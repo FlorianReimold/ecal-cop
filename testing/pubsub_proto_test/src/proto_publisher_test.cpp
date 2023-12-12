@@ -27,10 +27,6 @@
 
 #include <person.pb.h>
 
-
-// subscriber callback function
-
-
 class ProtoPublisherTest : public ::testing::Test {
 public:
 

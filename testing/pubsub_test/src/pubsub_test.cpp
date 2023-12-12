@@ -51,7 +51,7 @@ static std::string CreatePayLoad(size_t payload_size_)
 }
 
 TEST(PubSub, InitializeFinalize)
-{ 
+{
   // Is eCAL API initialized ?
   EXPECT_EQ(0, eCAL::IsInitialized());
 
@@ -64,24 +64,136 @@ TEST(PubSub, InitializeFinalize)
   // initialize eCAL API again we expect return value 1 for yet initialized
   EXPECT_EQ(1, eCAL::Initialize(0, nullptr, "initialize_test"));
 
-  // finalize eCAL API 2 times for the two monitoring post calls, so we decrease the reference
-  // counter and expect 0 for success
-  EXPECT_EQ(0, eCAL::Finalize());
+  // finalize eCAL API
   EXPECT_EQ(0, eCAL::Finalize());
 
   // Is eCAL API initialized ? yes ..
   EXPECT_EQ(1, eCAL::IsInitialized());
 
-  // finalize first time eCAL API we still expect 0 because 
-  // reference counter still greater 0
-  EXPECT_EQ(0, eCAL::Finalize());
-
-  // finalize second time eCAL API we still expect 0 
-  // but now reference counter is 0 and destruction should be succeeded
-  EXPECT_EQ(0, eCAL::Finalize());
-
   // finalize eCAL API again we expect 1 because yet finalized
   EXPECT_EQ(1, eCAL::Finalize());
+
+  // Is eCAL API initialized ? no
+  EXPECT_EQ(0, eCAL::IsInitialized());
+}
+
+TEST(PubSub, MultipleInitializeFinalize)
+{
+  // try to initialize / finalize multiple times
+  for (auto i = 0; i < 4; ++i)
+  {
+    // initialize eCAL API
+    EXPECT_EQ(0, eCAL::Initialize(0, nullptr, "multiple initialize/finalize"));
+
+    // finalize eCAL API
+    EXPECT_EQ(0, eCAL::Finalize());
+  }
+}
+
+TEST(PubSub, LeakedPubSub)
+{
+  // initialize eCAL API
+  EXPECT_EQ(0, eCAL::Initialize(0, nullptr, "leaked pub/sub"));
+
+  // enable loop back communication in the same thread
+  eCAL::Util::EnableLoopback(true);
+
+  // create subscriber and register a callback
+  eCAL::CSubscriber sub("foo");
+  sub.AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2));
+
+  // create publisher
+  eCAL::CPublisher pub("foo");
+
+  // let's match them
+  eCAL::Process::SleepMS(2 * CMN_REGISTRATION_REFRESH);
+
+  // start publishing thread
+  std::atomic<bool> pub_stop(false);
+  std::thread pub_t([&]() {
+    while (!pub_stop)
+    {
+      pub.Send("Hello World");
+#if 0
+      // some kind of busy waiting....
+      int y = 0;
+      for (int i = 0; i < 100000; i++)
+      {
+        y += i;
+      }
+#else
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+#endif
+    }
+    });
+
+  // let them work together
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  // finalize eCAL API
+  // without destroying any pub / sub
+  EXPECT_EQ(0, eCAL::Finalize());
+
+  // stop publishing thread
+  pub_stop = true; pub_t.join();
+}
+
+TEST(PubSub, CallbackDestruction)
+{
+  // initialize eCAL API
+  EXPECT_EQ(0, eCAL::Initialize(0, nullptr, "callback destruction"));
+
+  // enable loop back communication in the same thread
+  eCAL::Util::EnableLoopback(true);
+
+  // create subscriber and register a callback
+  std::shared_ptr<eCAL::CSubscriber> sub;
+
+  // create publisher
+  eCAL::CPublisher pub("foo");
+
+  // start publishing thread
+  std::atomic<bool> pub_stop(false);
+  std::thread pub_t([&]() {
+    while (!pub_stop)
+    {
+      pub.Send("Hello World");
+#if 0
+      // some kind of busy waiting....
+      int y = 0;
+      for (int i = 0; i < 100000; i++)
+      {
+        y += i;
+      }
+#else
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+#endif
+    }
+    });
+
+  std::atomic<bool> sub_stop(false);
+  std::thread sub_t([&]() {
+    while (!sub_stop)
+    {
+      sub = std::make_shared<eCAL::string::CSubscriber<std::string>>("foo");
+      sub->AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2));
+      std::this_thread::sleep_for(std::chrono::seconds(2));
+    }
+    });
+
+  // let them work together
+  std::this_thread::sleep_for(std::chrono::seconds(10));
+
+  // stop publishing thread
+  pub_stop = true;
+  pub_t.join();
+
+  sub_stop = true;
+  sub_t.join();
+
+  // finalize eCAL API
+  // without destroying any pub / sub
+  EXPECT_EQ(0, eCAL::Finalize());
 }
 
 TEST(PubSub, CreateDestroy)
@@ -89,26 +201,26 @@ TEST(PubSub, CreateDestroy)
   // initialize eCAL API
   eCAL::Initialize(0, nullptr, "pubsub_test");
 
-  // create publisher for topic "A"
+  // create publisher for topic "foo"
   eCAL::CPublisher pub;
 
   // check state
   EXPECT_EQ(false, pub.IsCreated());
 
   // create
-  EXPECT_EQ(true, pub.Create("A"));
+  EXPECT_EQ(true, pub.Create("foo"));
 
   // check state
   EXPECT_EQ(true, pub.IsCreated());
 
-  // create subscriber for topic "A"
+  // create subscriber for topic "foo"
   eCAL::CSubscriber sub;
 
   // check state
   EXPECT_EQ(false, sub.IsCreated());
 
   // create
-  EXPECT_EQ(true, sub.Create("A"));
+  EXPECT_EQ(true, sub.Create("foo"));
 
   // check state
   EXPECT_EQ(true, sub.IsCreated());
@@ -135,11 +247,11 @@ TEST(PubSub, SimpleMessage1)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create publisher for topic "A"
-  eCAL::CPublisher pub("A");
+  // create publisher for topic "foo"
+  eCAL::CPublisher pub("foo");
 
-  // create subscriber for topic "A"
-  eCAL::CSubscriber sub("A");
+  // create subscriber for topic "foo"
+  eCAL::CSubscriber sub("foo");
 
   // let's match them
   eCAL::Process::SleepMS(2 * CMN_REGISTRATION_REFRESH);
@@ -180,11 +292,11 @@ TEST(PubSub, SimpleMessage2)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
-  eCAL::CSubscriber sub("A");
+  // create subscriber for topic "foo"
+  eCAL::CSubscriber sub("foo");
 
-  // create publisher for topic "A"
-  eCAL::CPublisher pub("A");
+  // create publisher for topic "foo"
+  eCAL::CPublisher pub("foo");
 
   // let's match them
   eCAL::Process::SleepMS(2 * CMN_REGISTRATION_REFRESH);
@@ -218,11 +330,11 @@ TEST(PubSub, SimpleMessageCB)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
-  eCAL::CSubscriber sub("A");
+  // create subscriber for topic "foo"
+  eCAL::CSubscriber sub("foo");
 
-  // create publisher for topic "A"
-  eCAL::CPublisher pub("A");
+  // create publisher for topic "foo"
+  eCAL::CPublisher pub("foo");
 
   // add callback
   EXPECT_EQ(true, sub.AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -297,11 +409,11 @@ TEST(PubSub, DynamicSizeCB)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
-  eCAL::CSubscriber sub("A");
+  // create subscriber for topic "foo"
+  eCAL::CSubscriber sub("foo");
 
-  // create publisher for topic "A"
-  eCAL::CPublisher pub("A");
+  // create publisher for topic "foo"
+  eCAL::CPublisher pub("foo");
 
   // add callback
   EXPECT_EQ(true, sub.AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -353,13 +465,13 @@ TEST(PubSub, DynamicCreate)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
+  // create subscriber for topic "foo"
   eCAL::CSubscriber* sub;
-  sub = new eCAL::CSubscriber("A");
+  sub = new eCAL::CSubscriber("foo");
 
-  // create publisher for topic "A"
+  // create publisher for topic "foo"
   eCAL::CPublisher* pub;
-  pub = new eCAL::CPublisher("A");
+  pub = new eCAL::CPublisher("foo");
 
   // add callback
   EXPECT_EQ(true, sub->AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -381,8 +493,8 @@ TEST(PubSub, DynamicCreate)
   delete sub;
   sub = nullptr;
 
-  // create subscriber for topic "A"
-  sub = new eCAL::CSubscriber("A");
+  // create subscriber for topic "foo"
+  sub = new eCAL::CSubscriber("foo");
 
   // add callback
   EXPECT_EQ(true, sub->AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -403,8 +515,8 @@ TEST(PubSub, DynamicCreate)
   // destroy subscriber
   sub->Destroy();
 
-  // create subscriber for topic "A"
-  sub->Create("A");
+  // create subscriber for topic "foo"
+  sub->Create("foo");
 
   // add callback
   EXPECT_EQ(true, sub->AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -445,11 +557,11 @@ TEST(PubSub, ZeroPayloadMessageUDP)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
-  eCAL::CSubscriber sub("A");
+  // create subscriber for topic "foo"
+  eCAL::CSubscriber sub("foo");
 
-  // create publisher for topic "A"
-  eCAL::CPublisher pub("A");
+  // create publisher for topic "foo"
+  eCAL::CPublisher pub("foo");
 
   // add callback
   EXPECT_EQ(true, sub.AddReceiveCallback(std::bind(OnReceive, std::placeholders::_1, std::placeholders::_2)));
@@ -493,11 +605,11 @@ TEST(PubSub, MultipleSendsUDP)
   // publish / subscribe match in the same process
   eCAL::Util::EnableLoopback(true);
 
-  // create subscriber for topic "A"
-  eCAL::string::CSubscriber<std::string> sub("A");
+  // create subscriber for topic "foo"
+  eCAL::string::CSubscriber<std::string> sub("foo");
 
-  // create publisher for topic "A"
-  eCAL::string::CPublisher<std::string> pub("A");
+  // create publisher for topic "foo"
+  eCAL::string::CPublisher<std::string> pub("foo");
 
   // add callback
   auto save_data = [&last_received_msg, &last_received_timestamp](const char* /*topic_name_*/, const std::string& msg_, long long time_, long long /*clock_*/, long long /*id_*/)
@@ -594,7 +706,7 @@ TEST(PubSub, DestroyInCallback)
   eCAL::Finalize();
 }
 
-TEST(IO, SubscriberReconnection)
+TEST(PubSub, SubscriberReconnection)
 {
   /* Test setup :
    * publisher runs permanently in a thread

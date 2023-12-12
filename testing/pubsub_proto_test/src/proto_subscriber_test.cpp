@@ -81,7 +81,6 @@ TEST_F(ProtoSubscriberTest, SendReceive)
 
 }
 
-
 TEST_F(ProtoSubscriberTest, MoveAssignment)
 {
   eCAL::protobuf::CSubscriber<pb::People::Person> person_rec("ProtoSubscriberTest");
@@ -137,5 +136,4 @@ TEST_F(ProtoSubscriberTest, MoveConstruction)
   std::this_thread::sleep_for(std::chrono::milliseconds(1000));
   // assert that the OnPerson callback has been called once.
   ASSERT_EQ(1, received_callbacks);
-
 }

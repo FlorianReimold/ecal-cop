@@ -256,11 +256,6 @@ endif()
 # --------------------------------------------------------
 if(BUILD_ECAL_TESTS)
   enable_testing()
-
-  # ------------------------------------------------------
-  # test ecal
-  # ------------------------------------------------------
-  add_subdirectory(testing/core_test)
   add_subdirectory(testing/expmap_test)
   add_subdirectory(testing/pubsub_proto_test)
   add_subdirectory(testing/pubsub_test)
