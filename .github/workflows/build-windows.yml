@@ -42,7 +42,7 @@ jobs:
         -DECAL_THIRDPARTY_BUILD_GTEST=ON ^
         -DECAL_THIRDPARTY_BUILD_UDPCAP=ON ^
         -DBUILD_SHARED_LIBS=OFF ^
-        -DCMAKE_BUILD_TYPE=Release ^
+        -DCMAKE_BUILD_TYPE=Release
         mkdir "%ALLUSERSPROFILE%\eCAL"
         copy "%GITHUB_WORKSPACE%\ecal\core\cfg\ecal.ini" "%ALLUSERSPROFILE%\eCAL"
       shell: cmd
