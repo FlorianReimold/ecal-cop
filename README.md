@@ -14,7 +14,9 @@ Visit the eCAL Documentation at 🌐 https://ecal.io for more information.
   - C++ and C language support only
   - udp transport layer only (no shared memory, no tcp)
   - no monitoring API
-  - no log messaging over udp
+  - no logging over udp (console and file target still supported)
+
+Apart from these limitations, this functional reduced eCAL core version is fully compatible with Eclipse-eCAL. It uses the UDP layer for local and cross-host communication. As a result, it offers lower performance for local host only setups, but it has no drawbacks for network-based (udp) communication.
 
 ## How to build
 
