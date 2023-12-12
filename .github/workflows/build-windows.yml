@@ -1,0 +1,63 @@
+name: Build Windows Server 2019
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+env:
+  IS_GITHUB_SIGNING_ALLOWED: true
+  IS_JENKINS_SIGNING_ALLOWED: true
+
+jobs:
+  build-windows:
+    runs-on: windows-2019
+
+    steps:
+    # Downgrading nuget is required as of 2021-04-23, as nuget 5.9.1.111 fails installing protobuf
+    # https://github.com/actions/virtual-environments/issues/3240
+    - name: Downgrade nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.8.x'
+
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules:  'true'
+        fetch-depth: 0
+
+    - name: Download NPCAP
+      run: |
+        cd %GITHUB_WORKSPACE%
+        powershell -Command "& 'npcap\download_npcap.ps1'"
+      shell: cmd
+
+    - name: CMake
+      run: |
+        mkdir "${{ runner.workspace }}\_build\"
+        cd "${{ runner.workspace }}/_build"
+        cmake %GITHUB_WORKSPACE% -G "Visual Studio 16 2019" -A x64 -T v142 ^
+        -DBUILD_SAMPLES=ON ^
+        -DBUILD_TIME=ON ^
+        -DBUILD_ECAL_TESTS=ON ^
+        -DECAL_INSTALL_SAMPLE_SOURCES=ON ^
+        -DECAL_JOIN_MULTICAST_TWICE=OFF ^
+        -DECAL_NPCAP_SUPPORT=ON ^
+        -DECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS=ON ^
+        -DECAL_THIRDPARTY_BUILD_PROTOBUF=ON ^
+        -DECAL_THIRDPARTY_BUILD_GTEST=ON ^
+        -DECAL_THIRDPARTY_BUILD_UDPCAP=ON ^
+        -DBUILD_SHARED_LIBS=OFF ^
+        -DCMAKE_BUILD_TYPE=Release ^
+        mkdir "%ALLUSERSPROFILE%\eCAL"
+        copy "%GITHUB_WORKSPACE%\ecal\core\cfg\ecal.ini" "%ALLUSERSPROFILE%\eCAL"
+      shell: cmd
+
+    - name: Build Release
+      run: cmake --build . --config Release
+      working-directory: ${{ runner.workspace }}/_build
+
+#    - name: Run Tests
+#      run: ctest -C Release -V
+#      working-directory: ${{ runner.workspace }}/_build
