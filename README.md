@@ -1,5 +1,5 @@
 
-# The eCAL core only project
+# The eCAL COP (core only project)
 
 [![License](https://img.shields.io/github/license/continental/ecal.svg?style=flat)](LICENSE.txt)
 
