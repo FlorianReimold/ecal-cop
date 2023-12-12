@@ -27,12 +27,6 @@ jobs:
         submodules:  'true'
         fetch-depth: 0
 
-    - name: Download NPCAP
-      run: |
-        cd %GITHUB_WORKSPACE%
-        powershell -Command "& 'npcap\download_npcap.ps1'"
-      shell: cmd
-
     - name: CMake
       run: |
         mkdir "${{ runner.workspace }}\_build\"
