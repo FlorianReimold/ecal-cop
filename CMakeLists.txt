@@ -25,6 +25,7 @@ list(APPEND CMAKE_MODULE_PATH
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
   
 set(eCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+set(CMAKE_GENERATOR_PLATFORM x64)
 
 project(eCAL)
 set(ECAL_PROJECT_ROOT "${CMAKE_CURRENT_LIST_DIR}")
@@ -68,8 +69,6 @@ option(BUILD_SAMPLES                           "Build the eCAL samples"         
 option(BUILD_TIME                              "Build the eCAL time interfaces"                                    ON)
 option(BUILD_ECAL_TESTS                        "Build the eCAL google tests"                                       ON)
 
-option(ECAL_INSTALL_SAMPLE_SOURCES             "Install the sources of eCAL samples"                               ON)
-
 # Set option regarding third party library builds
 option(ECAL_THIRDPARTY_BUILD_ASIO              "Build asio with eCAL"                                              ON)
 option(ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS    "Build CMakeFunctions with eCAL"                                    ON)
@@ -88,10 +87,6 @@ else()
 endif()
 
 set(ECAL_BUILD_VERSION "0.0.0" CACHE STRING "Inject a build version if not building from a git repository")
-
-
-set(ECAL_CSHARP_BUILD_SAMPLES  ${BUILD_SAMPLES})
-
 
 # there is a CMake issue with testing threading availibility via TEST_RUN
 if(${CMAKE_CROSSCOMPILING})
@@ -310,12 +305,6 @@ install(EXPORT eCALCoreTargets
   COMPONENT sdk
 )
 
-if(ECAL_INSTALL_SAMPLE_SOURCES)
-  install(DIRECTORY samples/
-    DESTINATION ${eCAL_install_samples_src_dir}
-  )
-endif()
-
 # --------------------------------------------------------
 # create package
 # --------------------------------------------------------
@@ -327,7 +316,6 @@ message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS                  : ${CMAKE_EXPORT_
 message(STATUS "BUILD_SAMPLES                                  : ${BUILD_SAMPLES}")
 message(STATUS "BUILD_TIME                                     : ${BUILD_TIME}")
 message(STATUS "BUILD_ECAL_TESTS                               : ${BUILD_ECAL_TESTS}")
-message(STATUS "ECAL_INSTALL_SAMPLE_SOURCES                    : ${ECAL_INSTALL_SAMPLE_SOURCES}")
 message(STATUS "ECAL_NPCAP_SUPPORT                             : ${ECAL_NPCAP_SUPPORT}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_ASIO                     : ${ECAL_THIRDPARTY_BUILD_ASIO}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS           : ${ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS}")
