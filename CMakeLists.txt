@@ -106,6 +106,16 @@ file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
 message(STATUS "Module Path: ${CMAKE_MODULE_PATH}")
 message(STATUS "Prefix Path: ${CMAKE_PREFIX_PATH}")
 
+if(MSVC)
+  message(STATUS "supress thirdparty warnings for windows platform ..")
+  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
+  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+    string(REGEX REPLACE "/W[0-4]" "/W0" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+  else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0")
+  endif()
+endif()
+
 # This is a list of subprojects, that might be build with eCAL
 # according to how options ECAL_BUILD_<SUBPROJECT> are set
 set(possible_subprojects
@@ -126,6 +136,11 @@ foreach (dep IN LISTS possible_subprojects)
     include(thirdparty/${dep_lower}/build-${dep_lower}.cmake)
   endif ()
 endforeach ()
+
+if(MSVC)
+  message(STATUS "reset thirdparty warnings for windows platform ..")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
+endif()
 
 find_package(CMakeFunctions REQUIRED)
 
