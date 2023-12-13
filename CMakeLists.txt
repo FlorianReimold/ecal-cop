@@ -25,7 +25,10 @@ list(APPEND CMAKE_MODULE_PATH
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
   
 set(eCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
-set(CMAKE_GENERATOR_PLATFORM x64)
+
+if(MSVC)
+  set(CMAKE_GENERATOR_PLATFORM x64)
+endif()
 
 project(eCAL)
 set(ECAL_PROJECT_ROOT "${CMAKE_CURRENT_LIST_DIR}")
@@ -38,8 +41,6 @@ if(MSVC)
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /W4")
-  # support Windows 7 and newer
-  add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
 
 # --------------------------------------------------------
