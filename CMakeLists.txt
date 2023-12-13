@@ -34,16 +34,6 @@ project(eCAL)
 set(ECAL_PROJECT_ROOT "${CMAKE_CURRENT_LIST_DIR}")
 
 # --------------------------------------------------------
-# set msvc specific options
-# --------------------------------------------------------
-if(MSVC)
-  message(STATUS "MSVC detected - Adding flags")
-  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-  add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP /W4")
-endif()
-
-# --------------------------------------------------------
 # set gcc specific options
 # --------------------------------------------------------
 if(UNIX)
@@ -64,7 +54,7 @@ endif()
 
 # --------------------------------------------------------
 # command line build options
-# use it that way cmake .. -D(BUILD_TIME=ON -DBUILD_SAMPLES=ON
+# use it that way cmake .. -DBUILD_APPS=ON -DBUILD_SAMPLES=ON
 # --------------------------------------------------------
 option(BUILD_SAMPLES                           "Build the eCAL samples"                                            ON)
 option(BUILD_TIME                              "Build the eCAL time interfaces"                                    ON)
@@ -117,6 +107,20 @@ set(possible_subprojects
   tclap
   udpcap
 )
+
+# if a package does need to be build, include the cmake file with build instructions
+foreach (dep IN LISTS possible_subprojects)
+  string(TOUPPER ${dep} dep_upper)
+  string(TOLOWER ${dep} dep_lower)
+  if (ECAL_THIRDPARTY_BUILD_${dep_upper})
+    include(thirdparty/${dep_lower}/build-${dep_lower}.cmake)
+  endif ()
+endforeach ()
+
+if(MSVC)
+  message(STATUS "reset thirdparty warnings for windows platform ..")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
+endif()
 
 find_package(CMakeFunctions REQUIRED)
 
