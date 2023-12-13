@@ -127,11 +127,6 @@ foreach (dep IN LISTS possible_subprojects)
   endif ()
 endforeach ()
 
-if(MSVC)
-  message(STATUS "reset thirdparty warnings for windows platform ..")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
-endif()
-
 find_package(CMakeFunctions REQUIRED)
 
 git_revision_information(DEFAULT ${ECAL_BUILD_VERSION})
