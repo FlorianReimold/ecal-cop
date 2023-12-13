@@ -76,7 +76,6 @@ option(ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS    "Build CMakeFunctions with eCAL" 
 option(ECAL_THIRDPARTY_BUILD_GTEST             "Build gtest with eCAL"                                             ON)
 option(ECAL_THIRDPARTY_BUILD_SIMPLEINI         "Build simpleini with eCAL"                                         ON)
 option(ECAL_THIRDPARTY_BUILD_TCLAP             "Build tclap library with eCAL"                                     ON)
-
 if(WIN32)
   option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"   ON)
   option(ECAL_THIRDPARTY_BUILD_PROTOBUF        "Build protobuf with eCAL"                                          ON)
@@ -88,12 +87,6 @@ else()
 endif()
 
 set(ECAL_BUILD_VERSION "0.0.0" CACHE STRING "Inject a build version if not building from a git repository")
-
-# there is a CMake issue with testing threading availibility via TEST_RUN
-if(${CMAKE_CROSSCOMPILING})
-  set(THREADS_PTHREAD_ARG "2" CACHE STRING "Forcibly set by CMakeLists.txt." FORCE)
-endif()
-
 
 include(build_location)
 
@@ -112,16 +105,6 @@ file(TO_CMAKE_PATH "${CMAKE_MODULE_PATH}" CMAKE_MODULE_PATH)
 file(TO_CMAKE_PATH "${CMAKE_PREFIX_PATH}" CMAKE_PREFIX_PATH)
 message(STATUS "Module Path: ${CMAKE_MODULE_PATH}")
 message(STATUS "Prefix Path: ${CMAKE_PREFIX_PATH}")
-
-if(MSVC)
-  message(STATUS "supress thirdparty warnings for windows platform ..")
-  set(CMAKE_CXX_FLAGS_OLD "${CMAKE_CXX_FLAGS}")
-  if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-    string(REGEX REPLACE "/W[0-4]" "/W0" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-  else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W0")
-  endif()
-endif()
 
 # This is a list of subprojects, that might be build with eCAL
 # according to how options ECAL_BUILD_<SUBPROJECT> are set
@@ -143,11 +126,6 @@ foreach (dep IN LISTS possible_subprojects)
     include(thirdparty/${dep_lower}/build-${dep_lower}.cmake)
   endif ()
 endforeach ()
-
-if(MSVC)
-  message(STATUS "reset thirdparty warnings for windows platform ..")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_OLD}")
-endif()
 
 find_package(CMakeFunctions REQUIRED)
 
