@@ -23,6 +23,6 @@ Apart from these limitations, this functional reduced eCAL core version is fully
 ```bash
 mkdir _build
 cd _build
-cmake ..
+cmake .. -A x64
 cmake --build .
 ```
