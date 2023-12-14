@@ -39,10 +39,10 @@
 namespace eCAL
 {
   CPublisher::CPublisher() :
-                m_datawriter(nullptr),
-                m_id(0),
-                m_created(false),
-                m_initialized(false)
+    m_datawriter(nullptr),
+    m_id(0),
+    m_created(false),
+    m_initialized(false)
   {
   }
 
@@ -71,10 +71,10 @@ namespace eCAL
    * @brief CPublisher are move-enabled
   **/
   CPublisher::CPublisher(CPublisher&& rhs) noexcept :
-                m_datawriter(rhs.m_datawriter),
-                m_id(rhs.m_id),
-                m_created(rhs.m_created),
-                m_initialized(rhs.m_initialized)
+    m_datawriter(rhs.m_datawriter),
+    m_id(rhs.m_id),
+    m_created(rhs.m_created),
+    m_initialized(rhs.m_initialized)
   {
     rhs.m_created     = false;
     rhs.m_initialized = false;
@@ -101,8 +101,8 @@ namespace eCAL
   {
     SDataTypeInformation info;
     auto split_type = Util::SplitCombinedTopicType(topic_type_);
-    info.encoding = split_type.first;
-    info.name = split_type.second;
+    info.encoding   = split_type.first;
+    info.name       = split_type.second;
     info.descriptor = topic_desc_;
     return Create(topic_name_, info);
   }
@@ -326,21 +326,18 @@ namespace eCAL
 
   CPublisher::CPublisher(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
     : CPublisher()
-  {
-  }
+  {}
 
   CPublisher::CPublisher(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
     : CPublisher()
-  {
-  }
+  {}
 
   CPublisher::CPublisher(const std::string& topic_name_)
     : CPublisher(topic_name_, SDataTypeInformation{})
   {}
 
   CPublisher::~CPublisher()
-  {
-  }
+  {}
 
   /**
    * @brief CPublisher are move-enabled

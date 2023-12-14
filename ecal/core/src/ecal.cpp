@@ -21,6 +21,7 @@
  * @brief  eCAL core functions
 **/
 
+#include "ecal_def.h"
 #include "ecal_globals.h"
 #include "ecal_event.h"
 
