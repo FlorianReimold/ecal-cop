@@ -21,6 +21,7 @@
 #include <ecal/ecal_core.h>
 
 #include "ecal_process.h"
+#include "ecal_global_accessors.h"
 #include "registration/ecal_registration_receiver.h"
 #include "pubsub/ecal_pubgate.h"
 
@@ -40,12 +41,16 @@ namespace eCAL
 
     void PubShareType(bool state_)
     {
+#if ECAL_CORE_PUBLISHER
       if (g_pubgate() != nullptr) g_pubgate()->ShareType(state_);
+#endif
     }
 
     void PubShareDescription(bool state_)
     {
+#if ECAL_CORE_PUBLISHER
       if (g_pubgate() != nullptr) g_pubgate()->ShareDescription(state_);
+#endif
     }
 
     std::pair<std::string, std::string> SplitCombinedTopicType(const std::string& combined_topic_type_)

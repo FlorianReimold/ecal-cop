@@ -93,6 +93,7 @@ namespace eCAL
     }
 #endif // ECAL_CORE_REGISTRATION
 
+#if ECAL_CORE_SUBSCRIBER
     /////////////////////
     // SUBSCRIBER GATE
     /////////////////////
@@ -104,7 +105,9 @@ namespace eCAL
         new_initialization = true;
       }
     }
+#endif // ECAL_CORE_SUBSCRIBER
 
+#if ECAL_CORE_PUBLISHER
     /////////////////////
     // PUBLISHER GATE
     /////////////////////
@@ -116,6 +119,7 @@ namespace eCAL
         new_initialization = true;
       }
     }
+#endif // ECAL_CORE_PUBLISHER
 
     /////////////////////
     // TIMEGATE
@@ -150,8 +154,12 @@ namespace eCAL
     if (registration_provider_instance)                                   registration_provider_instance->Create(true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
 #endif
+#if ECAL_CORE_SUBSCRIBER
     if (subgate_instance && ((components_ & Init::Subscriber) != 0u))     subgate_instance->Create();
+#endif
+#if ECAL_CORE_PUBLISHER
     if (pubgate_instance && ((components_ & Init::Publisher) != 0u))      pubgate_instance->Create();
+#endif
     if (timegate_instance && ((components_ & Init::TimeSync) != 0u))      timegate_instance->Create(CTimeGate::eTimeSyncMode::realtime);
 
     initialized =  true;
@@ -172,10 +180,14 @@ namespace eCAL
     // check single component initialization
     switch (component_)
     {
+#if ECAL_CORE_PUBLISHER
     case Init::Publisher:
       return(pubgate_instance != nullptr);
+#endif
+#if ECAL_CORE_SUBSCRIBER
     case Init::Subscriber:
       return(subgate_instance != nullptr);
+#endif
     case Init::Logging:
       return(log_instance != nullptr);
     case Init::TimeSync:
@@ -192,8 +204,12 @@ namespace eCAL
     // start destruction
     if (timegate_instance)               timegate_instance->Destroy();
 
+#if ECAL_CORE_PUBLISHER
     if (pubgate_instance)                pubgate_instance->Destroy();
+#endif
+#if ECAL_CORE_SUBSCRIBER
     if (subgate_instance)                subgate_instance->Destroy();
+#endif
 #if ECAL_CORE_REGISTRATION
     if (registration_receiver_instance)  registration_receiver_instance->Destroy();
     if (registration_provider_instance)  registration_provider_instance->Destroy();
@@ -202,8 +218,12 @@ namespace eCAL
     //if (config_instance)                 config_instance->Destroy();
 
     timegate_instance               = nullptr;
+#if ECAL_CORE_PUBLISHER
     pubgate_instance                = nullptr;
+#endif
+#if ECAL_CORE_SUBSCRIBER
     subgate_instance                = nullptr;
+#endif
 #if ECAL_CORE_REGISTRATION
     registration_receiver_instance  = nullptr;
     registration_provider_instance  = nullptr;

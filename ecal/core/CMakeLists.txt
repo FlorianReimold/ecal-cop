@@ -18,11 +18,11 @@
 
 project(core VERSION ${eCAL_VERSION_STRING})
 
-find_package(asio         REQUIRED)
-find_package(tclap        REQUIRED)
-find_package(simpleini    REQUIRED)
+find_package(asio       REQUIRED)
+find_package(tclap      REQUIRED)
+find_package(simpleini  REQUIRED)
 if (ECAL_NPCAP_SUPPORT)
-  find_package(udpcap REQUIRED)
+  find_package(udpcap   REQUIRED)
 endif()
 
 # If we're currently doing a build within a git repository, we will configure the header files.
@@ -110,36 +110,57 @@ set(ecal_logging_src
 ######################################
 # pubsub
 ######################################
-set(ecal_pubsub_src
-    src/pubsub/ecal_pubgate.cpp
-    src/pubsub/ecal_publisher.cpp
-    src/pubsub/ecal_subgate.cpp
-    src/pubsub/ecal_subscriber.cpp
-    src/pubsub/ecal_pubgate.h
-    src/pubsub/ecal_subgate.h
+if(ECAL_CORE_PUBLISHER)
+  set(ecal_pub_src
+      src/pubsub/ecal_pubgate.cpp
+      src/pubsub/ecal_pubgate.h
+  )
+endif()
+list (APPEND
+    ecal_pub_src
+      src/pubsub/ecal_publisher.cpp
+)
+
+if(ECAL_CORE_SUBSCRIBER)
+  set(ecal_sub_src
+      src/pubsub/ecal_subgate.cpp
+      src/pubsub/ecal_subgate.h
+  )
+endif()
+list (APPEND
+    ecal_sub_src
+      src/pubsub/ecal_subscriber.cpp
 )
 
 ######################################
 # readwrite
 ######################################
-set(ecal_readwrite_src
-    src/readwrite/ecal_buffer_payload_writer.h
-    src/readwrite/ecal_reader.cpp
-    src/readwrite/ecal_reader.h
-    src/readwrite/ecal_reader_layer.h
-    src/readwrite/ecal_writer.cpp
-    src/readwrite/ecal_writer.h
-    src/readwrite/ecal_writer_base.h
-    src/readwrite/ecal_writer_data.h
-    src/readwrite/ecal_writer_info.h
-)
+if(ECAL_CORE_PUBLISHER)
+  set(ecal_writer_src
+      src/readwrite/ecal_writer.cpp
+      src/readwrite/ecal_writer.h
+      src/readwrite/ecal_writer_base.h
+      src/readwrite/ecal_writer_buffer_payload.h
+      src/readwrite/ecal_writer_data.h
+      src/readwrite/ecal_writer_info.h
+  )
+  set(ecal_writer_udp_src
+      src/readwrite/udp/ecal_writer_udp_mc.cpp
+      src/readwrite/udp/ecal_writer_udp_mc.h
+  )
+endif()
 
-set(ecal_readwrite_udp_src
-    src/readwrite/udp/ecal_reader_udp_mc.cpp
-    src/readwrite/udp/ecal_reader_udp_mc.h
-    src/readwrite/udp/ecal_writer_udp_mc.cpp
-    src/readwrite/udp/ecal_writer_udp_mc.h
-)
+if(ECAL_CORE_SUBSCRIBER)
+  set(ecal_reader_src
+      src/readwrite/ecal_reader.cpp
+      src/readwrite/ecal_reader.h
+      src/readwrite/ecal_reader_layer.h
+  )
+  set(ecal_reader_udp_src
+      src/readwrite/udp/ecal_reader_udp_mc.cpp
+      src/readwrite/udp/ecal_reader_udp_mc.h
+  )
+endif()
 
 ######################################
 # registration
@@ -257,10 +278,10 @@ set(ecal_header_cimpl
 
 set(ecal_header_msg
     include/ecal/msg/protobuf/publisher.h
-    include/ecal/msg/protobuf/subscriber.h
     include/ecal/msg/string/publisher.h
-    include/ecal/msg/string/subscriber.h
     include/ecal/msg/publisher.h
+    include/ecal/msg/protobuf/subscriber.h
+    include/ecal/msg/string/subscriber.h
     include/ecal/msg/subscriber.h
 )
 
@@ -278,9 +299,12 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_io_udp_sendreceive_linux_src}
     ${ecal_io_udp_sendreceive_win_src}
     ${ecal_logging_src} 
-    ${ecal_pubsub_src} 
-    ${ecal_readwrite_src} 
-    ${ecal_readwrite_udp_src}
+    ${ecal_pub_src} 
+    ${ecal_sub_src} 
+    ${ecal_writer_src} 
+    ${ecal_writer_udp_src}
+    ${ecal_reader_src} 
+    ${ecal_reader_udp_src}
     ${ecal_registration_src}   
     ${ecal_time_src}
     ${ecal_util_src}
@@ -325,17 +349,17 @@ target_compile_definitions(${PROJECT_NAME}
 if(ECAL_CORE_REGISTRATION)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_REGISTRATION)
-endif(ECAL_CORE_REGISTRATION)
+endif()
 
 if(ECAL_CORE_PUBLISHER)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_PUBLISHER)
-endif(ECAL_CORE_PUBLISHER)
+endif()
 
 if(ECAL_CORE_SUBSCRIBER)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_SUBSCRIBER)
-endif(ECAL_CORE_SUBSCRIBER)
+endif()
 
 if(ECAL_NPCAP_SUPPORT)
   target_compile_definitions(${PROJECT_NAME}
@@ -344,7 +368,7 @@ if(ECAL_NPCAP_SUPPORT)
     PRIVATE
       udpcap::udpcap
   )
-endif(ECAL_NPCAP_SUPPORT)
+endif()
 
 target_include_directories(${PROJECT_NAME}
   PRIVATE 
@@ -399,9 +423,12 @@ if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0")
     ${ecal_io_udp_sendreceive_linux_src}
     ${ecal_io_udp_sendreceive_win_src}
     ${ecal_logging_src} 
-    ${ecal_pubsub_src}
-    ${ecal_readwrite_src}
-    ${ecal_readwrite_udp_src} 
+    ${ecal_pub_src} 
+    ${ecal_sub_src} 
+    ${ecal_writer_src} 
+    ${ecal_writer_udp_src}
+    ${ecal_reader_src} 
+    ${ecal_reader_udp_src}
     ${ecal_registration_src}   
     ${ecal_time_src}
     ${ecal_util_src}

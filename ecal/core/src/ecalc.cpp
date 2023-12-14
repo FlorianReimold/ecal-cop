@@ -232,101 +232,136 @@ extern "C"
 {
   ECALC_API ECAL_HANDLE eCAL_Pub_New()
   {
+#if ECAL_CORE_PUBLISHER
     eCAL::CPublisher* pub = new eCAL::CPublisher;
     return(pub);
+#else
+    return(nullptr);
+#endif
   }
 
   ECALC_API int eCAL_Pub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_, const char* topic_desc_, int topic_desc_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (!pub->Create(topic_name_, topic_type_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)))) return(0);
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Pub_Destroy(ECAL_HANDLE handle_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     delete pub;
     pub = NULL;
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Pub_SetTypeName(ECAL_HANDLE handle_, const char* topic_type_name_, int topic_type_name_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->SetTypeName(std::string(topic_type_name_, static_cast<size_t>(topic_type_name_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_SetDescription(ECAL_HANDLE handle_, const char* topic_desc_, int topic_desc_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->SetDescription(std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_SetAttribute(ECAL_HANDLE handle_, const char* attr_name_, int attr_name_len_, const char* attr_value_, int attr_value_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->SetAttribute(std::string(attr_name_, static_cast<size_t>(attr_name_len_)), std::string(attr_value_, static_cast<size_t>(attr_value_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_ClearAttribute(ECAL_HANDLE handle_, const char* attr_name_, int attr_name_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->ClearAttribute(std::string(attr_name_, static_cast<size_t>(attr_name_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_ShareType(ECAL_HANDLE handle_, int state_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     pub->ShareType(state_ != 0);
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Pub_ShareDescription(ECAL_HANDLE handle_, int state_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     pub->ShareDescription(state_ != 0);
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Pub_SetMaxBandwidthUDP(ECAL_HANDLE handle_, long bandwidth_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->SetMaxBandwidthUDP(bandwidth_)) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_SetID(ECAL_HANDLE handle_, long long id_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->SetID(id_)) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_IsSubscribed(ECAL_HANDLE handle_)
   {
+#if ECAL_CORE_PUBLISHER
     if(handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if(pub->IsSubscribed()) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_Send(ECAL_HANDLE handle_, const void* const buf_, int buf_len_, long long time_)
   {
+#if ECAL_CORE_PUBLISHER
     if(handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     const size_t ret = pub->Send(buf_, static_cast<size_t>(buf_len_), time_);
@@ -334,11 +369,13 @@ extern "C"
     {
       return(buf_len_);
     }
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)
   {
+#if ECAL_CORE_PUBLISHER
     if(handle_   == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     const std::string dump = pub->Dump();
@@ -346,6 +383,7 @@ extern "C"
     {
       return(CopyBuffer(buf_, buf_len_, dump));
     }
+#endif
     return(0);
   }
 }

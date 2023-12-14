@@ -90,15 +90,19 @@ namespace eCAL
   }
 #endif
 
+#if ECAL_CORE_SUBSCRIBER
   CSubGate* g_subgate()
   {
     if (g_globals() == nullptr) return(nullptr);
     return(g_globals()->subgate().get());
   }
+#endif
 
+#if ECAL_CORE_PUBLISHER
   CPubGate* g_pubgate()
   {
     if (g_globals() == nullptr) return(nullptr);
     return(g_globals()->pubgate().get());
   }
+#endif
 }

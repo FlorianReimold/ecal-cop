@@ -26,6 +26,7 @@
 **/
 
 #include "ecal_registration_receiver.h"
+#include "ecal_global_accessors.h"
 
 #include "pubsub/ecal_subgate.h"
 #include "pubsub/ecal_pubgate.h"
@@ -183,6 +184,7 @@ namespace eCAL
 
   void CRegistrationReceiver::ApplySubscriberRegistration(const eCAL::pb::Sample& ecal_sample_)
   {
+#if ECAL_CORE_PUBLISHER
     // process registrations from same host group
     if (IsHostGroupMember(ecal_sample_))
     {
@@ -226,10 +228,12 @@ namespace eCAL
         }
       }
     }
+#endif
   }
 
   void CRegistrationReceiver::ApplyPublisherRegistration(const eCAL::pb::Sample& ecal_sample_)
   {
+#if ECAL_CORE_SUBSCRIBER
     // process registrations from same host group 
     if (IsHostGroupMember(ecal_sample_))
     {
@@ -273,6 +277,7 @@ namespace eCAL
         }
       }
     }
+#endif
   }
 
   bool CRegistrationReceiver::IsHostGroupMember(const eCAL::pb::Sample& ecal_sample_)

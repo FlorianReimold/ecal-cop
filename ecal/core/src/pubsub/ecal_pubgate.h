@@ -23,13 +23,12 @@
 
 #pragma once
 
-#include "ecal_global_accessors.h"
-#include "ecal_def.h"
-
 #include "readwrite/ecal_writer.h"
 
-#include <shared_mutex>
 #include <atomic>
+#include <shared_mutex>
+#include <memory>
+#include <string>
 #include <unordered_map>
 
 namespace eCAL

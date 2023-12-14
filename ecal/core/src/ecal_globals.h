@@ -30,8 +30,12 @@
 #endif 
 #include "time/ecal_timegate.h"
 #include "logging/ecal_log_impl.h"
+#if ECAL_CORE_PUBLISHER
 #include "pubsub/ecal_pubgate.h"
+#endif
+#if ECAL_CORE_SUBSCRIBER
 #include "pubsub/ecal_subgate.h"
+#endif
 
 #include <memory>
 
@@ -53,8 +57,12 @@ namespace eCAL
     const std::unique_ptr<CConfig>&                                       config()                 { return config_instance; };
     const std::unique_ptr<CLog>&                                          log()                    { return log_instance; };
     const std::unique_ptr<CTimeGate>&                                     timegate()               { return timegate_instance; };
+#if ECAL_CORE_SUBSCRIBER
     const std::unique_ptr<CSubGate>&                                      subgate()                { return subgate_instance; };
+#endif
+#if ECAL_CORE_PUBLISHER
     const std::unique_ptr<CPubGate>&                                      pubgate()                { return pubgate_instance; };
+#endif
 #if ECAL_CORE_REGISTRATION
     const std::unique_ptr<CRegistrationProvider>&                         registration_provider()  { return registration_provider_instance; };
     const std::unique_ptr<CRegistrationReceiver>&                         registration_receiver()  { return registration_receiver_instance; };
@@ -66,8 +74,12 @@ namespace eCAL
     std::unique_ptr<CConfig>                                              config_instance;
     std::unique_ptr<CLog>                                                 log_instance;
     std::unique_ptr<CTimeGate>                                            timegate_instance;
+#if ECAL_CORE_SUBSCRIBER
     std::unique_ptr<CSubGate>                                             subgate_instance;
+#endif
+#if ECAL_CORE_PUBLISHER
     std::unique_ptr<CPubGate>                                             pubgate_instance;
+#endif
 #if ECAL_CORE_REGISTRATION
     std::unique_ptr<CRegistrationProvider>                                registration_provider_instance;
     std::unique_ptr<CRegistrationReceiver>                                registration_receiver_instance;

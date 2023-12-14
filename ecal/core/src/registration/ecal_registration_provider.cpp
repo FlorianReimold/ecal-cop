@@ -259,11 +259,15 @@ namespace eCAL
     g_process_wbytes = static_cast<long long>(((double)g_process_wbytes_sum / m_reg_refresh) * 1000.0);
     g_process_wbytes_sum = 0;
 
+#if ECAL_CORE_SUBSCRIBER
     // refresh subscriber registration
     if (g_subgate() != nullptr) g_subgate()->RefreshRegistrations();
+#endif
 
+#if ECAL_CORE_PUBLISHER
     // refresh publisher registration
     if (g_pubgate() != nullptr) g_pubgate()->RefreshRegistrations();
+#endif
 
     // register process
     RegisterProcess();

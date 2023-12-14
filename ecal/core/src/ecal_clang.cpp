@@ -134,6 +134,7 @@ ECAL_API void log_message(const char* message_)
 /****************************************/
 ECAL_API ECAL_HANDLE pub_create(const char* topic_name_, const char* topic_type_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = new eCAL::CPublisher;
   if (!pub->Create(topic_name_, topic_type_))
   {
@@ -141,6 +142,9 @@ ECAL_API ECAL_HANDLE pub_create(const char* topic_name_, const char* topic_type_
     return(nullptr);
   }
   return(pub);
+#else
+  return(nullptr);
+#endif
 }
 
 /****************************************/
@@ -148,6 +152,7 @@ ECAL_API ECAL_HANDLE pub_create(const char* topic_name_, const char* topic_type_
 /****************************************/
 ECAL_API bool pub_destroy(ECAL_HANDLE handle_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
   if(pub != nullptr)
   {
@@ -159,6 +164,9 @@ ECAL_API bool pub_destroy(ECAL_HANDLE handle_)
   {
     return(false);
   }
+#else
+  return(false);
+#endif
 }
 
 /****************************************/
@@ -166,11 +174,13 @@ ECAL_API bool pub_destroy(ECAL_HANDLE handle_)
 /****************************************/
 ECAL_API bool pub_set_type_name(ECAL_HANDLE handle_, const char* topic_type_name_, const int topic_type_name_length_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
   if (pub != nullptr)
   {
     return(pub->SetTypeName(std::string(topic_type_name_, static_cast<size_t>(topic_type_name_length_))));
   }
+#endif
   return(false);
 }
 
@@ -179,11 +189,13 @@ ECAL_API bool pub_set_type_name(ECAL_HANDLE handle_, const char* topic_type_name
 /****************************************/
 ECAL_API bool pub_set_description(ECAL_HANDLE handle_, const char* topic_desc_, const int topic_desc_length_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
   if(pub != nullptr)
   {
     return(pub->SetDescription(std::string(topic_desc_, static_cast<size_t>(topic_desc_length_))));
   }
+#endif
   return(false);
 }
 
@@ -192,11 +204,13 @@ ECAL_API bool pub_set_description(ECAL_HANDLE handle_, const char* topic_desc_, 
 /****************************************/
 ECAL_API bool pub_set_max_bandwidth_udp(ECAL_HANDLE handle_, long bandwidth_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
   if (pub != nullptr)
   {
     return(pub->SetMaxBandwidthUDP(bandwidth_));
   }
+#endif
   return(false);
 }
 
@@ -205,6 +219,7 @@ ECAL_API bool pub_set_max_bandwidth_udp(ECAL_HANDLE handle_, long bandwidth_)
 /****************************************/
 ECAL_API int pub_send(ECAL_HANDLE handle_, const char* payload_, const int length_, const long long time_)
 {
+#if ECAL_CORE_PUBLISHER
   eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
   if(pub != nullptr)
   {
@@ -214,6 +229,7 @@ ECAL_API int pub_send(ECAL_HANDLE handle_, const char* payload_, const int lengt
       return(length_);
     }
   }
+#endif
   return(0);
 }
 

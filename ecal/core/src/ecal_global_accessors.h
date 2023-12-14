@@ -39,8 +39,12 @@ namespace eCAL
   class  CRegistrationProvider;
   class  CRegistrationReceiver;
 #endif
+#if ECAL_CORE_SUBSCRIBER
   class  CSubGate;
+#endif
+#if ECAL_CORE_PUBLISHER
   class  CPubGate;
+#endif
 
   // Declaration of getter functions for globally accessible variable instances
   CGlobals*               g_globals();
@@ -51,8 +55,12 @@ namespace eCAL
   CRegistrationProvider*  g_registration_provider();
   CRegistrationReceiver*  g_registration_receiver();
 #endif
+#if ECAL_CORE_SUBSCRIBER
   CSubGate*               g_subgate();
+#endif
+#if ECAL_CORE_PUBLISHER
   CPubGate*               g_pubgate();
+#endif
 
   // declaration of globally accessible variables
   extern CGlobals*                     g_globals_ctx;
