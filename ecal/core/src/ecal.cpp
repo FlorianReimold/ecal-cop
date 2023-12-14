@@ -22,9 +22,24 @@
 **/
 
 #include "ecal_globals.h"
+#include "ecal_event.h"
 
 #include <tclap/CmdLine.h>
 #include "util/advanced_tclap_output.h"
+
+namespace
+{
+  ECAL_API const eCAL::EventHandleT& ShutdownProcEvent()
+  {
+    static eCAL::EventHandleT evt;
+    static const std::string event_name(EVENT_SHUTDOWN_PROC + std::string("_") + std::to_string(eCAL::Process::GetProcessID()));
+    if (!gEventIsValid(evt))
+    {
+      gOpenNamedEvent(&evt, event_name, true);
+    }
+    return(evt);
+  }
+}
 
 namespace eCAL
 {
@@ -235,5 +250,16 @@ namespace eCAL
     delete g_globals_ctx;
     g_globals_ctx = nullptr;
     return(ret);
+  }
+
+  /**
+   * @brief Return the eCAL process state.
+   *
+   * @return  True if eCAL is in proper state.
+  **/
+  bool Ok()
+  {
+    const bool ecal_is_ok = (g_globals_ctx != nullptr) && !gWaitForEvent(ShutdownProcEvent(), 0);
+    return(ecal_is_ok);
   }
 }

@@ -29,11 +29,6 @@
 
 namespace eCAL
 {
-  bool Ok()
-  {
-    return(g_shutdown == 0);
-  }
-
   namespace Util
   {
     void EnableLoopback(bool state_)

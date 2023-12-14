@@ -64,17 +64,20 @@ TEST(PubSub, InitializeFinalize)
   // initialize eCAL API again we expect return value 1 for yet initialized
   EXPECT_EQ(1, eCAL::Initialize(0, nullptr, "initialize_test"));
 
-  // finalize eCAL API
+  // finalize eCAL API we expect return value 0 even it will not be really finalized because it's 2 times initialzed and 1 time finalized
   EXPECT_EQ(0, eCAL::Finalize());
 
-  // Is eCAL API initialized ? yes ..
+  // Is eCAL API initialized ? yes it' still initialized
   EXPECT_EQ(1, eCAL::IsInitialized());
 
-  // finalize eCAL API again we expect 1 because yet finalized
-  EXPECT_EQ(1, eCAL::Finalize());
+  // finalize eCAL API we expect return value 0 because now it will be finalized
+  EXPECT_EQ(0, eCAL::Finalize());
 
   // Is eCAL API initialized ? no
   EXPECT_EQ(0, eCAL::IsInitialized());
+
+  // finalize eCAL API we expect return value 1 because it was finalized before
+  EXPECT_EQ(1, eCAL::Finalize());
 }
 
 TEST(PubSub, MultipleInitializeFinalize)

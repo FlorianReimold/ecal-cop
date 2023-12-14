@@ -84,7 +84,6 @@ namespace eCAL
     SDataTypeInformation GetDataTypeInformation() const {return(m_topic_info);}
 
     void RefreshRegistration();
-    void CheckReceiveTimeout();
 
     size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::pb::eTLayerType layer_);
 
@@ -116,7 +115,6 @@ namespace eCAL
 
     std::mutex                                m_receive_callback_sync;
     ReceiveCallbackT                          m_receive_callback;
-    std::atomic<int>                          m_receive_time;
 
     std::deque<size_t>                        m_sample_hash_queue;
 

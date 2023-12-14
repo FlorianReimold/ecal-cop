@@ -52,7 +52,6 @@ namespace eCAL
                  m_topic_size(0),
                  m_read_buf_received(false),
                  m_read_time(0),
-                 m_receive_time(0),
                  m_clock(0),
                  m_clock_old(0),
                  m_freq(0),
@@ -373,9 +372,6 @@ namespace eCAL
     // increase read clock
     m_clock++;
 
-    // reset timeout
-    m_receive_time = 0;
-
     // store size
     m_topic_size = size_;
 
@@ -618,10 +614,6 @@ namespace eCAL
 
     // register without send
     Register(false);
-  }
-
-  void CDataReader::CheckReceiveTimeout()
-  {
   }
 
   std::string CDataReader::Dump(const std::string& indent_ /* = "" */)

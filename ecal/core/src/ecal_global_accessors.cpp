@@ -28,7 +28,6 @@ namespace eCAL
 {
   CGlobals*                     g_globals_ctx(nullptr);
   std::atomic<int>              g_globals_ctx_ref_cnt;
-  std::atomic<int>              g_shutdown;
 
   std::string                   g_default_ini_file(ECAL_DEFAULT_CFG);
 
@@ -53,7 +52,6 @@ namespace eCAL
   std::atomic<long long>        g_process_rclock;
   std::atomic<long long>        g_process_rbytes;
   std::atomic<long long>        g_process_rbytes_sum;
-
 
   CGlobals* g_globals()
   {

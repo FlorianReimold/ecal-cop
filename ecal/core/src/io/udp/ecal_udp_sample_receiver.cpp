@@ -111,6 +111,10 @@ namespace eCAL
 
     CSampleReceiver::~CSampleReceiver()
     {
+      // destroy udp receiver
+      m_udp_receiver.Destroy();
+
+      // stop receiver thread
       m_udp_receiver_thread->stop();
     }
 

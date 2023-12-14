@@ -32,28 +32,10 @@
 #endif
 
 #include "ecal_def.h"
-#include "ecal_event.h"
 #include "ecal_global_accessors.h"
 
 #include "pubsub/ecal_subgate.h"
 #include "ecal_sample_to_topicinfo.h"
-
-////////////////////////////////////////////////////////
-// local events
-////////////////////////////////////////////////////////
-namespace eCAL
-{
-  ECAL_API const EventHandleT& ShutdownProcEvent()
-  {
-    static EventHandleT evt;
-    static const std::string event_name(EVENT_SHUTDOWN_PROC + std::string("_") + std::to_string(Process::GetProcessID()));
-    if (!gEventIsValid(evt))
-    {
-      gOpenNamedEvent(&evt, event_name, true);
-    }
-    return(evt);
-  }
-}
 
 namespace eCAL
 {
@@ -76,19 +58,12 @@ namespace eCAL
     // initialize data reader layers
     CDataReader::InitializeLayers();
 
-    // start timeout thread
-    m_subtimeout_thread = std::make_shared<CCallbackThread>(std::bind(&CSubGate::CheckTimeouts, this));
-    m_subtimeout_thread->start(std::chrono::milliseconds(CMN_DATAREADER_TIMEOUT_RESOLUTION_MS));
-      
     m_created = true;
   }
 
   void CSubGate::Destroy()
   {
     if(!m_created) return;
-
-    // stop timeout thread
-    m_subtimeout_thread->stop();
 
     // destroy all remaining subscriber
     const std::unique_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
@@ -290,25 +265,5 @@ namespace eCAL
     {
       iter.second->RefreshRegistration();
     }
-  }
-
-  void CSubGate::CheckTimeouts()
-  {
-    // check subscriber timeouts
-    const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
-    for (auto iter = m_topic_name_datareader_map.begin(); iter != m_topic_name_datareader_map.end(); ++iter)
-    {
-      iter->second->CheckReceiveTimeout();
-    }
-
-    // signal shutdown if eCAL is not okay
-    const bool ecal_is_ok = (g_globals_ctx != nullptr) && !gWaitForEvent(ShutdownProcEvent(), 0);
-    if (!ecal_is_ok)
-    {
-      g_shutdown = 1;
-    }
-
-    // idle thread
-    std::this_thread::sleep_for(std::chrono::milliseconds(CMN_DATAREADER_TIMEOUT_RESOLUTION_MS));
   }
 }

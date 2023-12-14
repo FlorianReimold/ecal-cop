@@ -99,9 +99,6 @@
 /* time for resend registration info from publisher/subscriber in ms */
 #define CMN_REGISTRATION_REFRESH                   1000  /* ms */
 
-/* delta time to check timeout for data readers in ms */
-#define CMN_DATAREADER_TIMEOUT_RESOLUTION_MS       100   /* ms */
-
 /* cylce time udp receive threads in ms */
 #define CMN_UDP_RECEIVE_THREAD_CYCLE_TIME_MS       1000  /* ms */
 
