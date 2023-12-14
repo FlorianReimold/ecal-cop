@@ -29,8 +29,9 @@
 #include "ecal_buffer_payload_writer.h"
 #include "config/ecal_config_reader_hlp.h"
 
+#if ECAL_CORE_REGISTRATION
 #include "registration/ecal_registration_provider.h"
-#include "registration/ecal_registration_receiver.h"
+#endif
 
 #include "ecal_writer.h"
 #include "ecal_writer_base.h"
@@ -436,6 +437,7 @@ namespace eCAL
 
   bool CDataWriter::Register(bool force_)
   {
+#if ECAL_CORE_REGISTRATION
     if (m_topic_name.empty()) return(false);
 
     //@Rex: why is the logic different in CDataReader???
@@ -494,16 +496,18 @@ namespace eCAL
 
     // register publisher
     if (g_registration_provider() != nullptr) g_registration_provider()->RegisterTopic(m_topic_name, m_topic_id, ecal_reg_sample, force_);
-
 #ifndef NDEBUG
     // log it
     Logging::Log(log_level_debug4, m_topic_name + "::CDataWriter::Register");
 #endif
+
+#endif // ECAL_CORE_REGISTRATION
     return(true);
   }
 
   bool CDataWriter::Unregister()
   {
+#if ECAL_CORE_REGISTRATION
     if (m_topic_name.empty()) return(false);
 
     // create command parameter
@@ -521,11 +525,12 @@ namespace eCAL
 
     // unregister publisher
     if (g_registration_provider() != nullptr) g_registration_provider()->UnregisterTopic(m_topic_name, m_topic_id, ecal_unreg_sample, true);
-
 #ifndef NDEBUG
     // log it
     Logging::Log(log_level_debug4, m_topic_name + "::CDataWriter::UnRegister");
 #endif
+
+#endif // ECAL_CORE_REGISTRATION
     return(true);
   }
 

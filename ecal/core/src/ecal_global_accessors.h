@@ -35,20 +35,24 @@ namespace eCAL
   class  CConfig;
   class  CLog;
   class  CTimeGate;
+#if ECAL_CORE_REGISTRATION
   class  CRegistrationProvider;
+  class  CRegistrationReceiver;
+#endif
   class  CSubGate;
   class  CPubGate;
-  class  CRegistrationReceiver;
 
   // Declaration of getter functions for globally accessible variable instances
   CGlobals*               g_globals();
   CConfig*                g_config();
   CLog*                   g_log();
   CTimeGate*              g_timegate();
+#if ECAL_CORE_REGISTRATION
   CRegistrationProvider*  g_registration_provider();
+  CRegistrationReceiver*  g_registration_receiver();
+#endif
   CSubGate*               g_subgate();
   CPubGate*               g_pubgate();
-  CRegistrationReceiver*  g_registration_receiver();
 
   // declaration of globally accessible variables
   extern CGlobals*                     g_globals_ctx;

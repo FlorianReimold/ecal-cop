@@ -70,7 +70,12 @@ option(BUILD_SAMPLES                           "Build the eCAL samples"         
 option(BUILD_TIME                              "Build the eCAL time interfaces"                                    ON)
 option(BUILD_ECAL_TESTS                        "Build the eCAL google tests"                                       ON)
 
-# Set option regarding third party library builds
+# core internal feature configuration
+option(ECAL_CORE_REGISTRATION                  "Enables the eCAL registration layer"                               ON)
+option(ECAL_CORE_PUBLISHER                     "Enables the eCAL publisher functionality"                          ON)
+option(ECAL_CORE_SUBSCRIBER                    "Enables the eCAL subscriber functionality"                         ON)
+
+# third party library options
 option(ECAL_THIRDPARTY_BUILD_ASIO              "Build asio with eCAL"                                              ON)
 option(ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS    "Build CMakeFunctions with eCAL"                                    ON)
 option(ECAL_THIRDPARTY_BUILD_GTEST             "Build gtest with eCAL"                                             ON)
@@ -310,6 +315,9 @@ message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS                  : ${CMAKE_EXPORT_
 message(STATUS "BUILD_SAMPLES                                  : ${BUILD_SAMPLES}")
 message(STATUS "BUILD_TIME                                     : ${BUILD_TIME}")
 message(STATUS "BUILD_ECAL_TESTS                               : ${BUILD_ECAL_TESTS}")
+message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REGISTRATION}")
+message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
+message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
 message(STATUS "ECAL_NPCAP_SUPPORT                             : ${ECAL_NPCAP_SUPPORT}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_ASIO                     : ${ECAL_THIRDPARTY_BUILD_ASIO}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS           : ${ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS}")

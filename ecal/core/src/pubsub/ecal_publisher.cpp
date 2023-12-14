@@ -273,8 +273,12 @@ namespace eCAL
 
   bool CPublisher::IsSubscribed() const
   {
+#if ECAL_CORE_REGISTRATION
     if(m_datawriter == nullptr) return(false);
     return(m_datawriter->IsSubscribed());
+#else  // ECAL_CORE_REGISTRATION
+    return(true);
+#endif // ECAL_CORE_REGISTRATION
   }
 
   std::string CPublisher::GetTopicName() const

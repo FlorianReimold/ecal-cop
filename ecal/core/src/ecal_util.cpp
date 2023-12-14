@@ -33,7 +33,9 @@ namespace eCAL
   {
     void EnableLoopback(bool state_)
     {
+#if ECAL_CORE_REGISTRATION
       if (g_registration_receiver() != nullptr) g_registration_receiver()->EnableLoopback(state_);
+#endif
     }
 
     void PubShareType(bool state_)

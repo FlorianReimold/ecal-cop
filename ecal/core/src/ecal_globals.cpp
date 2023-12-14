@@ -25,6 +25,7 @@
 
 #include "config/ecal_config_reader.h"
 
+#include <iostream>
 #include <stdexcept>
 
 namespace eCAL
@@ -72,6 +73,7 @@ namespace eCAL
       new_initialization = true;
     }
 
+#if ECAL_CORE_REGISTRATION
     /////////////////////
     // REGISTRATION PROVIDER
     /////////////////////
@@ -89,6 +91,7 @@ namespace eCAL
       registration_receiver_instance = std::make_unique<CRegistrationReceiver>();
       new_initialization = true;
     }
+#endif // ECAL_CORE_REGISTRATION
 
     /////////////////////
     // SUBSCRIBER GATE
@@ -143,8 +146,10 @@ namespace eCAL
     /////////////////////
     //if (config_instance)                                                config_instance->Create();
     if (log_instance && ((components_ & Init::Logging) != 0u))            log_instance->Create();
+#if ECAL_CORE_REGISTRATION
     if (registration_provider_instance)                                   registration_provider_instance->Create(true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
+#endif
     if (subgate_instance && ((components_ & Init::Subscriber) != 0u))     subgate_instance->Create();
     if (pubgate_instance && ((components_ & Init::Publisher) != 0u))      pubgate_instance->Create();
     if (timegate_instance && ((components_ & Init::TimeSync) != 0u))      timegate_instance->Create(CTimeGate::eTimeSyncMode::realtime);
@@ -189,16 +194,20 @@ namespace eCAL
 
     if (pubgate_instance)                pubgate_instance->Destroy();
     if (subgate_instance)                subgate_instance->Destroy();
+#if ECAL_CORE_REGISTRATION
     if (registration_receiver_instance)  registration_receiver_instance->Destroy();
     if (registration_provider_instance)  registration_provider_instance->Destroy();
+#endif
     if (log_instance)                    log_instance->Destroy();
     //if (config_instance)                 config_instance->Destroy();
 
     timegate_instance               = nullptr;
     pubgate_instance                = nullptr;
     subgate_instance                = nullptr;
+#if ECAL_CORE_REGISTRATION
     registration_receiver_instance  = nullptr;
     registration_provider_instance  = nullptr;
+#endif
     log_instance                    = nullptr;
     config_instance                 = nullptr;
 

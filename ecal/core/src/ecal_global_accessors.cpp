@@ -76,11 +76,19 @@ namespace eCAL
     return(g_globals()->timegate().get());
   }
 
+#if ECAL_CORE_REGISTRATION
   CRegistrationProvider* g_registration_provider()
   {
     if (g_globals() == nullptr) return(nullptr);
     return(g_globals()->registration_provider().get());
   }
+
+  CRegistrationReceiver* g_registration_receiver()
+  {
+    if (g_globals() == nullptr) return(nullptr);
+    return(g_globals()->registration_receiver().get());
+  }
+#endif
 
   CSubGate* g_subgate()
   {
@@ -92,11 +100,5 @@ namespace eCAL
   {
     if (g_globals() == nullptr) return(nullptr);
     return(g_globals()->pubgate().get());
-  }
-
-  CRegistrationReceiver* g_registration_receiver()
-  {
-    if (g_globals() == nullptr) return(nullptr);
-    return(g_globals()->registration_receiver().get());
   }
 }

@@ -25,7 +25,9 @@
 #include <ecal/ecal_config.h>
 
 #include "ecal_def.h"
+#if ECAL_CORE_REGISTRATION
 #include "registration/ecal_registration_provider.h"
+#endif
 #include "ecal_reader.h"
 #include "ecal_process.h"
 #include "ecal_global_accessors.h"
@@ -168,6 +170,7 @@ namespace eCAL
 
   bool CDataReader::Register(const bool force_)
   {
+#if ECAL_CORE_REGISTRATION
     if(m_topic_name.empty()) return(false);
 
     // create command parameter
@@ -216,11 +219,14 @@ namespace eCAL
     // log it
     Logging::Log(log_level_debug4, m_topic_name + "::CDataReader::DoRegister");
 #endif
+
+#endif // ECAL_CORE_REGISTRATION
     return(true);
   }
 
   bool CDataReader::Unregister()
   {
+#if ECAL_CORE_REGISTRATION
     if (m_topic_name.empty()) return(false);
 
     // create command parameter
@@ -242,6 +248,8 @@ namespace eCAL
     // log it
     Logging::Log(log_level_debug4, m_topic_name + "::CDataReader::Unregister");
 #endif
+
+#endif // ECAL_CORE_REGISTRATION
     return(true);
   }
 

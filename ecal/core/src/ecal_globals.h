@@ -24,8 +24,10 @@
 #pragma once
 
 #include "ecal_global_accessors.h"
+#if ECAL_CORE_REGISTRATION
 #include "registration/ecal_registration_provider.h"
 #include "registration/ecal_registration_receiver.h"
+#endif 
 #include "time/ecal_timegate.h"
 #include "logging/ecal_log_impl.h"
 #include "pubsub/ecal_pubgate.h"
@@ -53,8 +55,10 @@ namespace eCAL
     const std::unique_ptr<CTimeGate>&                                     timegate()               { return timegate_instance; };
     const std::unique_ptr<CSubGate>&                                      subgate()                { return subgate_instance; };
     const std::unique_ptr<CPubGate>&                                      pubgate()                { return pubgate_instance; };
+#if ECAL_CORE_REGISTRATION
     const std::unique_ptr<CRegistrationProvider>&                         registration_provider()  { return registration_provider_instance; };
     const std::unique_ptr<CRegistrationReceiver>&                         registration_receiver()  { return registration_receiver_instance; };
+#endif
 
   private:
     bool                                                                  initialized;
@@ -64,7 +68,9 @@ namespace eCAL
     std::unique_ptr<CTimeGate>                                            timegate_instance;
     std::unique_ptr<CSubGate>                                             subgate_instance;
     std::unique_ptr<CPubGate>                                             pubgate_instance;
+#if ECAL_CORE_REGISTRATION
     std::unique_ptr<CRegistrationProvider>                                registration_provider_instance;
     std::unique_ptr<CRegistrationReceiver>                                registration_receiver_instance;
+#endif
   };
 }

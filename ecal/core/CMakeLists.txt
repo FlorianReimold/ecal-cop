@@ -144,12 +144,14 @@ set(ecal_readwrite_udp_src
 ######################################
 # registration
 ######################################
-set(ecal_registration_src
-    src/registration/ecal_registration_provider.cpp
-    src/registration/ecal_registration_provider.h
-    src/registration/ecal_registration_receiver.cpp
-    src/registration/ecal_registration_receiver.h
-)
+if (ECAL_CORE_REGISTRATION)
+  set(ecal_registration_src
+      src/registration/ecal_registration_provider.cpp
+      src/registration/ecal_registration_provider.h
+      src/registration/ecal_registration_receiver.cpp
+      src/registration/ecal_registration_receiver.h
+  )
+endif()
 
 ######################################
 # time
@@ -319,6 +321,21 @@ target_compile_definitions(${PROJECT_NAME}
     $<$<BOOL:${ECAL_USE_CLOCKLOCK_MUTEX}>:ECAL_USE_CLOCKLOCK_MUTEX>
     ECAL_NO_DEPRECATION_WARNINGS
 )
+
+if(ECAL_CORE_REGISTRATION)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_REGISTRATION)
+endif(ECAL_CORE_REGISTRATION)
+
+if(ECAL_CORE_PUBLISHER)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_PUBLISHER)
+endif(ECAL_CORE_PUBLISHER)
+
+if(ECAL_CORE_SUBSCRIBER)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_SUBSCRIBER)
+endif(ECAL_CORE_SUBSCRIBER)
 
 if(ECAL_NPCAP_SUPPORT)
   target_compile_definitions(${PROJECT_NAME}
