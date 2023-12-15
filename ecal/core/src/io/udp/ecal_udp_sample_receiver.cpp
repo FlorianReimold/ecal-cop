@@ -26,6 +26,8 @@
 
 #include <ecal/ecal_log.h>
 
+#include <utility>
+
 namespace eCAL
 {
   namespace UDP
@@ -94,7 +96,7 @@ namespace eCAL
     }
 
     CSampleReceiver::CSampleReceiver(const IO::UDP::SReceiverAttr& attr_, HasSampleCallbackT has_sample_callback_, ApplySampleCallbackT apply_sample_callback_) :
-      m_has_sample_callback(has_sample_callback_), m_apply_sample_callback(apply_sample_callback_)
+      m_has_sample_callback(std::move(has_sample_callback_)), m_apply_sample_callback(std::move(apply_sample_callback_))
     {
       // create udp receiver
       m_udp_receiver.Create(attr_);
@@ -103,7 +105,7 @@ namespace eCAL
       m_msg_buffer.resize(MSG_BUFFER_SIZE);
 
       // start receiver thread
-      m_udp_receiver_thread = std::make_shared<eCAL::CCallbackThread>(std::bind(&CSampleReceiver::ReceiveThread, this));
+      m_udp_receiver_thread = std::make_shared<eCAL::CCallbackThread>([this] { ReceiveThread(); });
       m_udp_receiver_thread->start(std::chrono::milliseconds(0));
 
       m_cleanup_start = std::chrono::steady_clock::now();
@@ -144,7 +146,7 @@ namespace eCAL
       if (sample_buffer_len_ < sizeof(IO::UDP::SUDPMessageHead)) return;
 
       // cast buffer to udp message struct
-      struct IO::UDP::SUDPMessage* ecal_message = (struct IO::UDP::SUDPMessage*)sample_buffer_;
+      auto ecal_message = (struct IO::UDP::SUDPMessage*)sample_buffer_;
 
       // check for eCAL 4.x header
       if (
@@ -320,7 +322,7 @@ namespace eCAL
       {
         m_cleanup_start = std::chrono::steady_clock::now();
 
-        for (SampleDefragmentationMapT::iterator riter = m_defrag_sample_map.begin(); riter != m_defrag_sample_map.end();)
+        for (auto riter = m_defrag_sample_map.begin(); riter != m_defrag_sample_map.end();)
         {
           const bool finished = riter->second->HasFinished();
           const bool timeouted = riter->second->HasTimedOut(step_time);

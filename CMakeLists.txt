@@ -73,7 +73,7 @@ option(BUILD_ECAL_TESTS                        "Build the eCAL google tests"    
 option(ECAL_CORE_REGISTRATION                  "Enables the eCAL registration layer"                               ON)
 option(ECAL_CORE_PUBLISHER                     "Enables the eCAL publisher functionality"                          ON)
 option(ECAL_CORE_SUBSCRIBER                    "Enables the eCAL subscriber functionality"                         ON)
-option(ECAL_CORE_TIMEPLUGIN                    "Enables the eCAL time plugin functionality"                       OFF)
+option(ECAL_CORE_TIMEPLUGIN                    "Enables the eCAL time plugin functionality"                        ON)
 
 # third party library options
 option(ECAL_THIRDPARTY_BUILD_ASIO              "Build asio with eCAL"                                              ON)

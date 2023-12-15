@@ -389,8 +389,7 @@ namespace eCAL
       // try to load plugin in standard path
       if (interface_.module_handle == nullptr)
       {
-        const auto module_path = module_name;
-        interface_.module_handle = LoadLibrary(module_path.c_str());
+        interface_.module_handle = LoadLibrary(module_name.c_str());
       }
 
       // try to load plugin from sub folder "ecal_time_plugin_dir"

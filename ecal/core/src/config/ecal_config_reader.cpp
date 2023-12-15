@@ -128,7 +128,7 @@ namespace
   // 2. The ecal.ini exists in that directory
   bool IsValidConfigFilePath(const std::string& path)
   {
-    if (path.empty()) { return false; };
+    if (path.empty()) { return false; }
 
     // check existence of ecal.ini file
     const EcalUtils::Filesystem::FileStatus ecal_ini_status(path + std::string(ECAL_DEFAULT_CFG), EcalUtils::Filesystem::Current);
@@ -314,7 +314,7 @@ namespace eCAL
       }
 
       // update command line keys
-      for (auto full_key : m_overwrite_keys)
+      for (const auto& full_key : m_overwrite_keys)
       {
          auto sec_pos = full_key.find_last_of('/');
          if (sec_pos == std::string::npos) continue;

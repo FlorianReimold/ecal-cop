@@ -34,7 +34,6 @@
 
 #include <sstream>
 #include <iostream>
-#include <utility>
 
 namespace eCAL
 {

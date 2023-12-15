@@ -69,7 +69,6 @@ namespace eCAL
   // declaration of globally accessible variables
   extern CGlobals*                     g_globals_ctx;
   extern std::atomic<int>              g_globals_ctx_ref_cnt;
-  extern std::atomic<int>              g_shutdown;
 
   extern std::string                   g_default_ini_file;
 

@@ -58,7 +58,6 @@ namespace eCAL
     void Destroy();
 
     void EnableLoopback(bool state_);
-    bool LoopBackEnabled() const { return m_loopback; };
 
     bool HasSample(const std::string& /*sample_name_*/) { return(true); };
     bool ApplySample(const eCAL::pb::Sample& ecal_sample_);

@@ -99,7 +99,6 @@ namespace eCAL
 
     bool IsCreated() const {return(m_created);}
     bool IsSubscribed() const {return(m_loc_subscribed || m_ext_subscribed);}
-    bool IsExtSubscribed() const {return(m_ext_subscribed);}
 
     const std::string& GetTopicName() const {return(m_topic_name);}
     const SDataTypeInformation& GetDataTypeInformation() const { return m_topic_info; }

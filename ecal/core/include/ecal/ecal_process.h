@@ -170,7 +170,7 @@ namespace eCAL
      *
      * @return  Zero if succeeded.
     **/
-    ECAL_API int AddRegistrationCallback(enum eCAL_Registration_Event event_, RegistrationCallbackT callback_);
+    ECAL_API int AddRegistrationCallback(enum eCAL_Registration_Event event_, const RegistrationCallbackT& callback_);
 
     /**
      * @brief  Remove registration callback.

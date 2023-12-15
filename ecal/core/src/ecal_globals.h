@@ -50,7 +50,7 @@ namespace eCAL
     int Initialize    ( unsigned int components_, std::vector<std::string>* config_keys_ = nullptr);
     int IsInitialized ( unsigned int component_  );
 
-    unsigned int GetComponents() { return(components); };
+    unsigned int GetComponents() const { return(components); };
 
     int Finalize(unsigned int components_);
 

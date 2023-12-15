@@ -31,7 +31,6 @@
 //#include <sys/socket.h>
 #endif
 
-#include "ecal_def.h"
 #include "ecal_global_accessors.h"
 
 #include "pubsub/ecal_subgate.h"
@@ -93,7 +92,7 @@ namespace eCAL
 
     const std::unique_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
     auto res = m_topic_name_datareader_map.equal_range(topic_name_);
-    for(TopicNameDataReaderMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for(auto iter = res.first; iter != res.second; ++iter)
     {
       if(iter->second == datareader_)
       {
@@ -139,7 +138,7 @@ namespace eCAL
       std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
 
       // Lock the sync map only while extracting the relevant shared pointers to the Datareaders.
-      // Apply the samples to the readers afterwards.
+      // Apply the samples to the readers afterward.
       {
         // apply sample to data reader
         const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
@@ -189,7 +188,7 @@ namespace eCAL
     // handle local publisher connection
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
-    for (TopicNameDataReaderMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for (auto iter = res.first; iter != res.second; ++iter)
     {
       // inform for local publisher connection
       iter->second->ApplyLocPublication(process_id, topic_id, topic_info);
@@ -209,7 +208,7 @@ namespace eCAL
     // unregister local publisher
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
-    for (TopicNameDataReaderMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for (auto iter = res.first; iter != res.second; ++iter)
     {
       iter->second->RemoveLocPublication(process_id, topic_id);
     }
@@ -229,7 +228,7 @@ namespace eCAL
     // handle external publisher connection
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
-    for (TopicNameDataReaderMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for (auto iter = res.first; iter != res.second; ++iter)
     {
       // inform for external publisher connection
       iter->second->ApplyExtPublication(host_name, process_id, topic_id, topic_info);
@@ -249,7 +248,7 @@ namespace eCAL
     // unregister local subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
-    for (TopicNameDataReaderMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for (auto iter = res.first; iter != res.second; ++iter)
     {
       iter->second->RemoveExtPublication(host_name, process_id, topic_id);
     }

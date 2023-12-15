@@ -26,6 +26,7 @@
 #include <functional>
 #include <mutex>
 #include <thread>
+#include <utility>
 
 #pragma once
 
@@ -41,8 +42,8 @@ namespace eCAL
      * @brief Constructor for the CallbackThread class.
      * @param callback A callback function to be executed in the CallbackThread thread.
      */
-    CCallbackThread(std::function<void()> callback)
-      : callback_(callback) {}
+    explicit CCallbackThread(std::function<void()> callback)
+      : callback_(std::move(callback)) {}
 
     /**
      * @brief Start the callback thread with a specified timeout.
