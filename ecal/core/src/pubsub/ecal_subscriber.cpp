@@ -30,6 +30,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <utility>
 
 
 namespace eCAL
@@ -205,7 +206,7 @@ namespace eCAL
   {
     if(m_datareader == nullptr) return(false);
     RemReceiveCallback();
-    return(m_datareader->AddReceiveCallback(callback_));
+    return(m_datareader->AddReceiveCallback(std::move(callback_)));
   }
 
   bool CSubscriber::RemReceiveCallback()

@@ -48,7 +48,6 @@ namespace eCAL
   void CPubGate::Create()
   {
     if(m_created) return;
-
     m_created = true;
   }
 
@@ -94,7 +93,7 @@ namespace eCAL
 
     const std::unique_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);
     auto res = m_topic_name_datawriter_map.equal_range(topic_name_);
-    for(TopicNameDataWriterMapT::iterator iter = res.first; iter != res.second; ++iter)
+    for(auto iter = res.first; iter != res.second; ++iter)
     {
       if(iter->second == datawriter_)
       {

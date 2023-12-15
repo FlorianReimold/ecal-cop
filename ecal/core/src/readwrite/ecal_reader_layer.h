@@ -58,7 +58,7 @@ namespace eCAL
     // deactivate / destroy a specific subscription
     virtual void RemSubscription(const std::string& host_name_, const std::string& topic_name_, const std::string& topic_id_) = 0;
 
-    // connection paramter from writer side
+    // connection parameter from writer side
     virtual void SetConnectionParameter(SReaderLayerPar& par_) = 0;
 
     static std::shared_ptr<T> Get()

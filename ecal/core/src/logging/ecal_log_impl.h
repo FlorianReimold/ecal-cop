@@ -63,7 +63,7 @@ namespace eCAL
       *
       * @param level_ The level.
     **/
-    void SetLogLevel(const eCAL_Logging_eLogLevel level_);
+    void SetLogLevel(eCAL_Logging_eLogLevel level_);
 
     /**
       * @brief Set the current log level.
@@ -78,7 +78,7 @@ namespace eCAL
       * @param level_  The level.
       * @param msg_    The message.
     **/
-    void Log(const eCAL_Logging_eLogLevel level_, const std::string& msg_);
+    void Log(eCAL_Logging_eLogLevel level_, const std::string& msg_);
 
     /**
       * @brief Log a message (with the current log level).

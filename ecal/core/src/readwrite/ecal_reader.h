@@ -129,9 +129,6 @@ namespace eCAL
     WriterCounterMapT                         m_writer_counter_map;
     long long                                 m_message_drops;
 
-    std::atomic<bool>                         m_loc_published;
-    std::atomic<bool>                         m_ext_published;
-
     bool                                      m_use_ttype;
     bool                                      m_use_tdesc;
 

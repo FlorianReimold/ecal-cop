@@ -338,7 +338,7 @@ namespace eCAL
     std::string GetTaskParameter(const char* sep_)
     {
       std::string par_line;
-      for (auto par : g_task_parameter)
+      for (const auto& par : g_task_parameter)
       {
         if (!par_line.empty()) par_line += sep_;
         par_line += par;
@@ -379,7 +379,7 @@ namespace eCAL
       }
     }
 
-    int AddRegistrationCallback(enum eCAL_Registration_Event event_, RegistrationCallbackT callback_)
+    int AddRegistrationCallback(enum eCAL_Registration_Event event_, const RegistrationCallbackT& callback_)
     {
 #if ECAL_CORE_REGISTRATION
       if (g_registration_receiver() == nullptr) return -1;
@@ -435,7 +435,7 @@ namespace eCAL
       if (g_process_name.empty())
       {
         WCHAR pname[1024] = { 0 };
-        GetModuleFileNameExW(GetCurrentProcess(), 0, pname, 1024);
+        GetModuleFileNameExW(GetCurrentProcess(), nullptr, pname, 1024);
         g_process_name = EcalUtils::StrConvert::WideToUtf8(pname);
       }
       return(g_process_name);

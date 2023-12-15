@@ -44,7 +44,7 @@ namespace eCAL
     void*       handle;  //!< event handle
 
     /* @cond */
-    bool operator==(const SEventHandle& rhs)
+    bool operator==(const SEventHandle& rhs) const
     {
       return(rhs.name == name && rhs.handle == handle);
     }

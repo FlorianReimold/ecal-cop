@@ -26,7 +26,6 @@
 #include <ecal/ecal_payload_writer.h>
 
 #include "ecal_def.h"
-#include "ecal_writer_buffer_payload.h"
 #include "config/ecal_config_reader_hlp.h"
 
 #if ECAL_CORE_REGISTRATION
@@ -41,7 +40,6 @@
 
 #include <sstream>
 #include <chrono>
-#include <functional>
 
 struct SSndHash
 {

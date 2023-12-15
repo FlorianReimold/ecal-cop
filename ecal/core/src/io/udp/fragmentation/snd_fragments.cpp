@@ -33,12 +33,11 @@ namespace
   // random number generator
   unsigned long xorshf96(unsigned long& x, unsigned long& y, unsigned long& z)  // period 2^96-1
   {
-    unsigned long t(0);
     x ^= x << 16;
     x ^= x >> 5;
     x ^= x << 1;
 
-    t = x;
+    unsigned long t = x;
     x = y;
     y = z;
     z = t ^ x ^ y;
@@ -83,10 +82,9 @@ namespace IO
     {
       if (buf_ == nullptr) return(0);
 
-      size_t sent(0);
       size_t sent_sum(0);
 
-      int32_t total_packet_num = int32_t(buf_len_ / MSG_PAYLOAD_SIZE);
+      auto total_packet_num = int32_t(buf_len_ / MSG_PAYLOAD_SIZE);
       if (buf_len_ % MSG_PAYLOAD_SIZE) total_packet_num++;
 
       // create message header
@@ -106,7 +104,7 @@ namespace IO
         memcpy(buf_, &msg_header, sizeof(struct SUDPMessageHead));
 
         // send single header + data package
-        sent = transmit_cb_(buf_, sizeof(struct SUDPMessageHead) + buf_len_);
+        size_t sent = transmit_cb_(buf_, sizeof(struct SUDPMessageHead) + buf_len_);
         if (sent == 0) return(sent);
         sent_sum += sent;
 
@@ -141,14 +139,14 @@ namespace IO
             static unsigned long y = 362436069;
             static unsigned long z = 521288629;
 
-            msg_header.id = xorshf96(x, y, z);
+            msg_header.id = static_cast<int32_t>(xorshf96(x, y, z));
           }
         }
         msg_header.num = total_packet_num;
         msg_header.len = int32_t(buf_len_);
 
         // send start package
-        sent = transmit_cb_(&msg_header, sizeof(struct SUDPMessageHead));
+        size_t sent = transmit_cb_(&msg_header, sizeof(struct SUDPMessageHead));
         if (sent == 0) return(sent);
         sent_sum += sent;
 

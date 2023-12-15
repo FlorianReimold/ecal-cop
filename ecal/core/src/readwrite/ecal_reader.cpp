@@ -24,7 +24,6 @@
 #include <ecal/ecal.h>
 #include <ecal/ecal_config.h>
 
-#include "ecal_def.h"
 #if ECAL_CORE_REGISTRATION
 #include "registration/ecal_registration_provider.h"
 #endif
@@ -38,7 +37,6 @@
 #include <sstream>
 #include <iostream>
 #include <utility>
-#include <algorithm>
 
 namespace eCAL
 {
@@ -468,7 +466,6 @@ namespace eCAL
 
   void CDataReader::ApplyLocPublication(const std::string& /*process_id_*/, const std::string& /*tid_*/, const SDataTypeInformation& /*tinfo_*/)
   {
-    m_loc_published = true;
   }
 
   void CDataReader::RemoveLocPublication(const std::string& /*process_id_*/, const std::string& /*tid_*/)
@@ -477,7 +474,6 @@ namespace eCAL
 
   void CDataReader::ApplyExtPublication(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*tid_*/, const SDataTypeInformation& /*tinfo_*/)
   {
-    m_ext_published = true;
   }
 
   void CDataReader::RemoveExtPublication(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*tid_*/)
@@ -547,10 +543,9 @@ namespace eCAL
         // process it
         return true;
       }
-
+      else
       // a negative clock difference may happen if a publisher
       // is using a shm ringbuffer and messages arrive in the wrong order
-      if (clock_difference < 0)
       {
         // -----------------------------------
         // drop messages in the wrong order
@@ -584,9 +579,6 @@ namespace eCAL
         }
       }
     }
-
-    // should never be reached
-    return false;
   }
     
   void CDataReader::RefreshRegistration()
