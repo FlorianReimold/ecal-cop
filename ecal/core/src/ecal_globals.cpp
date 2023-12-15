@@ -121,6 +121,7 @@ namespace eCAL
     }
 #endif // ECAL_CORE_PUBLISHER
 
+#if ECAL_CORE_TIMEPLUGIN
     /////////////////////
     // TIMEGATE
     /////////////////////
@@ -132,6 +133,8 @@ namespace eCAL
         new_initialization = true;
       }
     }
+#endif // ECAL_CORE_TIMEPLUGIN
+
 
     /////////////////////
     // LOGGING
@@ -160,8 +163,9 @@ namespace eCAL
 #if ECAL_CORE_PUBLISHER
     if (pubgate_instance && ((components_ & Init::Publisher) != 0u))      pubgate_instance->Create();
 #endif
+#if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance && ((components_ & Init::TimeSync) != 0u))      timegate_instance->Create(CTimeGate::eTimeSyncMode::realtime);
-
+#endif
     initialized =  true;
     components  |= components_;
 
@@ -190,8 +194,10 @@ namespace eCAL
 #endif
     case Init::Logging:
       return(log_instance != nullptr);
+#if ECAL_CORE_TIMEPLUGIN
     case Init::TimeSync:
       return(timegate_instance != nullptr);
+#endif
     default:
       return(0);
     }
@@ -202,8 +208,9 @@ namespace eCAL
     if (!initialized) return(1);
 
     // start destruction
+#if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance)               timegate_instance->Destroy();
-
+#endif
 #if ECAL_CORE_PUBLISHER
     if (pubgate_instance)                pubgate_instance->Destroy();
 #endif
@@ -217,7 +224,9 @@ namespace eCAL
     if (log_instance)                    log_instance->Destroy();
     //if (config_instance)                 config_instance->Destroy();
 
+#if ECAL_CORE_TIMEPLUGIN
     timegate_instance               = nullptr;
+#endif
 #if ECAL_CORE_PUBLISHER
     pubgate_instance                = nullptr;
 #endif

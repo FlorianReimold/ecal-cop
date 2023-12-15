@@ -67,13 +67,13 @@ endif()
 # use it that way cmake .. -DBUILD_APPS=ON -DBUILD_SAMPLES=ON
 # --------------------------------------------------------
 option(BUILD_SAMPLES                           "Build the eCAL samples"                                            ON)
-option(BUILD_TIME                              "Build the eCAL time interfaces"                                    ON)
 option(BUILD_ECAL_TESTS                        "Build the eCAL google tests"                                       ON)
 
 # core internal feature configuration
 option(ECAL_CORE_REGISTRATION                  "Enables the eCAL registration layer"                               ON)
 option(ECAL_CORE_PUBLISHER                     "Enables the eCAL publisher functionality"                          ON)
 option(ECAL_CORE_SUBSCRIBER                    "Enables the eCAL subscriber functionality"                         ON)
+option(ECAL_CORE_TIMEPLUGIN                    "Enables the eCAL time plugin functionality"                       OFF)
 
 # third party library options
 option(ECAL_THIRDPARTY_BUILD_ASIO              "Build asio with eCAL"                                              ON)
@@ -82,9 +82,9 @@ option(ECAL_THIRDPARTY_BUILD_GTEST             "Build gtest with eCAL"          
 option(ECAL_THIRDPARTY_BUILD_SIMPLEINI         "Build simpleini with eCAL"                                         ON)
 option(ECAL_THIRDPARTY_BUILD_TCLAP             "Build tclap library with eCAL"                                     ON)
 if(WIN32)
-  option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"   ON)
+  option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"  OFF)
   option(ECAL_THIRDPARTY_BUILD_PROTOBUF        "Build protobuf with eCAL"                                          ON)
-  option(ECAL_THIRDPARTY_BUILD_UDPCAP          "Build udpcap library with eCAL"                                    ON)
+  option(ECAL_THIRDPARTY_BUILD_UDPCAP          "Build udpcap library with eCAL"                                   OFF)
 else()
   option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"  OFF)
   option(ECAL_THIRDPARTY_BUILD_PROTOBUF        "Build protobuf with eCAL"                                         OFF)
@@ -227,9 +227,9 @@ add_subdirectory(ecal/core_pb)
 add_subdirectory(ecal/core)
 
 # --------------------------------------------------------
-# ecal time
+# ecal time plugins
 # --------------------------------------------------------
-if(BUILD_TIME)
+if(ECAL_CORE_TIMEPLUGIN)
   add_subdirectory(ecal_time)
 endif()
 
@@ -313,11 +313,11 @@ message(STATUS "Build Options:")
 message(STATUS "--------------------------------------------------------------------------------")
 message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS                  : ${CMAKE_EXPORT_COMPILE_COMMANDS}")
 message(STATUS "BUILD_SAMPLES                                  : ${BUILD_SAMPLES}")
-message(STATUS "BUILD_TIME                                     : ${BUILD_TIME}")
 message(STATUS "BUILD_ECAL_TESTS                               : ${BUILD_ECAL_TESTS}")
 message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REGISTRATION}")
 message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
+message(STATUS "ECAL_CORE_TIMEPLUGIN                           : ${ECAL_CORE_TIMEPLUGIN}")
 message(STATUS "ECAL_NPCAP_SUPPORT                             : ${ECAL_NPCAP_SUPPORT}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_ASIO                     : ${ECAL_THIRDPARTY_BUILD_ASIO}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS           : ${ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS}")

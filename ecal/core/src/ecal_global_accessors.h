@@ -34,7 +34,9 @@ namespace eCAL
   class  CGlobals;
   class  CConfig;
   class  CLog;
+#if ECAL_CORE_TIMEPLUGIN
   class  CTimeGate;
+#endif
 #if ECAL_CORE_REGISTRATION
   class  CRegistrationProvider;
   class  CRegistrationReceiver;
@@ -50,7 +52,9 @@ namespace eCAL
   CGlobals*               g_globals();
   CConfig*                g_config();
   CLog*                   g_log();
+#if ECAL_CORE_TIMEPLUGIN
   CTimeGate*              g_timegate();
+#endif
 #if ECAL_CORE_REGISTRATION
   CRegistrationProvider*  g_registration_provider();
   CRegistrationReceiver*  g_registration_receiver();

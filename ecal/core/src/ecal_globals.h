@@ -56,7 +56,9 @@ namespace eCAL
 
     const std::unique_ptr<CConfig>&                                       config()                 { return config_instance; };
     const std::unique_ptr<CLog>&                                          log()                    { return log_instance; };
+#if ECAL_CORE_TIMEPLUGIN
     const std::unique_ptr<CTimeGate>&                                     timegate()               { return timegate_instance; };
+#endif
 #if ECAL_CORE_SUBSCRIBER
     const std::unique_ptr<CSubGate>&                                      subgate()                { return subgate_instance; };
 #endif
@@ -73,7 +75,9 @@ namespace eCAL
     unsigned int                                                          components;
     std::unique_ptr<CConfig>                                              config_instance;
     std::unique_ptr<CLog>                                                 log_instance;
+#if ECAL_CORE_TIMEPLUGIN
     std::unique_ptr<CTimeGate>                                            timegate_instance;
+#endif
 #if ECAL_CORE_SUBSCRIBER
     std::unique_ptr<CSubGate>                                             subgate_instance;
 #endif

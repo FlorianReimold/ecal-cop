@@ -71,11 +71,13 @@ namespace eCAL
     return(g_globals()->log().get());
   }
 
+#if ECAL_CORE_TIMEPLUGIN
   CTimeGate* g_timegate()
   {
     if (g_globals() == nullptr) return(nullptr);
     return(g_globals()->timegate().get());
   }
+#endif
 
 #if ECAL_CORE_REGISTRATION
   CRegistrationProvider* g_registration_provider()

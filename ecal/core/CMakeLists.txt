@@ -110,27 +110,25 @@ set(ecal_logging_src
 ######################################
 # pubsub
 ######################################
+set(ecal_pub_src
+    src/pubsub/ecal_publisher.cpp
+)
 if(ECAL_CORE_PUBLISHER)
-  set(ecal_pub_src
+  list(APPEND ecal_pub_src
       src/pubsub/ecal_pubgate.cpp
       src/pubsub/ecal_pubgate.h
   )
 endif()
-list (APPEND
-    ecal_pub_src
-      src/pubsub/ecal_publisher.cpp
-)
 
+set(ecal_sub_src
+    src/pubsub/ecal_subscriber.cpp
+)
 if(ECAL_CORE_SUBSCRIBER)
-  set(ecal_sub_src
+  list(APPEND ecal_sub_src
       src/pubsub/ecal_subgate.cpp
       src/pubsub/ecal_subgate.h
   )
 endif()
-list (APPEND
-    ecal_sub_src
-      src/pubsub/ecal_subscriber.cpp
-)
 
 ######################################
 # readwrite
@@ -179,9 +177,13 @@ endif()
 ######################################
 set(ecal_time_src
     src/time/ecal_time.cpp
-    src/time/ecal_timegate.cpp
-    src/time/ecal_timegate.h
 )
+if(ECAL_CORE_TIMEGATE)
+  list(APPEND ecal_time_src
+      src/time/ecal_timegate.cpp
+      src/time/ecal_timegate.h
+  )
+endif()
 
 ######################################
 # util
@@ -215,10 +217,9 @@ set(ecal_cmn_src
     src/ecal_sample_to_topicinfo.h
 )
 if (WIN32)
-    list (APPEND
-        ecal_cmn_src
-        src/ecal_win_main.h
-    )
+  list(APPEND ecal_cmn_src
+      src/ecal_win_main.h
+  )
 endif()
 
 ######################################
@@ -349,16 +350,29 @@ target_compile_definitions(${PROJECT_NAME}
 if(ECAL_CORE_REGISTRATION)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_REGISTRATION)
+  target_compile_definitions(${PROJECT_NAME}_c
+    PRIVATE ECAL_CORE_REGISTRATION)
 endif()
 
 if(ECAL_CORE_PUBLISHER)
   target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_PUBLISHER)
+  target_compile_definitions(${PROJECT_NAME}_c
     PRIVATE ECAL_CORE_PUBLISHER)
 endif()
 
 if(ECAL_CORE_SUBSCRIBER)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_SUBSCRIBER)
+  target_compile_definitions(${PROJECT_NAME}_c
+    PRIVATE ECAL_CORE_SUBSCRIBER)
+endif()
+
+if(ECAL_CORE_TIMEPLUGIN)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_TIMEPLUGIN)
+  target_compile_definitions(${PROJECT_NAME}_c
+    PRIVATE ECAL_CORE_TIMEPLUGIN)
 endif()
 
 if(ECAL_NPCAP_SUPPORT)

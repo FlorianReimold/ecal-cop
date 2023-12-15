@@ -239,6 +239,7 @@ namespace eCAL
       }
       sstream << std::endl;
 
+#if ECAL_CORE_TIMEPLUGIN
       sstream << "------------------------- TIME -----------------------------------" << std::endl;
       sstream << "Synchronization realtime : " << Config::GetTimesyncModuleName() << std::endl;
       sstream << "Synchronization replay   : " << eCALPAR(TIME, SYNC_MOD_REPLAY) << std::endl;
@@ -253,11 +254,14 @@ namespace eCAL
       g_timegate()->GetStatus(status_state, &status_msg);
       sstream << "Status (Code)            : \"" << status_msg << "\" (" << status_state << ")" << std::endl;
       sstream << std::endl;
-
+#endif
+#if ECAL_CORE_SUBSCRIBER
       sstream << "------------------------- SUBSCRIPTION LAYER DEFAULTS ------------" << std::endl;
       sstream << "Layer Mode UDP MC        : " << LayerMode(Config::IsUdpMulticastRecEnabled()) << std::endl;
-      sstream << "Npcap UDP Reciever       : " << LayerMode(Config::IsNpcapEnabled());
+      sstream << "Drop out-of-order msgs   : " << (Config::GetDropOutOfOrderMessages() ? "on" : "off") << std::endl;
+#endif
 #ifdef ECAL_NPCAP_SUPPORT
+      sstream << "Npcap UDP Reciever       : " << LayerMode(Config::IsNpcapEnabled());
       if(Config::IsNpcapEnabled() && !Udpcap::Initialize())
       {
         sstream << " (Init FAILED!)";
@@ -268,8 +272,6 @@ namespace eCAL
         sstream << " (Npcap is enabled, but not configured via CMake!)";
       }
 #endif // ECAL_NPCAP_SUPPORT
-      sstream << std::endl;
-      sstream << "Drop out-of-order msgs   : " << (Config::GetDropOutOfOrderMessages() ? "on" : "off") << std::endl;
       sstream << std::endl;
 
       // write it into std:string

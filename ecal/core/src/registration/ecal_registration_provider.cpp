@@ -153,6 +153,7 @@ namespace eCAL
     process_sample_mutable_process->set_pparam(Process::GetProcessParameter());
     process_sample_mutable_process->mutable_state()->set_severity(eCAL::pb::eProcessSeverity(g_process_severity));
     process_sample_mutable_process->mutable_state()->set_info(g_process_info);
+#if ECAL_CORE_TIMEPLUGIN
     if (g_timegate() == nullptr)
     {
       process_sample_mutable_process->set_tsync_state(eCAL::pb::eTSyncState::tsync_none);
@@ -180,6 +181,7 @@ namespace eCAL
       }
       process_sample_mutable_process->set_tsync_mod_name(g_timegate()->GetName());
     }
+#endif
 
     // eCAL initialization state
     const unsigned int comp_state(g_globals()->GetComponents());
