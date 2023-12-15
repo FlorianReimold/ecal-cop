@@ -24,7 +24,7 @@
 #include <mutex>
 
 #include <ecal/ecal.h>
-#include <ecal/ecalc.h>
+#include <ecal/ecal_c.h>
 
 #include "ecal_process.h"
 

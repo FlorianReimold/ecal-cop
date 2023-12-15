@@ -201,7 +201,7 @@ set(ecal_util_src
 ######################################
 set(ecal_cmn_src
     src/ecal.cpp
-    src/ecal_clang.cpp
+    src/ecal_c.cpp
     src/ecal_event.cpp 
     src/ecal_event.h
     src/ecal_eventhandle.h
@@ -209,7 +209,6 @@ set(ecal_cmn_src
     src/ecal_globals.cpp
     src/ecal_process.cpp
     src/ecal_util.cpp
-    src/ecalc.cpp
     src/ecal_def.h
     src/ecal_def_ini.h
     src/ecal_global_accessors.h
@@ -226,7 +225,7 @@ endif()
 # c interface
 ######################################
 set(ecal_c_src
-    src/ecalc.cpp
+    src/ecal_c.cpp
 )
 
 ######################################
@@ -244,8 +243,9 @@ endif()
 ######################################
 set(ecal_header_cmn
     include/ecal/ecal.h
+    include/ecal/ecal_c.h
+    include/ecal/ecal_c_types.h
     include/ecal/ecal_callback.h
-    include/ecal/ecal_clang.h
     include/ecal/ecal_config.h
     include/ecal/ecal_core.h
     include/ecal/ecal_deprecate.h
@@ -260,8 +260,6 @@ set(ecal_header_cmn
     include/ecal/ecal_subscriber.h
     include/ecal/ecal_time.h
     include/ecal/ecal_util.h
-    include/ecal/ecalc.h
-    include/ecal/ecalc_types.h
     include/ecal/ecal_types.h
 )
 

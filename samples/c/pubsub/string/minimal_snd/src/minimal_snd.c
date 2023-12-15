@@ -17,7 +17,7 @@
  * ========================= eCAL LICENSE =================================
 */
 
-#include <ecal/ecalc.h>
+#include <ecal/ecal_c.h>
 #include <stdio.h>
 #include <string.h>
 
