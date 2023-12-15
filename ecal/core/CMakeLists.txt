@@ -178,7 +178,7 @@ endif()
 set(ecal_time_src
     src/time/ecal_time.cpp
 )
-if(ECAL_CORE_TIMEGATE)
+if(ECAL_CORE_TIMEPLUGIN)
   list(APPEND ecal_time_src
       src/time/ecal_timegate.cpp
       src/time/ecal_timegate.h
