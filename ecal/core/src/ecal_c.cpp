@@ -26,8 +26,6 @@
 #include <ecal/ecal.h>
 #include <ecal/ecal_c.h>
 
-#include "ecal_process.h"
-
 static int CopyBuffer(void* target_, int target_len_, const std::string& source_s_)
 {
   if(target_ == nullptr) return(0);
@@ -141,11 +139,6 @@ extern "C"
       return(CopyBuffer(name_, name_len_, name));
     }
     return(0);
-  }
-
-  ECALC_API int eCAL_Process_GetHostID()
-  {
-    return(eCAL::Process::internal::GetHostID());
   }
 
   ECALC_API int eCAL_Process_GetUnitName(void* name_, int name_len_)

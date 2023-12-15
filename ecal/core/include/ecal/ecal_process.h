@@ -63,14 +63,6 @@ namespace eCAL
     ECAL_API std::string GetHostGroupName();
 
     /**
-     * @brief  Get unique host id.
-     *
-     * @return  Host id or zero if failed.
-    **/
-    ECAL_DEPRECATE_SINCE_5_10("This function will be removed in eCAL6.")
-    ECAL_API int GetHostID();
-
-    /**
      * @brief  Get current unit name (defined via eCAL::Initialize). 
      *
      * @return  Unit name or empty string if failed. 

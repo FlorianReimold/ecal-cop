@@ -28,7 +28,6 @@
 #include "registration/ecal_registration_provider.h"
 #endif
 #include "ecal_reader.h"
-#include "ecal_process.h"
 #include "ecal_global_accessors.h"
 
 #include "readwrite/udp/ecal_reader_udp_mc.h"
@@ -46,7 +45,6 @@ namespace eCAL
   CDataReader::CDataReader() :
                  m_host_name(Process::GetHostName()),
                  m_host_group_name(Process::GetHostGroupName()),
-                 m_host_id(Process::internal::GetHostID()),
                  m_pid(Process::GetProcessID()),
                  m_pname(Process::GetProcessName()),
                  m_topic_size(0),
@@ -58,6 +56,7 @@ namespace eCAL
                  m_message_drops(0),
                  m_use_ttype(true),
                  m_use_tdesc(true),
+                 m_use_udp_mc_confirmed(false),
                  m_created(false)
   {
   }
@@ -72,14 +71,15 @@ namespace eCAL
     if(m_created) return(false);
 
     // set defaults
-    m_topic_name    = topic_name_;
+    m_topic_name           = topic_name_;
     m_topic_id.clear();
-    m_topic_info    = topic_info_;
-    m_clock         = 0;
-    m_clock_old     = 0;
-    m_message_drops = 0;
-    m_rec_time      = std::chrono::steady_clock::time_point();
-    m_created       = false;
+    m_topic_info           = topic_info_;
+    m_clock                = 0;
+    m_clock_old            = 0;
+    m_message_drops        = 0;
+    m_rec_time             = std::chrono::steady_clock::time_point();
+    m_use_udp_mc_confirmed = false;
+    m_created              = false;
 #ifndef NDEBUG
     // log it
     Logging::Log(log_level_debug1, m_topic_name + "::CDataReader::Create");
@@ -129,12 +129,13 @@ namespace eCAL
     Unregister();
 
     // reset defaults
-    m_created                 = false;
-    m_clock                   = 0;
-    m_clock_old               = 0;
-    m_freq                    = 0;
-    m_message_drops           = 0;
-    m_rec_time                = std::chrono::steady_clock::time_point();
+    m_created              = false;
+    m_clock                = 0;
+    m_clock_old            = 0;
+    m_freq                 = 0;
+    m_message_drops        = 0;
+    m_rec_time             = std::chrono::steady_clock::time_point();
+    m_use_udp_mc_confirmed = false;
 
     return(true);
   }
@@ -177,7 +178,6 @@ namespace eCAL
     auto *ecal_reg_sample_mutable_topic = ecal_reg_sample.mutable_topic();
     ecal_reg_sample_mutable_topic->set_hname(m_host_name);
     ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_hid(m_host_id);
     ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
     ecal_reg_sample_mutable_topic->set_tid(m_topic_id);
     // topic_information
@@ -203,6 +203,7 @@ namespace eCAL
       auto *tlayer = ecal_reg_sample_mutable_topic->add_tlayer();
       tlayer->set_type(eCAL::pb::tl_ecal_udp_mc);
       tlayer->set_version(1);
+      tlayer->set_confirmed(m_use_udp_mc_confirmed);
     }
     ecal_reg_sample_mutable_topic->set_pid(m_pid);
     ecal_reg_sample_mutable_topic->set_pname(m_pname);
@@ -233,7 +234,6 @@ namespace eCAL
     auto *ecal_reg_sample_mutable_topic = ecal_unreg_sample.mutable_topic();
     ecal_reg_sample_mutable_topic->set_hname(m_host_name);
     ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_hid(m_host_id);
     ecal_reg_sample_mutable_topic->set_pname(m_pname);
     ecal_reg_sample_mutable_topic->set_pid(m_pid);
     ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
@@ -327,11 +327,14 @@ namespace eCAL
     return(false);
   }
 
-  size_t CDataReader::AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::pb::eTLayerType /*layer_*/)
+  size_t CDataReader::AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::pb::eTLayerType layer_)
   {
     // ensure thread safety
     const std::lock_guard<std::mutex> lock(m_receive_callback_sync);
     if (!m_created) return(0);
+
+    // store receive layer
+    m_use_udp_mc_confirmed |= layer_ == eCAL::pb::tl_ecal_udp_mc;
 
     // number of hash values to track for duplicates
     constexpr int hash_queue_size(64);
@@ -626,7 +629,6 @@ namespace eCAL
     out << indent_ << "------------------------------------"                                       << std::endl;
     out << indent_ << "m_host_name:                        " << m_host_name                        << std::endl;
     out << indent_ << "m_host_group_name:                  " << m_host_group_name                  << std::endl;
-    out << indent_ << "m_host_id:                          " << m_host_id                          << std::endl;
     out << indent_ << "m_topic_name:                       " << m_topic_name                       << std::endl;
     out << indent_ << "m_topic_id:                         " << m_topic_id                         << std::endl;
     out << indent_ << "m_topic_info.encoding:              " << m_topic_info.encoding              << std::endl;

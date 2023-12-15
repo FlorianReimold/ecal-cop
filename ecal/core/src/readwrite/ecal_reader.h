@@ -98,7 +98,6 @@ namespace eCAL
 
     std::string                               m_host_name;
     std::string                               m_host_group_name;
-    int                                       m_host_id;
     int                                       m_pid;
     std::string                               m_pname;
     std::string                               m_topic_name;
@@ -131,6 +130,8 @@ namespace eCAL
 
     bool                                      m_use_ttype;
     bool                                      m_use_tdesc;
+
+    bool                                      m_use_udp_mc_confirmed;
 
     std::atomic<bool>                         m_created;
   };

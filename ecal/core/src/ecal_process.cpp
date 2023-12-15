@@ -22,28 +22,20 @@
 **/
 
 #include <ecal/ecal.h>
-#include <ecal/ecal_config.h>
 
 #include "ecal_def.h"
-#include "config/ecal_config_reader_hlp.h"
-#include "registration/ecal_registration_receiver.h"
 #include "ecal_globals.h"
-#include "ecal_process.h"
+
+#include "ecal_utils/command_line.h"
+#include "ecal_utils/ecal_utils.h"
+#include "ecal_utils/str_convert.h"
+
+#include "config/ecal_config_reader_hlp.h"
 #include "io/udp/ecal_udp_configurations.h"
 
-#include <array>
-#include <thread>
 #include <iostream>
-#include <fstream>
 #include <sstream>
-#include <memory>
 #include <string>
-
-#ifdef ECAL_OS_WINDOWS
-#include "ecal_win_main.h"
-#include <iphlpapi.h>
-#include <ecal_utils/str_convert.h>
-#endif /* ECAL_OS_WINDOWS */
 
 #ifdef ECAL_OS_LINUX
 #include <spawn.h>
@@ -57,9 +49,6 @@
 #include <sys/select.h>
 #include <limits.h>
 #include <netinet/in.h>
-
-#include <ecal_utils/ecal_utils.h>
-
 #endif /* ECAL_OS_LINUX */
 
 #ifdef ECAL_OS_MACOS
@@ -76,14 +65,6 @@
 #ifdef ECAL_NPCAP_SUPPORT
 #include <udpcap/npcap_helpers.h>
 #endif // ECAL_NPCAP_SUPPORT
-
-#include <ecal_utils/command_line.h>
-
-#ifndef NDEBUG
-#define STD_COUT_DEBUG( x ) { std::stringstream ss; ss << x; std::cout << ss.str(); }
-#else
-#define STD_COUT_DEBUG( x )
-#endif
 
 namespace
 {
@@ -119,52 +100,6 @@ namespace
     }
     return "???";
   }
-#if defined(ECAL_OS_WINDOWS)
-  std::pair<bool, int> get_host_id()
-  {
-    // retrieve needed buffer size for GetAdaptersInfo
-    ULONG alloc_adapters_size(0);
-    {
-      IP_ADAPTER_INFO AdapterInfo;
-      GetAdaptersInfo(&AdapterInfo, &alloc_adapters_size);
-    }
-    if(alloc_adapters_size == 0) return std::make_pair(false, 0);
-
-    // allocate adapter memory
-    auto adapter_mem = std::make_unique<char[]>(static_cast<size_t>(alloc_adapters_size));
-
-    // get all adapter infos
-    PIP_ADAPTER_INFO pAdapter(nullptr);
-    pAdapter = reinterpret_cast<PIP_ADAPTER_INFO>(adapter_mem.get());
-    const DWORD dwStatus = GetAdaptersInfo(pAdapter, &alloc_adapters_size);
-    if (dwStatus != ERROR_SUCCESS) return std::make_pair(false, 0);
-
-    // iterate adapters and create hash
-    int hash(0);
-    while(pAdapter != nullptr)
-    {
-      for (UINT i = 0; i < pAdapter->AddressLength; ++i)
-      {
-        hash += (pAdapter->Address[i] << ((i & 1) * 8));
-      }
-      pAdapter = pAdapter->Next;
-    }
-
-    // return success
-    return std::make_pair(true, hash);
-  }
-#elif defined(ECAL_OS_QNX)
-  std::pair<bool, int> get_host_id()
-  {
-    // TODO: Find a suitable method on QNX to calculate an unqiue host identifier
-    return std::make_pair(true, -1);
-  }
-#else
-  std::pair<bool, int> get_host_id()
-  {
-    return std::make_pair(true, static_cast<int>(gethostid()));
-  }
-#endif
 }
 
 namespace eCAL
@@ -298,36 +233,6 @@ namespace eCAL
     std::string GetHostGroupName()
     {
       return Config::GetHostGroupName().empty() ? GetHostName() : Config::GetHostGroupName();
-    }
-
-    int GetHostID()
-    {
-      return internal::GetHostID();
-    }
-
-    namespace internal
-    {
-      int GetHostID()
-      {
-        if (g_host_id == 0)
-        {
-          // try to get unique host id
-          bool success(false);
-          int  id(0);
-          std::tie(success, id) = get_host_id();
-          if (success)
-          {
-            g_host_id = id;
-          }
-          // never try again to not waste time
-          else
-          {
-            g_host_id = -1;
-            std::cerr << "Unable to get host id" << std::endl;
-          }
-        }
-        return(g_host_id);
-      }
     }
 
     std::string GetUnitName()
@@ -763,5 +668,3 @@ namespace eCAL
 }
 
 #endif /* ECAL_OS_LINUX */
-
-#undef STD_COUT_DEBUG

@@ -34,7 +34,6 @@
 
 #include "ecal_writer.h"
 #include "ecal_writer_base.h"
-#include "ecal_process.h"
 
 #include "pubsub/ecal_pubgate.h"
 
@@ -67,7 +66,6 @@ namespace eCAL
   CDataWriter::CDataWriter() :
     m_host_name(Process::GetHostName()),
     m_host_group_name(Process::GetHostGroupName()),
-    m_host_id(Process::internal::GetHostID()),
     m_pid(Process::GetProcessID()),
     m_pname(Process::GetProcessName()),
     m_topic_size(0),
@@ -417,7 +415,6 @@ namespace eCAL
     out << indent_ << "--------------------------"                            << std::endl;
     out << indent_ << "m_host_name:              " << m_host_name             << std::endl;
     out << indent_ << "m_host_group_name:        " << m_host_group_name       << std::endl;
-    out << indent_ << "m_host_id:                " << m_host_id               << std::endl;
     out << indent_ << "m_topic_name:             " << m_topic_name            << std::endl;
     out << indent_ << "m_topic_id:               " << m_topic_id              << std::endl;
     out << indent_ << "m_topic_info.encoding:    " << m_topic_info.encoding   << std::endl;
@@ -457,7 +454,6 @@ namespace eCAL
     auto *ecal_reg_sample_mutable_topic = ecal_reg_sample.mutable_topic();
     ecal_reg_sample_mutable_topic->set_hname(m_host_name);
     ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_hid(m_host_id);
     ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
     ecal_reg_sample_mutable_topic->set_tid(m_topic_id);
     if (share_ttype) ecal_reg_sample_mutable_topic->set_ttype(Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name));
@@ -514,7 +510,6 @@ namespace eCAL
     auto* ecal_reg_sample_mutable_topic = ecal_unreg_sample.mutable_topic();
     ecal_reg_sample_mutable_topic->set_hname(m_host_name);
     ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_hid(m_host_id);
     ecal_reg_sample_mutable_topic->set_pname(m_pname);
     ecal_reg_sample_mutable_topic->set_pid(m_pid);
     ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
