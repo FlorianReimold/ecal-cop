@@ -20,6 +20,17 @@ Apart from these limitations, this functional reduced eCAL core version is fully
 
 ## How to build
 
+### Clone the repository and its submodules
+
+```bash
+git clone https://github.com/ecal-io/ecal-core-udp.git
+cd ecal-core-udp
+git submodule init
+git submodule update
+```
+
+### Build it
+
 ```bash
 mkdir _build
 cd _build
