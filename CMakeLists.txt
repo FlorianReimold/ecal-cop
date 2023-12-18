@@ -62,34 +62,43 @@ if(UNIX)
   endif ()
 endif()
 
-# --------------------------------------------------------
-# command line build options
-# use it that way cmake .. -DBUILD_APPS=ON -DBUILD_SAMPLES=ON
-# --------------------------------------------------------
-option(BUILD_SAMPLES                           "Build the eCAL samples"                                            ON)
-option(BUILD_ECAL_TESTS                        "Build the eCAL google tests"                                       ON)
+# -------------------------------------------------------------------------------------------------------------------------------
+# configurable build options
+# command line usage: cmake .. -DBUILD_SAMPLES=ON -DBUILD_ECAL_TESTS=OFF -DECAL_CORE_CONFIG_INIFILE=OFF
+# -------------------------------------------------------------------------------------------------------------------------------
 
-# core internal feature configuration
-option(ECAL_CORE_REGISTRATION                  "Enables the eCAL registration layer"                               ON)
-option(ECAL_CORE_PUBLISHER                     "Enables the eCAL publisher functionality"                          ON)
-option(ECAL_CORE_SUBSCRIBER                    "Enables the eCAL subscriber functionality"                         ON)
-option(ECAL_CORE_TIMEPLUGIN                    "Enables the eCAL time plugin functionality"                        ON)
+# additional builds (adapt to your needs)
+option(BUILD_SAMPLES                                     "Build the eCAL samples"                                             ON)
+option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                        ON)
 
-# third party library options
-option(ECAL_THIRDPARTY_BUILD_ASIO              "Build asio with eCAL"                                              ON)
-option(ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS    "Build CMakeFunctions with eCAL"                                    ON)
-option(ECAL_THIRDPARTY_BUILD_GTEST             "Build gtest with eCAL"                                             ON)
-option(ECAL_THIRDPARTY_BUILD_SIMPLEINI         "Build simpleini with eCAL"                                         ON)
-option(ECAL_THIRDPARTY_BUILD_TCLAP             "Build tclap library with eCAL"                                     ON)
+# core internal feature configuration (adapt to your needs)
+option(ECAL_CORE_CONFIG_INIFILE                          "Enables to configure eCAL via ecal.ini file"                        ON)
+option(ECAL_CORE_COMMAND_LINE                            "Enables eCAL application cmd line interfaces"                       ON)
+option(ECAL_CORE_REGISTRATION                            "Enables the eCAL registration layer"                                ON)
+option(ECAL_CORE_PUBLISHER                               "Enables the eCAL publisher functionality"                           ON)
+option(ECAL_CORE_SUBSCRIBER                              "Enables the eCAL subscriber functionality"                          ON)
+option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time plugin functionality"                         ON)
+
+# -------------------------------------------------------------------------------------------------------------------------------
+# third party library options (do not change)
+# -------------------------------------------------------------------------------------------------------------------------------
+
+option(ECAL_THIRDPARTY_BUILD_ASIO                        "Build asio with eCAL"                                               ON)
+option(ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS              "Build CMakeFunctions with eCAL"                                     ON)
+option(ECAL_NPCAP_SUPPORT                                "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"   OFF)
+
+cmake_dependent_option(ECAL_THIRDPARTY_BUILD_GTEST       "Build gtest with eCAL"           ON   "BUILD_ECAL_TESTS"           OFF)
+cmake_dependent_option(ECAL_THIRDPARTY_BUILD_SIMPLEINI   "Build simpleini with eCAL"       ON   "ECAL_CORE_CONFIG_INIFILE"   OFF)
+cmake_dependent_option(ECAL_THIRDPARTY_BUILD_TCLAP       "Build tclap library with eCAL"   ON   "ECAL_CORE_COMMAND_LINE"     OFF)
+
 if(WIN32)
-  option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"  OFF)
-  option(ECAL_THIRDPARTY_BUILD_PROTOBUF        "Build protobuf with eCAL"                                          ON)
-  option(ECAL_THIRDPARTY_BUILD_UDPCAP          "Build udpcap library with eCAL"                                   OFF)
+  option(ECAL_THIRDPARTY_BUILD_PROTOBUF                  "Build protobuf with eCAL"                                           ON)
 else()
-  option(ECAL_NPCAP_SUPPORT                    "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"  OFF)
-  option(ECAL_THIRDPARTY_BUILD_PROTOBUF        "Build protobuf with eCAL"                                         OFF)
-  option(ECAL_THIRDPARTY_BUILD_UDPCAP          "Build udpcap library with eCAL"                                   OFF)
+  option(ECAL_NPCAP_SUPPORT                              "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"   OFF)
+  option(ECAL_THIRDPARTY_BUILD_PROTOBUF                  "Build protobuf with eCAL"                                          OFF)
 endif()
+
+cmake_dependent_option(ECAL_THIRDPARTY_BUILD_UDPCAP      "Build udpcap library with eCAL"  ON   "ECAL_NPCAP_SUPPORT"         OFF)
 
 set(ECAL_BUILD_VERSION "0.0.0" CACHE STRING "Inject a build version if not building from a git repository")
 
@@ -314,6 +323,8 @@ message(STATUS "----------------------------------------------------------------
 message(STATUS "CMAKE_EXPORT_COMPILE_COMMANDS                  : ${CMAKE_EXPORT_COMPILE_COMMANDS}")
 message(STATUS "BUILD_SAMPLES                                  : ${BUILD_SAMPLES}")
 message(STATUS "BUILD_ECAL_TESTS                               : ${BUILD_ECAL_TESTS}")
+message(STATUS "ECAL_CORE_CONFIG_INIFILE                       : ${ECAL_CORE_CONFIG_INIFILE}")
+message(STATUS "ECAL_CORE_COMMAND_LINE                         : ${ECAL_CORE_COMMAND_LINE}")
 message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REGISTRATION}")
 message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")

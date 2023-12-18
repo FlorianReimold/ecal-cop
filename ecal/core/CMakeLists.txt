@@ -19,8 +19,12 @@
 project(core VERSION ${eCAL_VERSION_STRING})
 
 find_package(asio       REQUIRED)
-find_package(tclap      REQUIRED)
+if (ECAL_CORE_CONFIG_INIFILE)
 find_package(simpleini  REQUIRED)
+endif()
+if (ECAL_CORE_COMMAND_LINE)
+find_package(tclap      REQUIRED)
+endif()
 if (ECAL_NPCAP_SUPPORT)
   find_package(udpcap   REQUIRED)
 endif()
@@ -345,6 +349,24 @@ target_compile_definitions(${PROJECT_NAME}
     ECAL_NO_DEPRECATION_WARNINGS
 )
 
+if(ECAL_CORE_CONFIG_INIFILE)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_CONFIG_INIFILE)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      simpleini::simpleini
+  )
+endif()
+
+if(ECAL_CORE_COMMAND_LINE)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_COMMAND_LINE)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      tclap::tclap
+  )
+endif()
+
 if(ECAL_CORE_REGISTRATION)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_CORE_REGISTRATION)
@@ -404,8 +426,6 @@ target_link_libraries(${PROJECT_NAME}
     $<$<BOOL:${WIN32}>:wsock32>
     $<$<BOOL:${QNXNTO}>:socket>
     asio::asio
-    tclap::tclap
-    simpleini::simpleini
     eCAL::core_pb
     eCAL::ecal-utils
 )

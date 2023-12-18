@@ -29,9 +29,10 @@
 #include "ecal_global_accessors.h"
 #include "util/getenvvar.h"
 
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <fstream>
-#include <cassert>
 
 #include <ecal_utils/filesystem.h>
 
@@ -42,7 +43,9 @@
 #include <pwd.h>
 #endif
 
+#if ECAL_CORE_CONFIG_INIFILE
 #include <SimpleIni.h>
+#endif
 
 namespace
 {
@@ -275,6 +278,8 @@ namespace eCAL
   ////////////////////////////////////////////////////////
   // CConfigImpl
   ////////////////////////////////////////////////////////
+#if ECAL_CORE_CONFIG_INIFILE
+
   class CConfigImpl : public CSimpleIni
   {
   public:
@@ -337,6 +342,24 @@ namespace eCAL
     std::vector<std::string> m_overwrite_keys;
   };
 
+#else // ECAL_CORE_CONFIG_INIFILE
+
+  class CConfigImpl
+  {
+  public:
+    CConfigImpl() = default;
+    virtual ~CConfigImpl() = default;
+
+    void OverwriteKeys(const std::vector<std::string>& /*key_vec_*/) {}
+    void AddFile(std::string& /*file_name_*/) {}
+
+    std::string GetValue(const std::string& /*section_*/, const std::string& /*key_*/, const std::string& default_) { return default_;}
+    long GetLongValue(const std::string& /*section_*/, const std::string& /*key_*/, long default_)                  { return default_; }
+    double GetDoubleValue(const std::string& /*section_*/, const std::string& /*key_*/, double default_)            { return default_; }
+  };
+
+#endif // ECAL_CORE_CONFIG_INIFILE
+
   ////////////////////////////////////////////////////////
   // CConfigBase
   ////////////////////////////////////////////////////////
@@ -364,23 +387,6 @@ namespace eCAL
 
   bool CConfig::Validate()
   {
-    // ------------------------------------------------------------------
-    // UDP and TCP publlisher mode should not set to "auto (2)" both
-    // 
-    // [publisher]
-    // use_tcp    = 2
-    // use_udp_mc = 2
-    // ------------------------------------------------------------------
-    {
-      const int use_tcp    = get("publisher", "use_tcp",    0);
-      const int use_udp_mc = get("publisher", "use_udp_mc", 0);
-      if ((use_tcp == 2) && (use_udp_mc == 2))
-      {
-        std::cerr << "eCAL config error: to set [publisher/use_tcp] and [publisher/use_udp_mc] both on auto mode (2) is not allowed" << std::endl;
-        return false;
-      }
-    }
-
     return true;
   }
 
