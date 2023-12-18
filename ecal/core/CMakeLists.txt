@@ -193,12 +193,17 @@ endif()
 # util
 ######################################
 set(ecal_util_src
-    src/util/advanced_tclap_output.cpp
-    src/util/advanced_tclap_output.h
     src/util/ecal_expmap.h
     src/util/ecal_thread.h
     src/util/getenvvar.h
 )
+if (ECAL_CORE_COMMAND_LINE)
+  list(APPEND ecal_util_src
+      src/util/advanced_tclap_output.cpp
+      src/util/advanced_tclap_output.h
+  )
+endif()
+
 
 ######################################
 # common

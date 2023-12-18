@@ -31,8 +31,10 @@ add_subdirectory(c/pubsub/string/minimal_snd)
 # cpp samples
 # --------------------------------------------------------
 # benchmarks
+if (ECAL_CORE_COMMAND_LINE)
 add_subdirectory(cpp/benchmarks/latency_rec)
 add_subdirectory(cpp/benchmarks/latency_snd)
+endif()
 add_subdirectory(cpp/benchmarks/performance_rec_cb)
 add_subdirectory(cpp/benchmarks/performance_snd)
 
