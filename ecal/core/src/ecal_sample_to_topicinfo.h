@@ -23,10 +23,10 @@
 
 #pragma once
 
-#include <ecal/core/pb/ecal.pb.h>
 #include <ecal/ecal_types.h>
-
 #include <ecal/ecal_util.h>
+
+#include "serialization/ecal_sample.h"
 
 namespace eCAL
 {

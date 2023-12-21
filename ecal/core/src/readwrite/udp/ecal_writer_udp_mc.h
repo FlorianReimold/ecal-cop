@@ -25,16 +25,9 @@
 
 #include "ecal_def.h"
 
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
 #include "io/udp/ecal_udp_sample_sender.h"
 #include "readwrite/ecal_writer_base.h"
+#include "serialization/ecal_sample.h"
 
 #include <string>
 

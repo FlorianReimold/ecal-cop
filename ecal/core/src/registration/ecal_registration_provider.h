@@ -29,8 +29,8 @@
 #pragma once
 
 #include "io/udp/ecal_udp_sample_sender.h"
-
 #include "util/ecal_thread.h"
+#include "serialization/ecal_sample.h"
 
 #include <ecal/ecal_types.h>
 
@@ -40,14 +40,6 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
-
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace eCAL
 {

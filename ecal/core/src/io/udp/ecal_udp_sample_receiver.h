@@ -25,6 +25,7 @@
 
 #include "io/udp/sendreceive/udp_receiver.h"
 #include "io/udp/fragmentation/rcv_fragments.h"
+#include "serialization/ecal_sample.h"
 #include "util/ecal_thread.h"
 
 #include <chrono>
@@ -33,14 +34,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace eCAL
 {

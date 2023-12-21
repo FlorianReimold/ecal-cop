@@ -27,14 +27,7 @@
 #include <ecal/ecal_callback.h>
 #include <ecal/ecal_types.h>
 
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
+#include "serialization/ecal_sample.h"
 #include "util/ecal_expmap.h"
 
 #include <condition_variable>

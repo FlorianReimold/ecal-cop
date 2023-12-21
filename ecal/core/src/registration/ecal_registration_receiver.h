@@ -30,21 +30,13 @@
 #include <ecal/ecal.h>
 
 #include "ecal_def.h"
-
 #include "io/udp/ecal_udp_sample_receiver.h"
+#include "serialization/ecal_sample.h"
 
 #include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
-
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace eCAL
 {
