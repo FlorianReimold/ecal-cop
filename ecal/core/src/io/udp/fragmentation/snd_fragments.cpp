@@ -25,6 +25,7 @@
 #include "msg_type.h"
 
 #include <chrono>
+#include <cstring>
 #include <mutex>
 #include <thread>
 
