@@ -420,8 +420,6 @@ if(ECAL_CORE_TIMEPLUGIN)
 endif()
 
 if(ECAL_CORE_PROTOBUF)
-#  target_compile_definitions(${PROJECT_NAME}
-#    PRIVATE ECAL_CORE_PROTOBUF)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       eCAL::core_pb

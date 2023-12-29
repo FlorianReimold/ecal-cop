@@ -218,7 +218,7 @@ namespace eCAL
   bool DeserializeFromBuffer(const char* data_, size_t size_, Sample& target_sample_)
   {
     eCAL::pb::Sample pb_sample;
-    if (pb_sample.ParseFromArray(data_, size_))
+    if (pb_sample.ParseFromArray(data_, static_cast<int>(size_)))
     {
       target_sample_ = Proto2SampleStruct(pb_sample);
       return true;
