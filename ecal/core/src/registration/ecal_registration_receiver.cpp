@@ -98,13 +98,13 @@ namespace eCAL
     m_loopback = state_;
   }
 
-  bool CRegistrationReceiver::ApplySample(const eCAL::pb::Sample& ecal_sample_)
+  bool CRegistrationReceiver::ApplySample(const eCAL::Sample& ecal_sample_)
   {
     if(!m_created) return false;
 
     //Remove in eCAL6
     // for the time being we need to copy the incoming sample and set the incompatible fields
-    eCAL::pb::Sample modified_ttype_sample;
+    eCAL::Sample modified_ttype_sample;
     ModifyIncomingSampleForBackwardsCompatibility(ecal_sample_, modified_ttype_sample);
 
     std::string reg_sample;
@@ -113,26 +113,26 @@ namespace eCAL
       || m_callback_process
       )
     {
-      reg_sample = modified_ttype_sample.SerializeAsString();
+      reg_sample = SerializeSampleAsString(modified_ttype_sample);
     }
 
-    switch(modified_ttype_sample.cmd_type())
+    switch(modified_ttype_sample.cmd_type)
     {
-    case eCAL::pb::bct_none:
-    case eCAL::pb::bct_set_sample:
+    case eCAL::bct_none:
+    case eCAL::bct_set_sample:
       break;
-    case eCAL::pb::bct_reg_process:
-    case eCAL::pb::bct_unreg_process:
+    case eCAL::bct_reg_process:
+    case eCAL::bct_unreg_process:
       // unregistration event not implemented currently
       if (m_callback_process) m_callback_process(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
       break;
-    case eCAL::pb::bct_reg_subscriber:
-    case eCAL::pb::bct_unreg_subscriber:
+    case eCAL::bct_reg_subscriber:
+    case eCAL::bct_unreg_subscriber:
       ApplySubscriberRegistration(modified_ttype_sample);
       if (m_callback_sub) m_callback_sub(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
       break;
-    case eCAL::pb::bct_reg_publisher:
-    case eCAL::pb::bct_unreg_publisher:
+    case eCAL::bct_reg_publisher:
+    case eCAL::bct_unreg_publisher:
       ApplyPublisherRegistration(modified_ttype_sample);
       if (m_callback_pub) m_callback_pub(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
       break;
@@ -182,23 +182,23 @@ namespace eCAL
     }
   }
 
-  void CRegistrationReceiver::ApplySubscriberRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CRegistrationReceiver::ApplySubscriberRegistration(const eCAL::Sample& ecal_sample_)
   {
 #if ECAL_CORE_PUBLISHER
     // process registrations from same host group
     if (IsHostGroupMember(ecal_sample_))
     {
       // do not register local entities, only if loop back flag is set true
-      if (m_loopback || (ecal_sample_.topic().pid() != Process::GetProcessID()))
+      if (m_loopback || (ecal_sample_.topic.pid != Process::GetProcessID()))
       {
         if (g_pubgate() != nullptr)
         {
-          switch (ecal_sample_.cmd_type())
+          switch (ecal_sample_.cmd_type)
           {
-          case eCAL::pb::bct_reg_subscriber:
+          case eCAL::bct_reg_subscriber:
             g_pubgate()->ApplyLocSubRegistration(ecal_sample_);
             break;
-          case eCAL::pb::bct_unreg_subscriber:
+          case eCAL::bct_unreg_subscriber:
             g_pubgate()->ApplyLocSubUnregistration(ecal_sample_);
             break;
           default:
@@ -214,12 +214,12 @@ namespace eCAL
       {
         if (g_pubgate() != nullptr)
         {
-          switch (ecal_sample_.cmd_type())
+          switch (ecal_sample_.cmd_type)
           {
-          case eCAL::pb::bct_reg_subscriber:
+          case eCAL::bct_reg_subscriber:
             g_pubgate()->ApplyExtSubRegistration(ecal_sample_);
             break;
-          case eCAL::pb::bct_unreg_subscriber:
+          case eCAL::bct_unreg_subscriber:
             g_pubgate()->ApplyExtSubUnregistration(ecal_sample_);
             break;
           default:
@@ -231,23 +231,23 @@ namespace eCAL
 #endif
   }
 
-  void CRegistrationReceiver::ApplyPublisherRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CRegistrationReceiver::ApplyPublisherRegistration(const eCAL::Sample& ecal_sample_)
   {
 #if ECAL_CORE_SUBSCRIBER
     // process registrations from same host group 
     if (IsHostGroupMember(ecal_sample_))
     {
       // do not register local entities, only if loop back flag is set true
-      if (m_loopback || (ecal_sample_.topic().pid() != Process::GetProcessID()))
+      if (m_loopback || (ecal_sample_.topic.pid != Process::GetProcessID()))
       {
         if (g_subgate() != nullptr)
         {
-          switch (ecal_sample_.cmd_type())
+          switch (ecal_sample_.cmd_type)
           {
-          case eCAL::pb::bct_reg_publisher:
+          case eCAL::bct_reg_publisher:
             g_subgate()->ApplyLocPubRegistration(ecal_sample_);
             break;
-          case eCAL::pb::bct_unreg_publisher:
+          case eCAL::bct_unreg_publisher:
             g_subgate()->ApplyLocPubUnregistration(ecal_sample_);
             break;
           default:
@@ -263,12 +263,12 @@ namespace eCAL
       {
         if (g_subgate() != nullptr)
         {
-          switch (ecal_sample_.cmd_type())
+          switch (ecal_sample_.cmd_type)
           {
-          case eCAL::pb::bct_reg_publisher:
+          case eCAL::bct_reg_publisher:
             g_subgate()->ApplyExtPubRegistration(ecal_sample_);
             break;
-          case eCAL::pb::bct_unreg_publisher:
+          case eCAL::bct_unreg_publisher:
             g_subgate()->ApplyExtPubUnregistration(ecal_sample_);
             break;
           default:
@@ -280,9 +280,9 @@ namespace eCAL
 #endif
   }
 
-  bool CRegistrationReceiver::IsHostGroupMember(const eCAL::pb::Sample& ecal_sample_)
+  bool CRegistrationReceiver::IsHostGroupMember(const eCAL::Sample& ecal_sample_)
   {
-    const std::string& sample_host_group_name = ecal_sample_.topic().hgname().empty() ? ecal_sample_.topic().hname() : ecal_sample_.topic().hgname();
+    const std::string& sample_host_group_name = ecal_sample_.topic.hgname.empty() ? ecal_sample_.topic.hname : ecal_sample_.topic.hgname;
 
     if (sample_host_group_name.empty() || m_host_group_name.empty()) 
       return false;

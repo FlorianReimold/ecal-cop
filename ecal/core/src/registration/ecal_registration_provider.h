@@ -29,8 +29,8 @@
 #pragma once
 
 #include "io/udp/ecal_udp_sample_sender.h"
-
 #include "util/ecal_thread.h"
+#include "serialization/ecal_sample.h"
 
 #include <ecal/ecal_types.h>
 
@@ -40,14 +40,6 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
-
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace eCAL
 {
@@ -60,8 +52,8 @@ namespace eCAL
     void Create(bool topics_, bool process_);
     void Destroy();
 
-    bool RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::pb::Sample& ecal_sample_, bool force_);
-    bool UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::pb::Sample& ecal_sample_, bool force_);
+    bool RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Sample& ecal_sample_, bool force_);
+    bool UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Sample& ecal_sample_, bool force_);
 
   protected:
     bool RegisterProcess();
@@ -69,7 +61,7 @@ namespace eCAL
       
     bool RegisterTopics();
 
-    bool ApplySample(const std::string& sample_name_, const eCAL::pb::Sample& sample_);
+    bool ApplySample(const std::string& sample_name_, const eCAL::Sample& sample_);
       
     void RegisterSendThread();
 
@@ -81,7 +73,7 @@ namespace eCAL
     std::shared_ptr<UDP::CSampleSender> m_reg_sample_snd;
     std::shared_ptr<CCallbackThread>    m_reg_sample_snd_thread;
 
-    using SampleMapT = std::unordered_map<std::string, eCAL::pb::Sample>;
+    using SampleMapT = std::unordered_map<std::string, eCAL::Sample>;
     std::mutex                          m_topics_map_sync;
     SampleMapT                          m_topics_map;
   };

@@ -106,18 +106,19 @@ namespace eCAL
     return(ret_state);
   }
 
-  void CPubGate::ApplyLocSubRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CPubGate::ApplyLocSubRegistration(const eCAL::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
     CDataWriter::SLocalSubscriptionInfo subscription_info;
-    subscription_info.topic_id = ecal_sample.tid();
-    subscription_info.process_id = std::to_string(ecal_sample.pid());
+    subscription_info.topic_id = ecal_sample.tid;
+    subscription_info.process_id = std::to_string(ecal_sample.pid);
     const SDataTypeInformation topic_information{ eCALSampleToTopicInformation(ecal_sample_) };
 
     std::string reader_par;
+#if 0 // currently not needed for udp only
     for (const auto& layer : ecal_sample.tlayer())
     {
       // layer parameter as protobuf message
@@ -125,6 +126,7 @@ namespace eCAL
       // for local subscriber registrations
       reader_par = layer.par_layer().SerializeAsString();
     }
+#endif
 
     // register local subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);
@@ -135,15 +137,15 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyLocSubUnregistration(const eCAL::pb::Sample& ecal_sample_)
+  void CPubGate::ApplyLocSubUnregistration(const eCAL::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
     CDataWriter::SLocalSubscriptionInfo subscription_info;
-    subscription_info.topic_id = ecal_sample.tid();
-    subscription_info.process_id = std::to_string(ecal_sample.pid());
+    subscription_info.topic_id = ecal_sample.tid;
+    subscription_info.process_id = std::to_string(ecal_sample.pid);
 
     // unregister local subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);
@@ -154,19 +156,20 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyExtSubRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CPubGate::ApplyExtSubRegistration(const eCAL::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
     CDataWriter::SExternalSubscriptionInfo subscription_info;
-    subscription_info.host_name  = ecal_sample.hname();
-    subscription_info.topic_id   = ecal_sample.tid();
-    subscription_info.process_id = std::to_string(ecal_sample.pid());
+    subscription_info.host_name  = ecal_sample.hname;
+    subscription_info.topic_id   = ecal_sample.tid;
+    subscription_info.process_id = std::to_string(ecal_sample.pid);
     const SDataTypeInformation topic_information{ eCALSampleToTopicInformation(ecal_sample_) };
 
     std::string reader_par;
+#if 0 // currently not needed for udp only
     for (const auto& layer : ecal_sample.tlayer())
     {
       // layer parameter as protobuf message
@@ -174,6 +177,7 @@ namespace eCAL
       // for external subscriber registrations
       reader_par = layer.par_layer().SerializeAsString();
     }
+#endif
 
     // register external subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);
@@ -184,16 +188,16 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyExtSubUnregistration(const eCAL::pb::Sample& ecal_sample_)
+  void CPubGate::ApplyExtSubUnregistration(const eCAL::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
     CDataWriter::SExternalSubscriptionInfo subscription_info;
-    subscription_info.host_name = ecal_sample.hname();
-    subscription_info.topic_id = ecal_sample.tid();
-    subscription_info.process_id = std::to_string(ecal_sample.pid());
+    subscription_info.host_name = ecal_sample.hname;
+    subscription_info.topic_id = ecal_sample.tid;
+    subscription_info.process_id = std::to_string(ecal_sample.pid);
 
     // unregister external subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);

@@ -177,6 +177,23 @@ if (ECAL_CORE_REGISTRATION)
 endif()
 
 ######################################
+# serialization
+######################################
+set(ecal_serialization_src
+    src/serialization/ecal_sample.h
+    src/serialization/ecal_sample_struct.h
+)
+if(ECAL_CORE_PROTOBUF)
+  list(APPEND ecal_serialization_src
+      src/serialization/ecal_sample_protobuf.cpp
+  )
+else()
+  list(APPEND ecal_serialization_src
+      src/serialization/ecal_sample.cpp
+  )
+endif()
+
+######################################
 # time
 ######################################
 set(ecal_time_src
@@ -313,7 +330,8 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_writer_udp_src}
     ${ecal_reader_src} 
     ${ecal_reader_udp_src}
-    ${ecal_registration_src}   
+    ${ecal_registration_src}
+    ${ecal_serialization_src}	
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}
@@ -400,6 +418,15 @@ if(ECAL_CORE_TIMEPLUGIN)
     PRIVATE ECAL_CORE_TIMEPLUGIN)
 endif()
 
+if(ECAL_CORE_PROTOBUF)
+  target_compile_definitions(${PROJECT_NAME}
+    PRIVATE ECAL_CORE_PROTOBUF)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      eCAL::core_pb
+  )
+endif()
+
 if(ECAL_NPCAP_SUPPORT)
   target_compile_definitions(${PROJECT_NAME}
     PRIVATE ECAL_NPCAP_SUPPORT)
@@ -431,7 +458,6 @@ target_link_libraries(${PROJECT_NAME}
     $<$<BOOL:${WIN32}>:wsock32>
     $<$<BOOL:${QNXNTO}>:socket>
     asio::asio
-    eCAL::core_pb
     eCAL::ecal-utils
 )
 
@@ -467,6 +493,7 @@ if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0")
     ${ecal_reader_src} 
     ${ecal_reader_udp_src}
     ${ecal_registration_src}   
+    ${ecal_serialization_src}	
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}

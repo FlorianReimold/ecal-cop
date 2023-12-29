@@ -51,11 +51,11 @@ namespace eCAL
     bool Register(const std::string& topic_name_, const std::shared_ptr<CDataWriter>& datawriter_);
     bool Unregister(const std::string& topic_name_, const std::shared_ptr<CDataWriter>& datawriter_);
 
-    void ApplyLocSubRegistration(const eCAL::pb::Sample& ecal_sample_);
-    void ApplyLocSubUnregistration(const eCAL::pb::Sample& ecal_sample_);
+    void ApplyLocSubRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplyLocSubUnregistration(const eCAL::Sample& ecal_sample_);
 
-    void ApplyExtSubRegistration(const eCAL::pb::Sample& ecal_sample_);
-    void ApplyExtSubUnregistration(const eCAL::pb::Sample& ecal_sample_);
+    void ApplyExtSubRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplyExtSubUnregistration(const eCAL::Sample& ecal_sample_);
 
     void RefreshRegistrations();
 

@@ -30,21 +30,13 @@
 #include <ecal/ecal.h>
 
 #include "ecal_def.h"
-
 #include "io/udp/ecal_udp_sample_receiver.h"
+#include "serialization/ecal_sample.h"
 
 #include <atomic>
 #include <memory>
 #include <string>
 #include <thread>
-
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
 
 namespace eCAL
 {
@@ -60,16 +52,16 @@ namespace eCAL
     void EnableLoopback(bool state_);
 
     bool HasSample(const std::string& /*sample_name_*/) { return(true); };
-    bool ApplySample(const eCAL::pb::Sample& ecal_sample_);
+    bool ApplySample(const eCAL::Sample& ecal_sample_);
 
     bool AddRegistrationCallback(enum eCAL_Registration_Event event_, const RegistrationCallbackT& callback_);
     bool RemRegistrationCallback(enum eCAL_Registration_Event event_);
 
   protected:
-    void ApplySubscriberRegistration(const eCAL::pb::Sample& ecal_sample_);
-    void ApplyPublisherRegistration(const eCAL::pb::Sample& ecal_sample_);
+    void ApplySubscriberRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplyPublisherRegistration(const eCAL::Sample& ecal_sample_);
 
-    bool IsHostGroupMember(const eCAL::pb::Sample & ecal_sample_);
+    bool IsHostGroupMember(const eCAL::Sample & ecal_sample_);
 
     static std::atomic<bool>              m_created;
     bool                                  m_network;

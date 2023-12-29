@@ -78,6 +78,7 @@ option(ECAL_CORE_REGISTRATION                            "Enables the eCAL regis
 option(ECAL_CORE_PUBLISHER                               "Enables the eCAL publisher functionality"                           ON)
 option(ECAL_CORE_SUBSCRIBER                              "Enables the eCAL subscriber functionality"                          ON)
 option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time plugin functionality"                         ON)
+option(ECAL_CORE_PROTOBUF                                "Use google protobuf for internal serialization"                     ON)
 
 # -------------------------------------------------------------------------------------------------------------------------------
 # third party library options (do not change)
@@ -92,7 +93,7 @@ cmake_dependent_option(ECAL_THIRDPARTY_BUILD_SIMPLEINI   "Build simpleini with e
 cmake_dependent_option(ECAL_THIRDPARTY_BUILD_TCLAP       "Build tclap library with eCAL"   ON   "ECAL_CORE_COMMAND_LINE"     OFF)
 
 if(WIN32)
-  option(ECAL_THIRDPARTY_BUILD_PROTOBUF                  "Build protobuf with eCAL"                                           ON)
+  cmake_dependent_option(ECAL_THIRDPARTY_BUILD_PROTOBUF  "Build protobuf with eCAL"        ON   "ECAL_CORE_PROTOBUF"         OFF)
 else()
   option(ECAL_NPCAP_SUPPORT                              "Enable the eCAL Npcap Receiver (i.e. the Win10 performance fix)"   OFF)
   option(ECAL_THIRDPARTY_BUILD_PROTOBUF                  "Build protobuf with eCAL"                                          OFF)
@@ -131,7 +132,7 @@ if(MSVC)
 endif()
 
 # This is a list of subprojects, that might be build with eCAL
-# according to how options ECAL_BUILD_<SUBPROJECT> are set
+# according to how CMake options are set
 set(possible_subprojects
   asio
   CMakeFunctions
@@ -225,10 +226,12 @@ if(WIN32)
   set(CMAKE_RELWITHDEBINFO_POSTFIX   reldbg)
 endif()
 
+if(ECAL_CORE_PROTOBUF)
 # --------------------------------------------------------
 # ecal core protobuf interface
 # --------------------------------------------------------
 add_subdirectory(ecal/core_pb)
+endif()
 
 # --------------------------------------------------------
 # ecal core
@@ -260,7 +263,9 @@ endif()
 if(BUILD_ECAL_TESTS)
   enable_testing()
   add_subdirectory(testing/expmap_test)
-  add_subdirectory(testing/pubsub_proto_test)
+  if(ECAL_CORE_PROTOBUF)
+    add_subdirectory(testing/pubsub_proto_test)
+  endif()
   add_subdirectory(testing/pubsub_test)
   add_subdirectory(testing/topic2mcast_test)
   add_subdirectory(testing/util_test)
@@ -329,6 +334,7 @@ message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REG
 message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
 message(STATUS "ECAL_CORE_TIMEPLUGIN                           : ${ECAL_CORE_TIMEPLUGIN}")
+message(STATUS "ECAL_CORE_PROTOBUF                             : ${ECAL_CORE_PROTOBUF}")
 message(STATUS "ECAL_NPCAP_SUPPORT                             : ${ECAL_NPCAP_SUPPORT}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_ASIO                     : ${ECAL_THIRDPARTY_BUILD_ASIO}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS           : ${ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS}")

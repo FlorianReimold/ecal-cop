@@ -18,22 +18,16 @@
 */
 
 /**
- * @brief  raw message buffer handling
+ * @file   ecal_sample.h
+ * @brief  eCAL sample (de)serialization
 **/
 
-#include <functional>
-#include <string>
-#include <vector>
+#pragma once
 
-#include "serialization/ecal_sample.h"
+#include "ecal_sample_struct.h"
 
-namespace IO
+namespace eCAL
 {
-  namespace UDP
-  {
-    size_t CreateSampleBuffer(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, std::vector<char>& payload_);
-
-    using TransmitCallbackT = std::function<size_t(const void*, const size_t)>;
-    size_t SendFragmentedMessage(char* buf_, size_t buf_len_, long bandwidth_, const TransmitCallbackT& transmit_cb_);
-  }
+  std::string SerializeSampleAsString (const Sample& source_sample_);
+  bool        ParseSampleFromArray    (const void* data_, int size_, Sample& target_sample);
 }

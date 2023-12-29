@@ -27,14 +27,7 @@
 #include <ecal/ecal_callback.h>
 #include <ecal/ecal_types.h>
 
-#ifdef _MSC_VER
-#pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-
+#include "serialization/ecal_sample.h"
 #include "util/ecal_expmap.h"
 
 #include <condition_variable>
@@ -85,7 +78,7 @@ namespace eCAL
 
     void RefreshRegistration();
 
-    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::pb::eTLayerType layer_);
+    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::eTLayerType layer_);
 
   protected:
     void SubscribeToLayers();

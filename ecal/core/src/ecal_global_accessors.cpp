@@ -42,8 +42,8 @@ namespace eCAL
   std::string                   g_process_id_s;
   std::string                   g_process_info;
 
-  eCAL_Process_eSeverity        g_process_severity(proc_sev_unknown);
-  eCAL_Process_eSeverity_Level  g_process_severity_level(proc_sev_level1);
+  eCAL_Process_eSeverity        g_process_severity(eCAL_Process_eSeverity::proc_sev_unknown);
+  eCAL_Process_eSeverity_Level  g_process_severity_level(eCAL_Process_eSeverity_Level::proc_sev_level1);
 
   std::atomic<long long>        g_process_wclock;
   std::atomic<long long>        g_process_wbytes;
