@@ -54,7 +54,7 @@ namespace IO
     size_t CreateSampleBuffer(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, std::vector<char>& payload_)
     {
       // serialize the ecal sample into a binary string representation (yes this is not zero copy but who cares for UDP ..)
-      std::string serialized_ecal_sample = eCAL::SerializeSampleAsString(ecal_sample_);
+      std::string serialized_ecal_sample = eCAL::SerializeToBinaryString(ecal_sample_);
 
       const unsigned short sample_name_size = (unsigned short)sample_name_.size() + 1;
       const size_t   sample_size = serialized_ecal_sample.size();

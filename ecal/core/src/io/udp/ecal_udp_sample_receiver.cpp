@@ -52,7 +52,7 @@ namespace eCAL
       if (m_sample_receiver->m_has_sample_callback(sample_name))
       {
         // read sample
-        if (!ParseSampleFromArray(msg_buffer_.data() + sizeof(sample_name_size) + sample_name_size, static_cast<int>(msg_buffer_.size() - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return(0);
+        if (!DeserializeFromBuffer(msg_buffer_.data() + sizeof(sample_name_size) + sample_name_size, static_cast<int>(msg_buffer_.size() - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return(0);
 #ifndef NDEBUG
         // log it
         eCAL::Logging::Log(log_level_debug3, sample_name + "::UDP Sample Completed");
@@ -216,7 +216,7 @@ namespace eCAL
         if (m_has_sample_callback(sample_name))
         {
           // read sample
-          if (!ParseSampleFromArray(ecal_message->payload + static_cast<size_t>(sizeof(sample_name_size) + sample_name_size), static_cast<int>(static_cast<size_t>(ecal_message->header.len) - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return;
+          if (!DeserializeFromBuffer(ecal_message->payload + static_cast<size_t>(sizeof(sample_name_size) + sample_name_size), static_cast<int>(static_cast<size_t>(ecal_message->header.len) - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return;
 
 #ifndef NDEBUG
           // log it

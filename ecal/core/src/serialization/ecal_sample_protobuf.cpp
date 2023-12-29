@@ -209,13 +209,13 @@ namespace
 
 namespace eCAL
 {
-  std::string SerializeSampleAsString(const Sample& source_sample_)
+  std::string SerializeToBinaryString(const Sample& source_sample_)
   {
     eCAL::pb::Sample pb_sample = SampleStruct2Proto(source_sample_);
     return pb_sample.SerializeAsString();
   };
 
-  bool ParseSampleFromArray(const void* data_, int size_, Sample& target_sample_)
+  bool DeserializeFromBuffer(const char* data_, size_t size_, Sample& target_sample_)
   {
     eCAL::pb::Sample pb_sample;
     if (pb_sample.ParseFromArray(data_, size_))

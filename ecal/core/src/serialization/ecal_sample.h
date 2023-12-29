@@ -28,6 +28,6 @@
 
 namespace eCAL
 {
-  std::string SerializeSampleAsString (const Sample& source_sample_);
-  bool        ParseSampleFromArray    (const void* data_, int size_, Sample& target_sample);
+  std::string SerializeToBinaryString (const Sample& source_sample_);
+  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Sample& target_sample_);
 }

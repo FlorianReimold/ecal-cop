@@ -113,7 +113,7 @@ namespace eCAL
       || m_callback_process
       )
     {
-      reg_sample = SerializeSampleAsString(modified_ttype_sample);
+      reg_sample = SerializeToBinaryString(modified_ttype_sample);
     }
 
     switch(modified_ttype_sample.cmd_type)
