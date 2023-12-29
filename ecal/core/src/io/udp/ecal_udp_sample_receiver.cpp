@@ -26,6 +26,7 @@
 
 #include <ecal/ecal_log.h>
 
+#include <cstring>
 #include <utility>
 
 namespace eCAL
