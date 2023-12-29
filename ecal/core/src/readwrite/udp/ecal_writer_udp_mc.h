@@ -48,8 +48,6 @@ namespace eCAL
     bool Write(const void* buf_, const SWriterAttr& attr_) override;
 
   protected:
-    eCAL::pb::Sample                    m_ecal_sample;
-
     std::shared_ptr<UDP::CSampleSender> m_sample_sender_loopback;
     std::shared_ptr<UDP::CSampleSender> m_sample_sender_no_loopback;
   };

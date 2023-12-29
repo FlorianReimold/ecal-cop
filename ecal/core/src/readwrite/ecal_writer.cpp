@@ -449,44 +449,47 @@ namespace eCAL
     }
 
     // create command parameter
-    eCAL::pb::Sample ecal_reg_sample;
-    ecal_reg_sample.set_cmd_type(eCAL::pb::bct_reg_publisher);
-    auto *ecal_reg_sample_mutable_topic = ecal_reg_sample.mutable_topic();
-    ecal_reg_sample_mutable_topic->set_hname(m_host_name);
-    ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
-    ecal_reg_sample_mutable_topic->set_tid(m_topic_id);
-    if (share_ttype) ecal_reg_sample_mutable_topic->set_ttype(Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name));
-    if (share_tdesc) ecal_reg_sample_mutable_topic->set_tdesc(m_topic_info.descriptor);
+    eCAL::Sample ecal_reg_sample;
+    ecal_reg_sample.cmd_type = eCAL::bct_reg_publisher;
+    auto& ecal_reg_sample_mutable_topic = ecal_reg_sample.topic;
+    ecal_reg_sample_mutable_topic.hname  = m_host_name;
+    ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
+    ecal_reg_sample_mutable_topic.tname  = m_topic_name;
+    ecal_reg_sample_mutable_topic.tid    = m_topic_id;
+    if (share_ttype) ecal_reg_sample_mutable_topic.ttype = Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name);
+    if (share_tdesc) ecal_reg_sample_mutable_topic.tdesc = m_topic_info.descriptor;
     // topic_information
     {
-      auto* ecal_reg_sample_mutable_tdatatype = ecal_reg_sample_mutable_topic->mutable_tdatatype();
+      auto& ecal_reg_sample_mutable_tdatatype = ecal_reg_sample_mutable_topic.tdatatype;
       if (share_ttype)
       {
-        ecal_reg_sample_mutable_tdatatype->set_encoding(m_topic_info.encoding);
-        ecal_reg_sample_mutable_tdatatype->set_name(m_topic_info.name);
+        ecal_reg_sample_mutable_tdatatype.encoding = m_topic_info.encoding;
+        ecal_reg_sample_mutable_tdatatype.name     = m_topic_info.name;
       }
       if (share_tdesc)
       {
-        ecal_reg_sample_mutable_tdatatype->set_desc(m_topic_info.descriptor);
+        ecal_reg_sample_mutable_tdatatype.desc     = m_topic_info.descriptor;
       }
     }
-    *ecal_reg_sample_mutable_topic->mutable_attr() = google::protobuf::Map<std::string, std::string> { m_attr.begin(), m_attr.end() };
-    ecal_reg_sample_mutable_topic->set_tsize(google::protobuf::int32(m_topic_size));
+    ecal_reg_sample_mutable_topic.attr  = m_attr;
+    ecal_reg_sample_mutable_topic.tsize = m_topic_size;
     // udp multicast layer
     {
-      auto *udp_tlayer = ecal_reg_sample_mutable_topic->add_tlayer();
-      udp_tlayer->set_type(eCAL::pb::tl_ecal_udp_mc);
-      udp_tlayer->set_version(1);
-      udp_tlayer->set_confirmed(m_writer.udp_mc_mode.confirmed);
+      ecal_reg_sample_mutable_topic.tlayer.resize(1);
+      auto& udp_tlayer = ecal_reg_sample_mutable_topic.tlayer[0];
+      udp_tlayer.type      = eCAL::tl_ecal_udp_mc;
+      udp_tlayer.version   = 1;
+      udp_tlayer.confirmed = m_writer.udp_mc_mode.confirmed;
+#if 0 // currently not needed for udp only
       udp_tlayer->mutable_par_layer()->ParseFromString(m_writer.udp_mc.GetConnectionParameter());
+#endif
     }
-    ecal_reg_sample_mutable_topic->set_pid(m_pid);
-    ecal_reg_sample_mutable_topic->set_pname(m_pname);
-    ecal_reg_sample_mutable_topic->set_uname(Process::GetUnitName());
-    ecal_reg_sample_mutable_topic->set_did(m_id);
-    ecal_reg_sample_mutable_topic->set_dclock(m_clock);
-    ecal_reg_sample_mutable_topic->set_dfreq(m_freq);
+    ecal_reg_sample_mutable_topic.pid    = m_pid;
+    ecal_reg_sample_mutable_topic.pname  = m_pname;
+    ecal_reg_sample_mutable_topic.uname  = Process::GetUnitName();
+    ecal_reg_sample_mutable_topic.did    = m_id;
+    ecal_reg_sample_mutable_topic.dclock = m_clock;
+    ecal_reg_sample_mutable_topic.dfreq  = m_freq;
 
     // register publisher
     if (g_registration_provider() != nullptr) g_registration_provider()->RegisterTopic(m_topic_name, m_topic_id, ecal_reg_sample, force_);
@@ -505,16 +508,16 @@ namespace eCAL
     if (m_topic_name.empty()) return(false);
 
     // create command parameter
-    eCAL::pb::Sample ecal_unreg_sample;
-    ecal_unreg_sample.set_cmd_type(eCAL::pb::bct_unreg_publisher);
-    auto* ecal_reg_sample_mutable_topic = ecal_unreg_sample.mutable_topic();
-    ecal_reg_sample_mutable_topic->set_hname(m_host_name);
-    ecal_reg_sample_mutable_topic->set_hgname(m_host_group_name);
-    ecal_reg_sample_mutable_topic->set_pname(m_pname);
-    ecal_reg_sample_mutable_topic->set_pid(m_pid);
-    ecal_reg_sample_mutable_topic->set_tname(m_topic_name);
-    ecal_reg_sample_mutable_topic->set_tid(m_topic_id);
-    ecal_reg_sample_mutable_topic->set_uname(Process::GetUnitName());
+    eCAL::Sample ecal_unreg_sample;
+    ecal_unreg_sample.cmd_type = eCAL::bct_unreg_publisher;
+    auto& ecal_reg_sample_mutable_topic  = ecal_unreg_sample.topic;
+    ecal_reg_sample_mutable_topic.hname  = m_host_name;
+    ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
+    ecal_reg_sample_mutable_topic.pname  = m_pname;
+    ecal_reg_sample_mutable_topic.pid    = m_pid;
+    ecal_reg_sample_mutable_topic.tname  = m_topic_name;
+    ecal_reg_sample_mutable_topic.tid    = m_topic_id;
+    ecal_reg_sample_mutable_topic.uname  = Process::GetUnitName();
 
     // unregister publisher
     if (g_registration_provider() != nullptr) g_registration_provider()->UnregisterTopic(m_topic_name, m_topic_id, ecal_unreg_sample, true);

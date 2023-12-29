@@ -50,15 +50,14 @@ namespace IO
 {
   namespace UDP
   {
-    size_t CreateSampleBuffer(const std::string& sample_name_, const eCAL::pb::Sample& ecal_sample_, std::vector<char>& payload_)
+    size_t CreateSampleBuffer(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, std::vector<char>& payload_)
     {
+      // serialize the ecal sample into a binary string representation (yes this is not zero copy but who cares for UDP ..)
+      std::string serialized_ecal_sample = eCAL::SerializeSampleAsString(ecal_sample_);
+
       const unsigned short sample_name_size = (unsigned short)sample_name_.size() + 1;
-#if GOOGLE_PROTOBUF_VERSION >= 3001000
-      const size_t         sample_size = ecal_sample_.ByteSizeLong();
-#else
-      size_t         sample_size = ecal_sample_.ByteSize();
-#endif
-      const size_t         data_size = sizeof(sample_name_size) + sample_name_size + sample_size;
+      const size_t   sample_size = serialized_ecal_sample.size();
+      const size_t   data_size   = sizeof(sample_name_size) + sample_name_size + sample_size;
 
       // create payload buffer with reserved space for first message head
       payload_.resize(data_size + sizeof(struct SUDPMessageHead));
@@ -68,14 +67,10 @@ namespace IO
       ((unsigned short*)payload_data)[0] = sample_name_size;
       // write topic name
       memcpy(payload_data + sizeof(sample_name_size), sample_name_.c_str(), sample_name_size);
-
       // write payload
-      if (ecal_sample_.SerializeWithCachedSizesToArray((google::protobuf::uint8*)payload_data + sizeof(sample_name_size) + sample_name_size))
-      {
-        return data_size;
-      }
+      memcpy(payload_data + sizeof(sample_name_size) + sample_name_size, serialized_ecal_sample.c_str(), sample_size);
 
-      return (0);
+      return data_size;
     }
 
     size_t SendFragmentedMessage(char* buf_, size_t buf_len_, long bandwidth_, const TransmitCallbackT& transmit_cb_)

@@ -78,7 +78,7 @@ namespace eCAL
 
     void RefreshRegistration();
 
-    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::pb::eTLayerType layer_);
+    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::eTLayerType layer_);
 
   protected:
     void SubscribeToLayers();

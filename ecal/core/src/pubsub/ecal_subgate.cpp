@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iterator>
 
 #include <ecal/ecal.h>
 
@@ -111,29 +112,29 @@ namespace eCAL
     return(m_topic_name_datareader_map.find(sample_name_) != m_topic_name_datareader_map.end());
   }
 
-  bool CSubGate::ApplySample(const eCAL::pb::Sample& ecal_sample_, eCAL::pb::eTLayerType layer_)
+  bool CSubGate::ApplySample(const eCAL::Sample& ecal_sample_, eCAL::eTLayerType layer_)
   {
     if(!m_created) return false;
 
     size_t sent(0);
-    switch (ecal_sample_.cmd_type())
+    switch (ecal_sample_.cmd_type)
     {
-    case eCAL::pb::bct_set_sample:
+    case eCAL::bct_set_sample:
     {
 #ifndef NDEBUG
       // check layer
-      if (layer_ == eCAL::pb::eTLayerType::tl_none)
+      if (layer_ == eCAL::eTLayerType::tl_none)
       {
         // log it
-        eCAL::Logging::Log(log_level_error, ecal_sample_.topic().tname() + " : payload received without layer definition !");
+        eCAL::Logging::Log(log_level_error, ecal_sample_.topic.tname + " : payload received without layer definition !");
       }
 #endif
 
       // update globals
       g_process_rclock++;
-      const auto& ecal_sample_content         = ecal_sample_.content();
-      const auto& ecal_sample_content_payload = ecal_sample_content.payload();
-      g_process_rbytes_sum += ecal_sample_.content().payload().size();
+      const auto& ecal_sample_content         = ecal_sample_.content;
+      const auto& ecal_sample_content_payload = ecal_sample_content.payload;
+      g_process_rbytes_sum += ecal_sample_.content.payload.size();
 
       std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
 
@@ -142,7 +143,7 @@ namespace eCAL
       {
         // apply sample to data reader
         const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
-        auto res = m_topic_name_datareader_map.equal_range(ecal_sample_.topic().tname());
+        auto res = m_topic_name_datareader_map.equal_range(ecal_sample_.topic.tname);
         std::transform(
           res.first, res.second, std::back_inserter(readers_to_apply), [](const auto& match) { return match.second; }
         );
@@ -151,13 +152,13 @@ namespace eCAL
       for (const auto& reader : readers_to_apply)
       {
         sent = reader->AddSample(
-          ecal_sample_.topic().tid(),
+          ecal_sample_.topic.tid,
           ecal_sample_content_payload.data(),
           ecal_sample_content_payload.size(),
-          ecal_sample_content.id(),
-          ecal_sample_content.clock(),
-          ecal_sample_content.time(),
-          static_cast<size_t>(ecal_sample_content.hash()),
+          ecal_sample_content.id,
+          ecal_sample_content.clock,
+          ecal_sample_content.time,
+          static_cast<size_t>(ecal_sample_content.hash),
           layer_
         );
       }
@@ -170,20 +171,20 @@ namespace eCAL
     return (sent > 0);
   }
 
-  void CSubGate::ApplyLocPubRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CSubGate::ApplyLocPubRegistration(const eCAL::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
     // check topic name
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
     if (topic_name.empty()) return;
 
-    const std::string& topic_id   = ecal_sample.tid();
+    const std::string& topic_id   = ecal_sample.tid;
     const SDataTypeInformation topic_info{ eCALSampleToTopicInformation(ecal_sample_) };
 
     // get process id
-    const std::string process_id = std::to_string(ecal_sample_.topic().pid());
+    const std::string process_id = std::to_string(ecal_sample_.topic.pid);
 
     // handle local publisher connection
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
@@ -195,15 +196,15 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyLocPubUnregistration(const eCAL::pb::Sample& ecal_sample_)
+  void CSubGate::ApplyLocPubUnregistration(const eCAL::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
     // check topic name
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& topic_name = ecal_sample.tname();
-    const std::string& topic_id   = ecal_sample.tid();
-    const std::string process_id  = std::to_string(ecal_sample_.topic().pid());
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& topic_name = ecal_sample.tname;
+    const std::string& topic_id   = ecal_sample.tid;
+    const std::string process_id  = std::to_string(ecal_sample_.topic.pid);
 
     // unregister local publisher
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
@@ -214,16 +215,16 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyExtPubRegistration(const eCAL::pb::Sample& ecal_sample_)
+  void CSubGate::ApplyExtPubRegistration(const eCAL::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& host_name  = ecal_sample.hname();
-    const std::string& topic_name = ecal_sample.tname();
-    const std::string& topic_id   = ecal_sample.tid();
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& host_name  = ecal_sample.hname;
+    const std::string& topic_name = ecal_sample.tname;
+    const std::string& topic_id   = ecal_sample.tid;
     const SDataTypeInformation topic_info{ eCALSampleToTopicInformation(ecal_sample_) };
-    const std::string  process_id = std::to_string(ecal_sample.pid());
+    const std::string  process_id = std::to_string(ecal_sample.pid);
 
     // handle external publisher connection
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
@@ -235,15 +236,15 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyExtPubUnregistration(const eCAL::pb::Sample& ecal_sample_)
+  void CSubGate::ApplyExtPubUnregistration(const eCAL::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
-    const auto& ecal_sample = ecal_sample_.topic();
-    const std::string& host_name  = ecal_sample.hname();
-    const std::string& topic_name = ecal_sample.tname();
-    const std::string& topic_id   = ecal_sample.tid();
-    const std::string  process_id = std::to_string(ecal_sample.pid());
+    const auto& ecal_sample = ecal_sample_.topic;
+    const std::string& host_name  = ecal_sample.hname;
+    const std::string& topic_name = ecal_sample.tname;
+    const std::string& topic_id   = ecal_sample.tid;
+    const std::string  process_id = std::to_string(ecal_sample.pid);
 
     // unregister local subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);

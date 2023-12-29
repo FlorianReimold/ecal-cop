@@ -27,6 +27,8 @@
 #include "ecal_writer_udp_mc.h"
 #include "io/udp/ecal_udp_configurations.h"
 
+#include <iterator>
+
 namespace eCAL
 {
   CDataWriterUdpMC::~CDataWriterUdpMC()
@@ -93,26 +95,26 @@ namespace eCAL
     if (!m_created) return false;
 
     // create new sample
-    m_ecal_sample.Clear();
-    m_ecal_sample.set_cmd_type(eCAL::pb::bct_set_sample);
-    auto *ecal_sample_mutable_topic = m_ecal_sample.mutable_topic();
-    ecal_sample_mutable_topic->set_hname(m_host_name);
-    ecal_sample_mutable_topic->set_tname(m_topic_name);
-    ecal_sample_mutable_topic->set_tid(m_topic_id);
+    eCAL::Sample ecal_sample;
+    ecal_sample.cmd_type = eCAL::bct_set_sample;
+    auto& ecal_sample_mutable_topic = ecal_sample.topic;
+    ecal_sample_mutable_topic.hname = m_host_name;
+    ecal_sample_mutable_topic.tname = m_topic_name;
+    ecal_sample_mutable_topic.tid   = m_topic_id;
 
-    // set layer
-    auto *layer = ecal_sample_mutable_topic->add_tlayer();
-    layer->set_type(eCAL::pb::eTLayerType::tl_ecal_udp_mc);
-    layer->set_confirmed(true);
+    // udp multicast layer
+    ecal_sample_mutable_topic.tlayer.resize(1);
+    auto& udp_tlayer = ecal_sample_mutable_topic.tlayer[0];
+    udp_tlayer.type      = eCAL::eTLayerType::tl_ecal_udp_mc;
+    udp_tlayer.confirmed = true;
 
     // append content
-    auto *ecal_sample_mutable_content = m_ecal_sample.mutable_content();
-    ecal_sample_mutable_content->set_id(attr_.id);
-    ecal_sample_mutable_content->set_clock(attr_.clock);
-    ecal_sample_mutable_content->set_time(attr_.time);
-    ecal_sample_mutable_content->set_hash(attr_.hash);
-    ecal_sample_mutable_content->set_size((google::protobuf::int32)attr_.len);
-    ecal_sample_mutable_content->set_payload(buf_, attr_.len);
+    auto& ecal_sample_mutable_content = ecal_sample.content;
+    ecal_sample_mutable_content.id    = attr_.id;
+    ecal_sample_mutable_content.clock = attr_.clock;
+    ecal_sample_mutable_content.time  = attr_.time;
+    ecal_sample_mutable_content.hash  = attr_.hash;
+    std::copy(static_cast<const char*>(buf_), static_cast<const char*>(buf_) + attr_.len, std::back_inserter(ecal_sample_mutable_content.payload));
 
     // send it
     size_t sent = 0;
@@ -120,14 +122,14 @@ namespace eCAL
     {
       if (m_sample_sender_loopback)
       {
-        sent = m_sample_sender_loopback->Send(m_ecal_sample.topic().tname(), m_ecal_sample, attr_.bandwidth);
+        sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, ecal_sample, attr_.bandwidth);
       }
     }
     else
     {
       if (m_sample_sender_no_loopback)
       {
-        sent = m_sample_sender_no_loopback->Send(m_ecal_sample.topic().tname(), m_ecal_sample, attr_.bandwidth);
+        sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, ecal_sample, attr_.bandwidth);
       }
     }
 

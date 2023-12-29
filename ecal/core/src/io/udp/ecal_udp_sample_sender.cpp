@@ -18,7 +18,7 @@
 */
 
 /**
- * @brief  UDP sample sender to send messages of type eCAL::pb::Sample
+ * @brief  UDP sample sender to send messages of type eCAL::Sample
 **/
 
 #include "ecal_udp_sample_sender.h"
@@ -43,7 +43,7 @@ namespace eCAL
       m_udp_sender = std::make_shared<IO::UDP::CUDPSender>(attr_);
     }
 
-    size_t CSampleSender::Send(const std::string& sample_name_, const eCAL::pb::Sample& ecal_sample_, long bandwidth_)
+    size_t CSampleSender::Send(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, long bandwidth_)
     {
       if (!m_udp_sender) return(0);
 

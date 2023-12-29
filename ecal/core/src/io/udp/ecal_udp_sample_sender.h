@@ -18,7 +18,7 @@
 */
 
 /**
- * @brief  UDP sample sender to send messages of type eCAL::pb::Sample
+ * @brief  UDP sample sender to send messages of type eCAL::Sample
 **/
 
 #pragma once
@@ -37,7 +37,7 @@ namespace eCAL
     {
     public:
       CSampleSender(const IO::UDP::SSenderAttr& attr_);
-      size_t Send(const std::string& sample_name_, const eCAL::pb::Sample& ecal_sample_, long bandwidth_);
+      size_t Send(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, long bandwidth_);
 
     private:
       IO::UDP::SSenderAttr                 m_attr;

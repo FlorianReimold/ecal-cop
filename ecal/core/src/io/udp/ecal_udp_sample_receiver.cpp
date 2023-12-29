@@ -18,7 +18,7 @@
 */
 
 /**
- * @brief  UDP sample receiver to receive messages of type eCAL::pb::Sample
+ * @brief  UDP sample receiver to receive messages of type eCAL::Sample
 **/
 
 #include "ecal_udp_sample_receiver.h"
@@ -51,27 +51,27 @@ namespace eCAL
       if (m_sample_receiver->m_has_sample_callback(sample_name))
       {
         // read sample
-        if (!m_ecal_sample.ParseFromArray(msg_buffer_.data() + sizeof(sample_name_size) + sample_name_size, static_cast<int>(msg_buffer_.size() - (sizeof(sample_name_size) + sample_name_size)))) return(0);
+        if (!ParseSampleFromArray(msg_buffer_.data() + sizeof(sample_name_size) + sample_name_size, static_cast<int>(msg_buffer_.size() - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return(0);
 #ifndef NDEBUG
         // log it
         eCAL::Logging::Log(log_level_debug3, sample_name + "::UDP Sample Completed");
 
         // log it
-        switch (m_ecal_sample.cmd_type())
+        switch (m_ecal_sample.cmd_type)
         {
-        case eCAL::pb::bct_none:
+        case eCAL::bct_none:
           eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - NONE");
           break;
-        case eCAL::pb::bct_set_sample:
+        case eCAL::bct_set_sample:
           eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - SAMPLE");
           break;
-        case eCAL::pb::bct_reg_publisher:
+        case eCAL::bct_reg_publisher:
           eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER PUBLISHER");
           break;
-        case eCAL::pb::bct_reg_subscriber:
+        case eCAL::bct_reg_subscriber:
           eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER SUBSCRIBER");
           break;
-        case eCAL::pb::bct_reg_process:
+        case eCAL::bct_reg_process:
           eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER PROCESS");
           break;
         default:
@@ -80,12 +80,12 @@ namespace eCAL
         }
 #endif
         // get layer if this is a payload sample
-        eCAL::pb::eTLayerType layer = eCAL::pb::eTLayerType::tl_none;
-        if (m_ecal_sample.cmd_type() == eCAL::pb::eCmdType::bct_set_sample)
+        eCAL::eTLayerType layer = eCAL::eTLayerType::tl_none;
+        if (m_ecal_sample.cmd_type == eCAL::eCmdType::bct_set_sample)
         {
-          if (m_ecal_sample.topic().tlayer_size() > 0)
+          if (m_ecal_sample.topic.tlayer.size() > 0)
           {
-            layer = m_ecal_sample.topic().tlayer(0).type();
+            layer = m_ecal_sample.topic.tlayer[0].type;
           }
         }
         // apply sample
@@ -215,28 +215,28 @@ namespace eCAL
         if (m_has_sample_callback(sample_name))
         {
           // read sample
-          if (!m_ecal_sample.ParseFromArray(ecal_message->payload + static_cast<size_t>(sizeof(sample_name_size) + sample_name_size), static_cast<int>(static_cast<size_t>(ecal_message->header.len) - (sizeof(sample_name_size) + sample_name_size)))) return;
+          if (!ParseSampleFromArray(ecal_message->payload + static_cast<size_t>(sizeof(sample_name_size) + sample_name_size), static_cast<int>(static_cast<size_t>(ecal_message->header.len) - (sizeof(sample_name_size) + sample_name_size)), m_ecal_sample)) return;
 
 #ifndef NDEBUG
           // log it
           eCAL::Logging::Log(log_level_debug3, sample_name + "::UDP Sample Completed");
 
           // log it
-          switch (m_ecal_sample.cmd_type())
+          switch (m_ecal_sample.cmd_type)
           {
-          case eCAL::pb::bct_none:
+          case eCAL::bct_none:
             eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - NONE");
             break;
-          case eCAL::pb::bct_set_sample:
+          case eCAL::bct_set_sample:
             eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - SAMPLE");
             break;
-          case eCAL::pb::bct_reg_publisher:
+          case eCAL::bct_reg_publisher:
             eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER PUBLISHER");
             break;
-          case eCAL::pb::bct_reg_subscriber:
+          case eCAL::bct_reg_subscriber:
             eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER SUBSCRIBER");
             break;
-          case eCAL::pb::bct_reg_process:
+          case eCAL::bct_reg_process:
             eCAL::Logging::Log(log_level_debug4, sample_name + "::UDP Sample Command Type - REGISTER PROCESS");
             break;
           default:
@@ -245,12 +245,12 @@ namespace eCAL
           }
 #endif
           // get layer if this is a payload sample
-          eCAL::pb::eTLayerType layer = eCAL::pb::eTLayerType::tl_none;
-          if (m_ecal_sample.cmd_type() == eCAL::pb::eCmdType::bct_set_sample)
+          eCAL::eTLayerType layer = eCAL::eTLayerType::tl_none;
+          if (m_ecal_sample.cmd_type == eCAL::eCmdType::bct_set_sample)
           {
-            if (m_ecal_sample.topic().tlayer_size() > 0)
+            if (m_ecal_sample.topic.tlayer.size() > 0)
             {
-              layer = m_ecal_sample.topic().tlayer(0).type();
+              layer = m_ecal_sample.topic.tlayer[0].type;
             }
           }
           // apply sample

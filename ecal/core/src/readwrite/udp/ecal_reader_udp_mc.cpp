@@ -104,9 +104,9 @@ namespace eCAL
     return(g_subgate()->HasSample(sample_name_));
   }
 
-  bool CUDPReaderLayer::ApplySample(const eCAL::pb::Sample& ecal_sample_)
+  bool CUDPReaderLayer::ApplySample(const eCAL::Sample& ecal_sample_)
   {
     if (g_subgate() == nullptr) return false;
-    return g_subgate()->ApplySample(ecal_sample_, eCAL::pb::eTLayerType::tl_ecal_udp_mc);
+    return g_subgate()->ApplySample(ecal_sample_, eCAL::eTLayerType::tl_ecal_udp_mc);
   }
 }

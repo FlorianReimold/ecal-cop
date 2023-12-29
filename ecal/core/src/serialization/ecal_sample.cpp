@@ -18,16 +18,21 @@
 */
 
 /**
- * @file   ecal_sample.h
+ * @file   ecal_sample.cpp
  * @brief  eCAL sample (de)serialization
 **/
 
-#pragma once
-
-#include "ecal_sample_struct.h"
+#include "ecal_sample.h"
 
 namespace eCAL
 {
-  std::string SerializeSampleAsString (const Sample& source_sample_);
-  bool        ParseSampleFromArray    (const void* data_, int size_, Sample& target_sample);
+  std::string SerializeSampleAsString(const Sample& source_sample_)
+  {
+    return "";
+  };
+
+  bool ParseSampleFromArray(const void* data_, int size_, Sample& target_sample)
+  {
+    return false;
+  };
 }

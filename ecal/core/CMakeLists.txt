@@ -181,7 +181,17 @@ endif()
 ######################################
 set(ecal_serialization_src
     src/serialization/ecal_sample.h
+    src/serialization/ecal_sample_struct.h
 )
+if(ECAL_CORE_PROTOBUF)
+  list(APPEND ecal_serialization_src
+      src/serialization/ecal_sample_protobuf.cpp
+  )
+else()
+  list(APPEND ecal_serialization_src
+      src/serialization/ecal_sample.cpp
+  )
+endif()
 
 ######################################
 # time

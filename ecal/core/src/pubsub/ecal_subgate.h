@@ -46,13 +46,13 @@ namespace eCAL
     bool Unregister(const std::string& topic_name_, const std::shared_ptr<CDataReader>& datareader_);
 
     bool HasSample(const std::string& sample_name_);
-    bool ApplySample(const eCAL::pb::Sample& ecal_sample_, eCAL::pb::eTLayerType layer_);
+    bool ApplySample(const eCAL::Sample& ecal_sample_, eCAL::eTLayerType layer_);
 
-    void ApplyLocPubRegistration(const eCAL::pb::Sample& ecal_sample_);
-    void ApplyLocPubUnregistration(const eCAL::pb::Sample& ecal_sample_);
+    void ApplyLocPubRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplyLocPubUnregistration(const eCAL::Sample& ecal_sample_);
 
-    void ApplyExtPubRegistration(const eCAL::pb::Sample& ecal_sample_);
-    void ApplyExtPubUnregistration(const eCAL::pb::Sample& ecal_sample_);
+    void ApplyExtPubRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplyExtPubUnregistration(const eCAL::Sample& ecal_sample_);
 
     void RefreshRegistrations();
 
