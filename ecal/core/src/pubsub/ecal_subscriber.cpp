@@ -229,10 +229,6 @@ namespace eCAL
   {
   }
 
-  CSubscriber::CSubscriber(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
-    : CSubscriber()
-  {}
-
   CSubscriber::CSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
     : CSubscriber()
   {}
@@ -265,11 +261,6 @@ namespace eCAL
     return *this;
   }
 
-  bool CSubscriber::Create(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
-  {
-    return false;
-  }
-
   bool CSubscriber::Create(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
   {
     return false;
@@ -295,11 +286,6 @@ namespace eCAL
     return false;
   }
 
-  size_t CSubscriber::Receive(std::string& buf_, long long* time_ /* = nullptr */, int rcv_timeout_ /* = 0 */) const
-  {
-    return 0;
-  }
-
   bool CSubscriber::ReceiveBuffer(std::string& buf_, long long* time_ /* = nullptr */, int rcv_timeout_ /* = 0 */) const
   {
     return false;
@@ -316,16 +302,6 @@ namespace eCAL
   }
 
   std::string CSubscriber::GetTopicName() const
-  {
-    return "";
-  }
-
-  std::string CSubscriber::GetTypeName() const
-  {
-    return "";
-  }
-
-  std::string CSubscriber::GetDescription() const
   {
     return "";
   }

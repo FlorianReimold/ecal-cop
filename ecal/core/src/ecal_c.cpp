@@ -364,6 +364,7 @@ extern "C"
 /////////////////////////////////////////////////////////
 // Subscriber
 /////////////////////////////////////////////////////////
+#if ECAL_CORE_SUBSCRIBER
 static std::recursive_mutex g_sub_callback_mtx;
 static void g_sub_receive_callback(const char* topic_name_, const struct eCAL::SReceiveCallbackData* data_, const ReceiveCallbackCT callback_, void* par_)
 {
@@ -376,34 +377,48 @@ static void g_sub_receive_callback(const char* topic_name_, const struct eCAL::S
   data.clock = data_->clock;
   callback_(topic_name_, &data, par_);
 }
+#endif
 
 extern "C"
 {
   ECALC_API ECAL_HANDLE eCAL_Sub_New()
   {
+#if ECAL_CORE_SUBSCRIBER
     auto* sub = new eCAL::CSubscriber;
     return(sub);
+#else
+    return(nullptr);
+#endif
   }
 
   ECALC_API int eCAL_Sub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_encoding_, const char* topic_type_name_, const char* topic_desc_, int topic_desc_len_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     struct eCAL::SDataTypeInformation topic_info = { topic_type_encoding_, topic_type_name_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)) };
     if (!sub->Create(topic_name_, topic_info)) return(0);
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Sub_Destroy(ECAL_HANDLE handle_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if(handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     delete sub;
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Sub_SetID(ECAL_HANDLE handle_, const long long* id_array_, const int id_num_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     std::set<long long> id_set;
@@ -416,26 +431,34 @@ extern "C"
     }
     if (sub->SetID(id_set)) return(1);
     return(1);
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Sub_SetAttribute(ECAL_HANDLE handle_, const char* attr_name_, int attr_name_len_, const char* attr_value_, int attr_value_len_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     if (sub->SetAttribute(std::string(attr_name_, static_cast<size_t>(attr_name_len_)), std::string(attr_value_, static_cast<size_t>(attr_value_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_ClearAttribute(ECAL_HANDLE handle_, const char* attr_name_, int attr_name_len_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     if (sub->ClearAttribute(std::string(attr_name_, static_cast<size_t>(attr_name_len_)))) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_Receive(ECAL_HANDLE handle_, void* buf_, int buf_len_, long long* time_, int rcv_timeout_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (buf_len_ == ECAL_ALLOCATE_4ME)
     {
       return eCAL_Sub_Receive_Alloc(handle_, static_cast<void**>(buf_), time_, rcv_timeout_); //-V206
@@ -444,10 +467,14 @@ extern "C"
     {
       return eCAL_Sub_Receive_ToBuffer(handle_, buf_, buf_len_, time_, rcv_timeout_);
     }
+#else
+    return(0);
+#endif
   }
 
   ECALC_API int eCAL_Sub_Receive_ToBuffer(ECAL_HANDLE handle_, void* buf_, int buf_len_, long long* time_, int rcv_timeout_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
 
@@ -456,11 +483,13 @@ extern "C"
     {
       return(CopyBuffer(buf_, buf_len_, buf));
     }
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_Receive_Alloc(ECAL_HANDLE handle_, void** buf_, long long* time_, int rcv_timeout_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
 
@@ -469,11 +498,13 @@ extern "C"
     {
       return(CopyBuffer(buf_, ECAL_ALLOCATE_4ME, buf));
     }
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_Receive_Buffer_Alloc(ECAL_HANDLE handle_, void** buf_, int* buf_len_, long long* time_, int rcv_timeout_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
 
@@ -484,33 +515,34 @@ extern "C"
       if (buf_len_) *buf_len_ = static_cast<int>(buf.size());
       return(1);
     }
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_AddReceiveCallback(ECAL_HANDLE handle_, ReceiveCallbackCT callback_, void* par_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if(handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     auto callback = std::bind(g_sub_receive_callback, std::placeholders::_1, std::placeholders::_2, callback_, par_);
     if(sub->AddReceiveCallback(callback)) return(1);
+#endif
     return(0);
-  }
-
-  ECALC_API_DEPRECATED int eCAL_Sub_AddReceiveCallbackC(ECAL_HANDLE handle_, ReceiveCallbackCT callback_, void* par_)
-  {
-    return eCAL_Sub_AddReceiveCallback(handle_, callback_, par_);
   }
 
   ECALC_API int eCAL_Sub_RemReceiveCallback(ECAL_HANDLE handle_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if(handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     if(sub->RemReceiveCallback()) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if(handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     const std::string dump = sub->Dump();
@@ -518,6 +550,7 @@ extern "C"
     {
       return(CopyBuffer(buf_, buf_len_, dump));
     }
+#endif
     return(0);
   }
 }

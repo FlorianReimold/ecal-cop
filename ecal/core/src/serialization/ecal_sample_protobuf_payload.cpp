@@ -59,8 +59,8 @@ namespace
     pb_content->set_id(payload_.content.id);
     pb_content->set_clock(payload_.content.clock);
     pb_content->set_time(payload_.content.time);
-    pb_content->set_payload(payload_.content.payload.data(), payload_.content.payload.size());
     pb_content->set_hash(payload_.content.hash);
+    pb_content->set_payload(payload_.content.payload.data(), payload_.content.payload.size());
 
     return pb_payload;
   }

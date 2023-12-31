@@ -282,10 +282,6 @@ namespace eCAL
   {
   }
 
-  CPublisher::CPublisher(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
-    : CPublisher()
-  {}
-
   CPublisher::CPublisher(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
     : CPublisher()
   {}
@@ -327,27 +323,12 @@ namespace eCAL
     return *this;
   }
 
-  bool CPublisher::Create(const std::string& topic_name_, const std::string& topic_type_ /* = "" */, const std::string& topic_desc_ /* = "" */)
-  {
-    return false;
-  }
-
   bool CPublisher::Create(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
   {
     return false;
   }
 
   bool CPublisher::Destroy()
-  {
-    return false;
-  }
-
-  bool CPublisher::SetTypeName(const std::string& topic_type_name_)
-  {
-    return false;
-  }
-
-  bool CPublisher::SetDescription(const std::string& topic_desc_)
   {
     return false;
   }
