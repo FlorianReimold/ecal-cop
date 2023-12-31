@@ -24,9 +24,9 @@
 #pragma once
 
 #include "io/udp/sendreceive/udp_sender.h"
-#include "serialization/ecal_sample.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 namespace eCAL
@@ -37,7 +37,7 @@ namespace eCAL
     {
     public:
       CSampleSender(const IO::UDP::SSenderAttr& attr_);
-      size_t Send(const std::string& sample_name_, const eCAL::Sample& ecal_sample_, long bandwidth_);
+      size_t Send(const std::string& sample_name_, const std::string& serialized_sample_, long bandwidth_);
 
     private:
       IO::UDP::SSenderAttr                 m_attr;

@@ -30,7 +30,7 @@
 
 namespace eCAL
 {
-  inline SDataTypeInformation eCALSampleToTopicInformation(const eCAL::Sample& sample)
+  inline SDataTypeInformation eCALSampleToTopicInformation(const eCAL::Registration::Sample& sample)
   {
     SDataTypeInformation topic;
     const auto& tdatatype = sample.topic.tdatatype;
@@ -41,7 +41,7 @@ namespace eCAL
   }
   
   // This function can be removed in eCAL6. For the time being we need to enrich incoming samples with additional topic information.
-  inline void ModifyIncomingSampleForBackwardsCompatibility(const eCAL::Sample& sample, eCAL::Sample& modified_sample)
+  inline void ModifyIncomingSampleForBackwardsCompatibility(const eCAL::Registration::Sample& sample, eCAL::Registration::Sample& modified_sample)
   {
     modified_sample = sample;
     if (!modified_sample.topic.ttype.empty() && modified_sample.topic.tdatatype.name.empty())

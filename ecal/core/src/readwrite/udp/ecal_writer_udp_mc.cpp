@@ -95,8 +95,8 @@ namespace eCAL
     if (!m_created) return false;
 
     // create new sample
-    eCAL::Sample ecal_sample;
-    ecal_sample.cmd_type = eCAL::bct_set_sample;
+    eCAL::Payload::Sample ecal_sample;
+    ecal_sample.cmd_type = eCAL::eCmdType::bct_set_sample;
     auto& ecal_sample_mutable_topic = ecal_sample.topic;
     ecal_sample_mutable_topic.hname = m_host_name;
     ecal_sample_mutable_topic.tname = m_topic_name;
@@ -122,14 +122,14 @@ namespace eCAL
     {
       if (m_sample_sender_loopback)
       {
-        sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, ecal_sample, attr_.bandwidth);
+        sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, SerializeToBinaryString(ecal_sample), attr_.bandwidth);
       }
     }
     else
     {
       if (m_sample_sender_no_loopback)
       {
-        sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, ecal_sample, attr_.bandwidth);
+        sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, SerializeToBinaryString(ecal_sample), attr_.bandwidth);
       }
     }
 

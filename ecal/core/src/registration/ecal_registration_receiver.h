@@ -52,16 +52,16 @@ namespace eCAL
     void EnableLoopback(bool state_);
 
     bool HasSample(const std::string& /*sample_name_*/) { return(true); };
-    bool ApplySample(const eCAL::Sample& ecal_sample_);
+    bool ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_);
 
     bool AddRegistrationCallback(enum eCAL_Registration_Event event_, const RegistrationCallbackT& callback_);
     bool RemRegistrationCallback(enum eCAL_Registration_Event event_);
 
   protected:
-    void ApplySubscriberRegistration(const eCAL::Sample& ecal_sample_);
-    void ApplyPublisherRegistration(const eCAL::Sample& ecal_sample_);
+    void ApplySubscriberRegistration(const eCAL::Registration::Sample& ecal_sample_);
+    void ApplyPublisherRegistration(const eCAL::Registration::Sample& ecal_sample_);
 
-    bool IsHostGroupMember(const eCAL::Sample & ecal_sample_);
+    bool IsHostGroupMember(const eCAL::Registration::Sample& ecal_sample_);
 
     static std::atomic<bool>              m_created;
     bool                                  m_network;

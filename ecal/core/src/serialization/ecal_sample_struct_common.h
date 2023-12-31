@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,20 +18,30 @@
 */
 
 /**
- * @brief  raw message buffer handling
+ * @file   ecal_payload_common.h
+ * @brief  eCAL common types
 **/
 
-#include <functional>
-#include <string>
-#include <vector>
+#pragma once
 
-namespace IO
+namespace eCAL
 {
-  namespace UDP
+  enum eCmdType
   {
-    size_t CreateSampleBuffer(const std::string& sample_name_, const std::string& serialized_sample_, std::vector<char>& payload_);
+    bct_none             = 0,
+    bct_set_sample       = 1,
+    bct_reg_publisher    = 2,
+    bct_reg_subscriber   = 3,
+    bct_reg_process      = 4,
+    bct_unreg_publisher  = 12,
+    bct_unreg_subscriber = 13,
+    bct_unreg_process    = 14
+  };
 
-    using TransmitCallbackT = std::function<size_t(const void*, const size_t)>;
-    size_t SendFragmentedMessage(char* buf_, size_t buf_len_, long bandwidth_, const TransmitCallbackT& transmit_cb_);
-  }
+  enum eTLayerType
+  {
+    tl_none        = 0,
+    tl_ecal_udp_mc = 1,
+    tl_all         = 255,
+  };
 }

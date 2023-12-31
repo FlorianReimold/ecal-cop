@@ -19,15 +19,21 @@
 
 /**
  * @file   ecal_sample.h
- * @brief  eCAL sample (de)serialization
+ * @brief  eCAL sample serialization / deserialization
 **/
 
 #pragma once
 
-#include "ecal_sample_struct.h"
+#include "ecal_sample_struct_payload.h"
+#include "ecal_sample_struct_registration.h"
 
 namespace eCAL
 {
-  std::string SerializeToBinaryString (const Sample& source_sample_);
-  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Sample& target_sample_);
+  // payload sample - serialize/deserialize
+  std::string SerializeToBinaryString (const Payload::Sample& payload_sample_);
+  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Payload::Sample& payload_sample_);
+
+  // registration sample - serialize/deserialize
+  std::string SerializeToBinaryString (const Registration::Sample& registration_sample_);
+  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Registration::Sample& registration_sample_);
 }

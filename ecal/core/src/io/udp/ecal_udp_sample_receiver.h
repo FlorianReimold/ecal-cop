@@ -25,7 +25,6 @@
 
 #include "io/udp/sendreceive/udp_receiver.h"
 #include "io/udp/fragmentation/rcv_fragments.h"
-#include "serialization/ecal_sample.h"
 #include "util/ecal_thread.h"
 
 #include <chrono>
@@ -43,7 +42,7 @@ namespace eCAL
     {
     public:
       using HasSampleCallbackT   = std::function<bool(const std::string& sample_name_)>;
-      using ApplySampleCallbackT = std::function<void(const eCAL::Sample& ecal_sample_, eCAL::eTLayerType layer_)>;
+      using ApplySampleCallbackT = std::function<void(const char* serialized_sample_data_, size_t serialized_sample_size_)>;
 
       CSampleReceiver(const IO::UDP::SReceiverAttr& attr_, HasSampleCallbackT has_sample_callback_, ApplySampleCallbackT apply_sample_callback_);
       virtual ~CSampleReceiver();
@@ -62,7 +61,6 @@ namespace eCAL
       std::shared_ptr<eCAL::CCallbackThread>  m_udp_receiver_thread;
 
       std::vector<char>                       m_msg_buffer;
-      eCAL::Sample                            m_ecal_sample;
 
       std::chrono::steady_clock::time_point   m_cleanup_start;
 
@@ -76,11 +74,10 @@ namespace eCAL
 
       protected:
         CSampleReceiver* m_sample_receiver;
-        eCAL::Sample m_ecal_sample;
       };
 
       using SampleDefragmentationMapT = std::unordered_map<int32_t, std::shared_ptr<CSampleDefragmentation>>;
-      SampleDefragmentationMapT               m_defrag_sample_map;
+      SampleDefragmentationMapT m_defrag_sample_map;
     };
   }
 }

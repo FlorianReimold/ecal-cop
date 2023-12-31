@@ -181,16 +181,20 @@ endif()
 ######################################
 set(ecal_serialization_src
     src/serialization/ecal_sample.h
-    src/serialization/ecal_sample_struct.h
+	src/serialization/ecal_sample_struct_common.h
+    src/serialization/ecal_sample_struct_payload.h
+    src/serialization/ecal_sample_struct_registration.h
 )
 if(ECAL_CORE_CEREAL)
   list(APPEND ecal_serialization_src
-      src/serialization/ecal_sample_cereal.cpp
+      src/serialization/ecal_sample_cereal_payload.cpp
+      src/serialization/ecal_sample_cereal_registration.cpp
   )
 endif()
 if(ECAL_CORE_PROTOBUF)
   list(APPEND ecal_serialization_src
-      src/serialization/ecal_sample_protobuf.cpp
+      src/serialization/ecal_sample_protobuf_payload.cpp
+      src/serialization/ecal_sample_protobuf_registration.cpp
   )
 endif()
 
