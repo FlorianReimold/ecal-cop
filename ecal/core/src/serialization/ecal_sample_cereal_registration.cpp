@@ -24,7 +24,7 @@
 
 #include "ecal_sample_struct_registration.h"
 
-#include "cereal/archives/binary.hpp"
+#include "cereal/archives/portable_binary.hpp"
 #include "cereal/types/string.hpp"
 #include "cereal/types/vector.hpp"
 #include "cereal/types/map.hpp"
@@ -181,7 +181,7 @@ namespace eCAL
   std::string SerializeToBinaryString(const Registration::Sample& registration_sample_)
   {
     std::ostringstream oss;
-    cereal::BinaryOutputArchive archive(oss);
+    cereal::PortableBinaryOutputArchive archive(oss);
     archive(registration_sample_);
     return oss.str();
   };
@@ -189,7 +189,7 @@ namespace eCAL
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& registration_sample_)
   {
     std::istringstream iss(std::string(data_, size_));
-    cereal::BinaryInputArchive archive(iss);
+    cereal::PortableBinaryInputArchive archive(iss);
     archive(registration_sample_);
     return true;
   };

@@ -24,7 +24,7 @@
 
 #include "ecal_sample_struct_payload.h"
 
-#include "cereal/archives/binary.hpp"
+#include "cereal/archives/portable_binary.hpp"
 #include "cereal/types/string.hpp"
 #include "cereal/types/vector.hpp"
 
@@ -87,7 +87,7 @@ namespace eCAL
   std::string SerializeToBinaryString(const Payload::Sample& payload_sample_)
   {
     std::ostringstream oss;
-    cereal::BinaryOutputArchive archive(oss);
+    cereal::PortableBinaryOutputArchive archive(oss);
     archive(payload_sample_);
     return oss.str();
   };
@@ -95,7 +95,7 @@ namespace eCAL
   bool DeserializeFromBuffer(const char* data_, size_t size_, Payload::Sample& payload_sample_)
   {
     std::istringstream iss(std::string(data_, size_));
-    cereal::BinaryInputArchive archive(iss);
+    cereal::PortableBinaryInputArchive archive(iss);
     archive(payload_sample_);
     return true;
   };
