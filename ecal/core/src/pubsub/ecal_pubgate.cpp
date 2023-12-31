@@ -106,7 +106,7 @@ namespace eCAL
     return(ret_state);
   }
 
-  void CPubGate::ApplyLocSubRegistration(const eCAL::Sample& ecal_sample_)
+  void CPubGate::ApplyLocSubRegistration(const Registration::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
@@ -137,7 +137,7 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyLocSubUnregistration(const eCAL::Sample& ecal_sample_)
+  void CPubGate::ApplyLocSubUnregistration(const Registration::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
@@ -156,7 +156,7 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyExtSubRegistration(const eCAL::Sample& ecal_sample_)
+  void CPubGate::ApplyExtSubRegistration(const Registration::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
@@ -188,7 +188,7 @@ namespace eCAL
     }
   }
 
-  void CPubGate::ApplyExtSubUnregistration(const eCAL::Sample& ecal_sample_)
+  void CPubGate::ApplyExtSubUnregistration(const Registration::Sample& ecal_sample_)
   {
     if (!m_created) return;
 

@@ -112,29 +112,35 @@ namespace eCAL
     return(m_topic_name_datareader_map.find(sample_name_) != m_topic_name_datareader_map.end());
   }
 
-  bool CSubGate::ApplySample(const eCAL::Sample& ecal_sample_, eCAL::eTLayerType layer_)
+  bool CSubGate::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
   {
     if(!m_created) return false;
 
+    Payload::Sample ecal_sample;
+    if (!DeserializeFromBuffer(serialized_sample_data_, serialized_sample_size_, ecal_sample)) return false;
+
+    // TODO: Extract correct layer here
+    eTLayerType layer = tl_ecal_udp_mc;
+
     size_t sent(0);
-    switch (ecal_sample_.cmd_type)
+    switch (ecal_sample.cmd_type)
     {
-    case eCAL::bct_set_sample:
+    case bct_set_sample:
     {
 #ifndef NDEBUG
       // check layer
-      if (layer_ == eCAL::eTLayerType::tl_none)
+      if (layer == eTLayerType::tl_none)
       {
         // log it
-        eCAL::Logging::Log(log_level_error, ecal_sample_.topic.tname + " : payload received without layer definition !");
+        Logging::Log(log_level_error, ecal_sample.topic.tname + " : payload received without layer definition !");
       }
 #endif
 
       // update globals
       g_process_rclock++;
-      const auto& ecal_sample_content         = ecal_sample_.content;
+      const auto& ecal_sample_content         = ecal_sample.content;
       const auto& ecal_sample_content_payload = ecal_sample_content.payload;
-      g_process_rbytes_sum += ecal_sample_.content.payload.size();
+      g_process_rbytes_sum += ecal_sample.content.payload.size();
 
       std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
 
@@ -143,7 +149,7 @@ namespace eCAL
       {
         // apply sample to data reader
         const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
-        auto res = m_topic_name_datareader_map.equal_range(ecal_sample_.topic.tname);
+        auto res = m_topic_name_datareader_map.equal_range(ecal_sample.topic.tname);
         std::transform(
           res.first, res.second, std::back_inserter(readers_to_apply), [](const auto& match) { return match.second; }
         );
@@ -152,14 +158,14 @@ namespace eCAL
       for (const auto& reader : readers_to_apply)
       {
         sent = reader->AddSample(
-          ecal_sample_.topic.tid,
+          ecal_sample.topic.tid,
           ecal_sample_content_payload.data(),
           ecal_sample_content_payload.size(),
           ecal_sample_content.id,
           ecal_sample_content.clock,
           ecal_sample_content.time,
           static_cast<size_t>(ecal_sample_content.hash),
-          layer_
+          layer
         );
       }
     }
@@ -171,7 +177,7 @@ namespace eCAL
     return (sent > 0);
   }
 
-  void CSubGate::ApplyLocPubRegistration(const eCAL::Sample& ecal_sample_)
+  void CSubGate::ApplyLocPubRegistration(const Registration::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
@@ -196,7 +202,7 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyLocPubUnregistration(const eCAL::Sample& ecal_sample_)
+  void CSubGate::ApplyLocPubUnregistration(const Registration::Sample& ecal_sample_)
   {
     if (!m_created) return;
 
@@ -215,7 +221,7 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyExtPubRegistration(const eCAL::Sample& ecal_sample_)
+  void CSubGate::ApplyExtPubRegistration(const Registration::Sample& ecal_sample_)
   {
     if(!m_created) return;
 
@@ -236,7 +242,7 @@ namespace eCAL
     }
   }
 
-  void CSubGate::ApplyExtPubUnregistration(const eCAL::Sample& ecal_sample_)
+  void CSubGate::ApplyExtPubUnregistration(const Registration::Sample& ecal_sample_)
   {
     if (!m_created) return;
 

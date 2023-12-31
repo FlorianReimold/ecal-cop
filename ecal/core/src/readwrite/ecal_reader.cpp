@@ -173,8 +173,8 @@ namespace eCAL
     if(m_topic_name.empty()) return(false);
 
     // create command parameter
-    eCAL::Sample ecal_reg_sample;
-    ecal_reg_sample.cmd_type = eCAL::bct_reg_subscriber;
+    Registration::Sample ecal_reg_sample;
+    ecal_reg_sample.cmd_type = bct_reg_subscriber;
     auto& ecal_reg_sample_mutable_topic = ecal_reg_sample.topic;
     ecal_reg_sample_mutable_topic.hname  = m_host_name;
     ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
@@ -202,7 +202,7 @@ namespace eCAL
     {
       ecal_reg_sample_mutable_topic.tlayer.resize(1);
       auto& udp_tlayer = ecal_reg_sample_mutable_topic.tlayer[0];
-      udp_tlayer.type      = eCAL::tl_ecal_udp_mc;
+      udp_tlayer.type      = tl_ecal_udp_mc;
       udp_tlayer.version   = 1;
       udp_tlayer.confirmed = m_use_udp_mc_confirmed;
     }
@@ -211,7 +211,11 @@ namespace eCAL
     ecal_reg_sample_mutable_topic.uname         = Process::GetUnitName();
     ecal_reg_sample_mutable_topic.dclock        = m_clock;
     ecal_reg_sample_mutable_topic.dfreq         = m_freq;
-    ecal_reg_sample_mutable_topic.message_drops = m_message_drops;
+    ecal_reg_sample_mutable_topic.message_drops = static_cast<int32_t>(m_message_drops);
+
+    // we do not know the number of connections ..
+    ecal_reg_sample_mutable_topic.connections_loc = 0;
+    ecal_reg_sample_mutable_topic.connections_ext = 0;
 
     // register subscriber
     if(g_registration_provider() != nullptr) g_registration_provider()->RegisterTopic(m_topic_name, m_topic_id, ecal_reg_sample, force_);
@@ -230,8 +234,8 @@ namespace eCAL
     if (m_topic_name.empty()) return(false);
 
     // create command parameter
-    eCAL::Sample ecal_unreg_sample;
-    ecal_unreg_sample.cmd_type = eCAL::bct_unreg_subscriber;
+    Registration::Sample ecal_unreg_sample;
+    ecal_unreg_sample.cmd_type = bct_unreg_subscriber;
     auto& ecal_reg_sample_mutable_topic = ecal_unreg_sample.topic;
     ecal_reg_sample_mutable_topic.hname  = m_host_name;
     ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
@@ -328,14 +332,14 @@ namespace eCAL
     return(false);
   }
 
-  size_t CDataReader::AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::eTLayerType layer_)
+  size_t CDataReader::AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eTLayerType layer_)
   {
     // ensure thread safety
     const std::lock_guard<std::mutex> lock(m_receive_callback_sync);
     if (!m_created) return(0);
 
     // store receive layer
-    m_use_udp_mc_confirmed |= layer_ == eCAL::tl_ecal_udp_mc;
+    m_use_udp_mc_confirmed |= layer_ == tl_ecal_udp_mc;
 
     // number of hash values to track for duplicates
     constexpr int hash_queue_size(64);
@@ -554,7 +558,7 @@ namespace eCAL
         // -----------------------------------
         // drop messages in the wrong order
         // -----------------------------------
-        if (eCAL::Config::GetDropOutOfOrderMessages())
+        if (Config::GetDropOutOfOrderMessages())
         {
           // do not update the internal clock counter
 

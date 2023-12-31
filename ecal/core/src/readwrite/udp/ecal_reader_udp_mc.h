@@ -51,7 +51,7 @@ namespace eCAL
 
   private:
     bool HasSample(const std::string& sample_name_);
-    bool ApplySample(const eCAL::Sample& ecal_sample_);
+    bool ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_);
 
     bool                                   m_started;
     bool                                   m_local_mode;

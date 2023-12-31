@@ -60,7 +60,7 @@ namespace eCAL
       attr.rcvbuf    = Config::GetUdpMulticastRcvBufSizeBytes();
 
       // start payload sample receiver
-      m_payload_receiver = std::make_shared<UDP::CSampleReceiver>(attr, std::bind(&CUDPReaderLayer::HasSample, this, std::placeholders::_1), std::bind(&CUDPReaderLayer::ApplySample, this, std::placeholders::_1));
+      m_payload_receiver = std::make_shared<UDP::CSampleReceiver>(attr, std::bind(&CUDPReaderLayer::HasSample, this, std::placeholders::_1), std::bind(&CUDPReaderLayer::ApplySample, this, std::placeholders::_1, std::placeholders::_2));
 
       m_started = true;
     }
@@ -104,9 +104,9 @@ namespace eCAL
     return(g_subgate()->HasSample(sample_name_));
   }
 
-  bool CUDPReaderLayer::ApplySample(const eCAL::Sample& ecal_sample_)
+  bool CUDPReaderLayer::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
   {
     if (g_subgate() == nullptr) return false;
-    return g_subgate()->ApplySample(ecal_sample_, eCAL::eTLayerType::tl_ecal_udp_mc);
+    return g_subgate()->ApplySample(serialized_sample_data_, serialized_sample_size_);
   }
 }

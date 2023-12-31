@@ -98,7 +98,7 @@ namespace eCAL
     m_created = false;
   }
 
-  bool CRegistrationProvider::RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Sample& ecal_sample_, const bool force_)
+  bool CRegistrationProvider::RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const Registration::Sample& ecal_sample_, const bool force_)
   {
     if(!m_created)    return(false);
     if(!m_reg_topics) return(false);
@@ -115,7 +115,7 @@ namespace eCAL
     return(true);
   }
 
-  bool CRegistrationProvider::UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Sample& ecal_sample_, const bool force_)
+  bool CRegistrationProvider::UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const Registration::Sample& ecal_sample_, const bool force_)
   {
     if(!m_created) return(false);
 
@@ -142,8 +142,8 @@ namespace eCAL
     if(!m_created)     return(false);
     if(!m_reg_process) return(false);
 
-    eCAL::Sample process_sample;
-    process_sample.cmd_type = eCAL::bct_reg_process;
+    Registration::Sample process_sample;
+    process_sample.cmd_type = bct_reg_process;
     auto& process_sample_mutable_process = process_sample.process;
     process_sample_mutable_process.hname                = Process::GetHostName();
     process_sample_mutable_process.hgname               = Process::GetHostGroupName();
@@ -151,32 +151,34 @@ namespace eCAL
     process_sample_mutable_process.pname                = Process::GetProcessName();
     process_sample_mutable_process.uname                = Process::GetUnitName();
     process_sample_mutable_process.pparam               = Process::GetProcessParameter();
-    process_sample_mutable_process.state.severity       = static_cast<eProcessSeverity>(g_process_severity);
-    process_sample_mutable_process.state.severity_level = static_cast<eProcessSeverityLevel>(g_process_severity_level);
+    process_sample_mutable_process.datawrite            = g_process_wbytes;
+    process_sample_mutable_process.dataread             = g_process_rbytes;
+    process_sample_mutable_process.state.severity       = static_cast<Registration::eProcessSeverity>(g_process_severity);
+    process_sample_mutable_process.state.severity_level = static_cast<Registration::eProcessSeverityLevel>(g_process_severity_level);
     process_sample_mutable_process.state.info           = g_process_info;
 #if ECAL_CORE_TIMEPLUGIN
     if (g_timegate() == nullptr)
     {
-      process_sample_mutable_process.tsync_state = eCAL::eTSyncState::tsync_none;
+      process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
     }
     else
     {
       if (!g_timegate()->IsSynchronized())
       {
-        process_sample_mutable_process.tsync_state = eCAL::eTSyncState::tsync_none;
+        process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
       }
       else
       {
         switch (g_timegate()->GetSyncMode())
         {
         case CTimeGate::eTimeSyncMode::realtime:
-          process_sample_mutable_process.tsync_state = eCAL::eTSyncState::tsync_realtime;
+          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_realtime;
           break;
         case CTimeGate::eTimeSyncMode::replay:
-          process_sample_mutable_process.tsync_state = eCAL::eTSyncState::tsync_replay;
+          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_replay;
           break;
         default:
-          process_sample_mutable_process.tsync_state = eCAL::eTSyncState::tsync_none;
+          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
           break;
         }
       }
@@ -195,7 +197,7 @@ namespace eCAL
     if (!component_info.empty()) component_info = component_info.substr(1);
     process_sample_mutable_process.component_init_info = component_info;
 
-    process_sample_mutable_process.ecal_runtime_version = eCAL::GetVersionString();
+    process_sample_mutable_process.ecal_runtime_version = GetVersionString();
 
     // apply registration sample
     const bool return_value = ApplySample(Process::GetHostName(), process_sample);
@@ -208,8 +210,8 @@ namespace eCAL
 	  if (!m_created)     return(false);
 	  if (!m_reg_process) return(false);
 
-	  eCAL::Sample process_sample;
-	  process_sample.cmd_type = eCAL::bct_unreg_process;
+	  Registration::Sample process_sample;
+	  process_sample.cmd_type = bct_unreg_process;
 	  auto& process_sample_mutable_process = process_sample.process;
 	  process_sample_mutable_process.hname = Process::GetHostName();
 	  process_sample_mutable_process.pid   = Process::GetProcessID();
@@ -240,14 +242,14 @@ namespace eCAL
     return return_value;
   }
 
-  bool CRegistrationProvider::ApplySample(const std::string& sample_name_, const eCAL::Sample& sample_)
+  bool CRegistrationProvider::ApplySample(const std::string& sample_name_, const Registration::Sample& sample_)
   {
     if(!m_created) return(false);
 
     bool return_value {true};
 
     if (m_reg_sample_snd)
-      return_value &= (m_reg_sample_snd->Send(sample_name_, sample_, -1) != 0);
+      return_value &= (m_reg_sample_snd->Send(sample_name_, SerializeToBinaryString(sample_), -1) != 0);
 
     return return_value;
   }

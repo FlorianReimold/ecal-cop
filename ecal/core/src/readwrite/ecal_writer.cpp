@@ -449,8 +449,8 @@ namespace eCAL
     }
 
     // create command parameter
-    eCAL::Sample ecal_reg_sample;
-    ecal_reg_sample.cmd_type = eCAL::bct_reg_publisher;
+    Registration::Sample ecal_reg_sample;
+    ecal_reg_sample.cmd_type = bct_reg_publisher;
     auto& ecal_reg_sample_mutable_topic = ecal_reg_sample.topic;
     ecal_reg_sample_mutable_topic.hname  = m_host_name;
     ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
@@ -472,12 +472,12 @@ namespace eCAL
       }
     }
     ecal_reg_sample_mutable_topic.attr  = m_attr;
-    ecal_reg_sample_mutable_topic.tsize = m_topic_size;
+    ecal_reg_sample_mutable_topic.tsize = static_cast<int32_t>(m_topic_size);
     // udp multicast layer
     {
       ecal_reg_sample_mutable_topic.tlayer.resize(1);
       auto& udp_tlayer = ecal_reg_sample_mutable_topic.tlayer[0];
-      udp_tlayer.type      = eCAL::tl_ecal_udp_mc;
+      udp_tlayer.type      = tl_ecal_udp_mc;
       udp_tlayer.version   = 1;
       udp_tlayer.confirmed = m_writer.udp_mc_mode.confirmed;
 #if 0 // currently not needed for udp only
@@ -490,6 +490,10 @@ namespace eCAL
     ecal_reg_sample_mutable_topic.did    = m_id;
     ecal_reg_sample_mutable_topic.dclock = m_clock;
     ecal_reg_sample_mutable_topic.dfreq  = m_freq;
+
+    // we do not know the number of connections ..
+    ecal_reg_sample_mutable_topic.connections_loc = 0;
+    ecal_reg_sample_mutable_topic.connections_ext = 0;
 
     // register publisher
     if (g_registration_provider() != nullptr) g_registration_provider()->RegisterTopic(m_topic_name, m_topic_id, ecal_reg_sample, force_);
@@ -508,8 +512,8 @@ namespace eCAL
     if (m_topic_name.empty()) return(false);
 
     // create command parameter
-    eCAL::Sample ecal_unreg_sample;
-    ecal_unreg_sample.cmd_type = eCAL::bct_unreg_publisher;
+    Registration::Sample ecal_unreg_sample;
+    ecal_unreg_sample.cmd_type = bct_unreg_publisher;
     auto& ecal_reg_sample_mutable_topic  = ecal_unreg_sample.topic;
     ecal_reg_sample_mutable_topic.hname  = m_host_name;
     ecal_reg_sample_mutable_topic.hgname = m_host_group_name;

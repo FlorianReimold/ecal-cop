@@ -72,8 +72,8 @@ namespace eCAL
 
     bool IsCreated() const {return(m_created);}
 
-    std::string          GetTopicName()        const {return(m_topic_name);}
-    std::string          GetTopicID()          const {return(m_topic_id);}
+    std::string          GetTopicName()           const {return(m_topic_name);}
+    std::string          GetTopicID()             const {return(m_topic_id);}
     SDataTypeInformation GetDataTypeInformation() const {return(m_topic_info);}
 
     void RefreshRegistration();
