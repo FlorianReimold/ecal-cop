@@ -27,12 +27,6 @@
 #include "cereal/archives/binary.hpp"
 #include "cereal/types/string.hpp"
 #include "cereal/types/vector.hpp"
-#include "cereal/types/map.hpp"
-#include "cereal/types/unordered_map.hpp"
-#include "cereal/types/tuple.hpp"
-#include "cereal/types/utility.hpp"
-
-#include <string>
 
 namespace cereal
 {
@@ -40,31 +34,53 @@ namespace cereal
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::TLayer& tlayer)
   {
-    archive(tlayer.type, tlayer.version, tlayer.confirmed);
+    archive
+    (
+      tlayer.type,
+      tlayer.version,
+      tlayer.confirmed
+    );
   }
 
   // Serialization for eCAL::Topic
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Topic& topic)
   {
-    archive(topic.hname,
-      topic.tid, topic.tname, topic.tlayer);
+    archive
+    (
+      topic.hname,
+      topic.tid,
+      topic.tname,
+      topic.tlayer
+    );
   }
 
   // Serialization for eCAL::Content
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Content& content)
   {
-    archive(content.id, content.clock, content.time, content.payload, content.hash);
+    archive
+    (
+      content.id,
+      content.clock,
+      content.time,
+      content.hash,
+      content.payload
+    );
   }
 
   // Serialization for eCAL::Sample
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Sample& sample)
   {
-    archive(sample.cmd_type, sample.topic, sample.content);
+    archive
+    (
+      sample.cmd_type,
+      sample.topic,
+      sample.content
+    );
   }
-} // namespace cereal
+}
 
 namespace eCAL
 {

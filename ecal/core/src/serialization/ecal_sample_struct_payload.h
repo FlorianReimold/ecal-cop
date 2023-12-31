@@ -48,7 +48,6 @@ namespace eCAL
       std::string                         hname;                        // host name
       std::string                         tid;                          // topic id
       std::string                         tname;                        // topic name
-
       std::vector<TLayer>                 tlayer;                       // active topic transport layers and its specific parameter
     };
 

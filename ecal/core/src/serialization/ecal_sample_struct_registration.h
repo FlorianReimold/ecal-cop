@@ -102,7 +102,7 @@ namespace eCAL
     };
 
     // Process information
-    struct SProcess
+    struct Process
     {
       int32_t                             rclock = 0;                   // registration clock
       std::string                         hname;                        // host name
@@ -165,7 +165,7 @@ namespace eCAL
     {
       eCmdType                            cmd_type = {};                // registration command type
       Host                                host;                         // host information
-      SProcess                            process;                      // process information
+      Process                             process;                      // process information
       Topic                               topic;                        // topic information
     };
   }

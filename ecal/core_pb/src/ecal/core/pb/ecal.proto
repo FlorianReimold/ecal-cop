@@ -30,9 +30,8 @@ message Content                                // topic content
   int64        id                    =  1;     // sample id
   int64        clock                 =  2;     // internal used clock
   int64        time                  =  3;     // time the content was updated
-  bytes        payload               =  4;     // octet stream
-  int32        size                  =  6;     // size (redundant for compatibility)
   int64        hash                  =  7;     // unique hash for that sample
+  bytes        payload               =  4;     // octet stream
 }
 
 enum eCmdType                                  // command type
