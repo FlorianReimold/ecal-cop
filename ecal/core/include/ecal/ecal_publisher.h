@@ -77,16 +77,6 @@ namespace eCAL
     ECAL_API CPublisher();
 
     /**
-     * @brief Constructor. 
-     *
-     * @param topic_name_   Unique topic name. 
-     * @param topic_type_   Type name. 
-     * @param topic_desc_   Type description (optional). 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the constructor CPublisher(const std::string& topic_name_, const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6.")
-    ECAL_API CPublisher(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ = "");
-
-    /**
      * @brief Constructor.
      *
      * @param topic_name_   Unique topic name.
@@ -127,18 +117,6 @@ namespace eCAL
     ECAL_API CPublisher& operator=(CPublisher&& rhs) noexcept;
 
     /**
-     * @brief Creates this object. 
-     *
-     * @param topic_name_   Unique topic name. 
-     * @param topic_type_   Type name (optional). 
-     * @param topic_desc_   Type description (optional). 
-     *
-     * @return  True if it succeeds, false if it fails. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the create method bool Create(const std::string& topic_name_, const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6.")
-    ECAL_API bool Create(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ = "");
-
-    /**
      * @brief Creates this object.
      *
      * @param topic_name_   Unique topic name.
@@ -168,26 +146,6 @@ namespace eCAL
     ECAL_API bool Destroy();
 
     /**
-     * @brief Setup topic type name.
-     *
-     * @param topic_type_name_   Topic type name.
-     *
-     * @return  True if it succeeds, false if it fails.
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the method bool SetDataTypeInformation(const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6")
-    ECAL_API bool SetTypeName(const std::string& topic_type_name_);
-
-    /**
-     * @brief Setup topic description. 
-     *
-     * @param topic_desc_   Description string. 
-     *
-     * @return  True if it succeeds, false if it fails. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the method bool SetDataTypeInformation(const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6")
-    ECAL_API bool SetDescription(const std::string& topic_desc_);
-
-    /**
      * @brief Setup topic information.
      *
      * @param topic_info_  Topic information attributes.
@@ -203,7 +161,6 @@ namespace eCAL
      * @param attr_value_  Attribute value. 
      *
      * @return  True if it succeeds, false if it fails. 
-     * @experimental
     **/
     ECAL_API bool SetAttribute(const std::string& attr_name_, const std::string& attr_value_);
 

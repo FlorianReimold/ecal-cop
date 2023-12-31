@@ -58,18 +58,6 @@ namespace eCAL
      * @brief  Constructor.
      *
      * @param topic_name_  Unique topic name.
-     * @param topic_type_  Type name (optional for type checking).
-     * @param topic_desc_  Type description (optional for description checking).
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the constructor CMsgSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6. ")
-    explicit CMsgSubscriber(const std::string& topic_name_, const std::string& topic_type_ = "", const std::string& topic_desc_ = "") : CSubscriber(topic_name_, topic_type_, topic_desc_)
-    {
-    }
-
-    /**
-     * @brief  Constructor.
-     *
-     * @param topic_name_  Unique topic name.
      * @param topic_info_  Topic type information (encoding, type, descriptor).
     **/
     CMsgSubscriber(const std::string& topic_name_, const struct SDataTypeInformation& topic_info_) : CSubscriber(topic_name_, topic_info_)
@@ -126,21 +114,6 @@ namespace eCAL
     }
 
     ~CMsgSubscriber() override = default;
-
-    /**
-     * @brief Creates this object.
-     *
-     * @param topic_name_   Unique topic name.
-     * @param topic_type_   Type name (optional for type checking).
-     * @param topic_desc_   Type description (optional for description checking).
-     *
-     * @return  true if it succeeds, false if it fails.
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the method CMsgSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6. ")
-    bool Create(const std::string& topic_name_, const std::string& topic_type_ = "", const std::string& topic_desc_ = "")
-    {
-      return(CSubscriber::Create(topic_name_, topic_type_, topic_desc_));
-    }
 
     /**
      * @brief Creates this object.
@@ -225,19 +198,6 @@ namespace eCAL
     }
 
 protected:
-    ECAL_DEPRECATE_SINCE_5_13("Please use SDataTypeInformation GetDataTypeInformation() instead. This function will be removed in eCAL6.")
-    virtual std::string GetTypeName() const
-    {
-      struct SDataTypeInformation topic_info{ GetDataTypeInformation() };
-      return Util::CombinedTopicEncodingAndType(topic_info.encoding, topic_info.name);
-    };
-
-    ECAL_DEPRECATE_SINCE_5_13("Please use SDataTypeInformation GetDataTypeInformation() instead. This function will be removed in eCAL6.")
-    virtual std::string GetDescription() const
-    {
-      return GetDataTypeInformation().descriptor;
-    };
-
     // We cannot make it pure virtual, as it would break a bunch of implementations, who are not (yet) implementing this function
     virtual struct SDataTypeInformation GetDataTypeInformation() const { return SDataTypeInformation{}; }
     virtual bool Deserialize(T& msg_, const void* buffer_, size_t size_) const = 0;

@@ -89,16 +89,6 @@ namespace eCAL
     ECAL_API CSubscriber();
 
     /**
-     * @brief Constructor. 
-     *
-     * @param topic_name_   Unique topic name. 
-     * @param topic_type_   Type name (optional for type checking).
-     * @param topic_desc_   Type description (optional for description checking).
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the constructor CSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_) instead. This function will be removed in eCAL6.")
-    ECAL_API CSubscriber(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ = "");
-
-    /**
      * @brief Constructor.
      *
      * @param topic_name_   Unique topic name.
@@ -137,18 +127,6 @@ namespace eCAL
      * @brief CSubscribers are move-enabled
     **/
     ECAL_API CSubscriber& operator=(CSubscriber&& rhs) noexcept;
-
-    /**
-     * @brief Creates this object. 
-     *
-     * @param topic_name_   Unique topic name. 
-     * @param topic_type_   Type name (optional for type checking).
-     * @param topic_desc_   Type description (optional for description checking).
-     *
-     * @return  true if it succeeds, false if it fails. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the create method bool Create(const std::string& topic_name_, const STopicInformation& topic_info_) instead. This function will be removed in eCAL6.")
-    ECAL_API bool Create(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ = "");
 
     /**
      * @brief Creates this object.
@@ -204,21 +182,8 @@ namespace eCAL
      * @param attr_name_   Attribute name. 
      *
      * @return  True if it succeeds, false if it fails.
-     * @experimental
     **/
     ECAL_API bool ClearAttribute(const std::string& attr_name_);
-
-    /**
-     * @brief Receive a message from the publisher. 
-     *
-     * @param [out] buf_    Standard string for copying message content.
-     * @param [out] time_   Time from publisher in us (default = nullptr).
-     * @param rcv_timeout_  Maximum time before receive operation returns (in milliseconds, -1 means infinite).
-     *
-     * @return  Length of received buffer. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_10("Please use the method bool ReceiveBuffer(std::string& buf_, long long* time_ = nullptr, int rcv_timeout_ = 0) instead. This function will be removed in eCAL6.")
-    ECAL_API size_t Receive(std::string& buf_, long long* time_ = nullptr, int rcv_timeout_ = 0) const;
 
     /**
      * @brief Receive a message from the publisher (able to process zero length buffer).
@@ -260,22 +225,6 @@ namespace eCAL
      * @return  The topic name. 
     **/
     ECAL_API std::string GetTopicName() const;
-
-    /**
-     * @brief Gets type of the connected topic. 
-     *
-     * @return  The type name. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the method SDataTypeInformation GetDataTypeInformation() instead. You can extract the typename from the STopicInformation variable. This function will be removed in eCAL6.")
-    ECAL_API std::string GetTypeName() const;
-
-    /**
-     * @brief Gets description of the connected topic. 
-     *
-     * @return  The description. 
-    **/
-    ECAL_DEPRECATE_SINCE_5_13("Please use the method SDataTypeInformation GetDataTypeInformation() instead. You can extract the descriptor from the STopicInformation variable. This function will be removed in eCAL6.")
-    ECAL_API std::string GetDescription() const;
 
     /**
      * @brief Gets description of the connected topic.

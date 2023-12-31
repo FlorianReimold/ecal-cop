@@ -44,15 +44,16 @@ extern "C"
   /**
    * @brief Create a publisher. 
    *
-   * @param handle_          Publisher handle.
-   * @param topic_name_      Unique topic name.
-   * @param topic_type_      Topic type name. 
-   * @param topic_desc_      Topic type description. 
-   * @param topic_desc_len_  Topic type description length. 
+   * @param handle_                   Publisher handle.
+   * @param topic_name_               Unique topic name.
+   * @param topic_type_encoding_      Topic type encoding (like 'base', 'proto').
+   * @param topic_type_name_          Topic type name     (like 'string', 'person').
+   * @param topic_desc_               Topic type description. 
+   * @param topic_desc_len_           Topic type description length. 
    *
    * @return  None zero if succeeded.
   **/
-  ECALC_API int eCAL_Pub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_, const char* topic_desc_, int topic_desc_len_);
+  ECALC_API int eCAL_Pub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_encoding_, const char* topic_type_name_, const char* topic_desc_, int topic_desc_len_);
 
   /**
    * @brief Destroy a publisher. 
@@ -62,28 +63,6 @@ extern "C"
    * @return  None zero if succeeded.
   **/
   ECALC_API int eCAL_Pub_Destroy(ECAL_HANDLE handle_);
-
-  /**
-   * @brief Setup topic type name.
-   *
-   * @param handle_               Publisher handle.
-   * @param topic_type_name_      Topic type name.
-   * @param topic_type_name_len_  Topic type name length.
-   *
-   * @return  None zero if succeeded.
-  **/
-  ECALC_API int eCAL_Pub_SetTypeName(ECAL_HANDLE handle_, const char* topic_type_name_, int topic_type_name_len_);
-
-  /**
-   * @brief Setup topic type description. 
-   *
-   * @param handle_          Publisher handle. 
-   * @param topic_desc_      Topic type description. 
-   * @param topic_desc_len_  Topic type description length. 
-   *
-   * @return  None zero if succeeded.
-  **/
-  ECALC_API int eCAL_Pub_SetDescription(ECAL_HANDLE handle_, const char* topic_desc_, int topic_desc_len_);
 
   /**
    * @brief Sets publisher attribute. 

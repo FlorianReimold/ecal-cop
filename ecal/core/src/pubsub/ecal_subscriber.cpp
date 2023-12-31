@@ -42,12 +42,6 @@ namespace eCAL
   {
   }
 
-  CSubscriber::CSubscriber(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
-    : CSubscriber()
-  {
-    Create(topic_name_, topic_type_, topic_desc_);
-  }
-
   CSubscriber::CSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
     : CSubscriber()
   {
@@ -83,16 +77,6 @@ namespace eCAL
     rhs.m_initialized = false;
 
     return *this;
-  }
-
-  bool CSubscriber::Create(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */)
-  {
-    SDataTypeInformation info;
-    auto split_type = Util::SplitCombinedTopicType(topic_type_);
-    info.encoding   = split_type.first;
-    info.name       = split_type.second;
-    info.descriptor = topic_desc_;
-    return Create(topic_name_, info);
   }
 
   bool CSubscriber::Create(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
@@ -186,16 +170,6 @@ namespace eCAL
     return m_datareader->ClearAttribute(attr_name_);
   }
 
-  size_t CSubscriber::Receive(std::string& buf_, long long* time_ /* = nullptr */, int rcv_timeout_ /* = 0 */) const
-  {
-    if(!m_created) return(0);
-    if (m_datareader->Receive(buf_, time_, rcv_timeout_))
-    {
-      return(buf_.size());
-    }
-    return(0);
-  }
-
   bool CSubscriber::ReceiveBuffer(std::string& buf_, long long* time_ /* = nullptr */, int rcv_timeout_ /* = 0 */) const
   {
     if (!m_created) return(false);
@@ -219,19 +193,6 @@ namespace eCAL
   {
     if(m_datareader == nullptr) return("");
     return(m_datareader->GetTopicName());
-  }
-
-  std::string CSubscriber::GetTypeName() const
-  {
-    if(m_datareader == nullptr) return("");
-    const SDataTypeInformation info = m_datareader->GetDataTypeInformation();
-    return(Util::CombinedTopicEncodingAndType(info.encoding, info.name));
-  }
-
-  std::string CSubscriber::GetDescription() const
-  {
-    if(m_datareader == nullptr) return("");
-    return(m_datareader->GetDataTypeInformation().descriptor);
   }
   
   SDataTypeInformation CSubscriber::GetDataTypeInformation() const

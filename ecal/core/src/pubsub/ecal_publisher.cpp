@@ -45,12 +45,6 @@ namespace eCAL
   {
   }
 
-  CPublisher::CPublisher(const std::string& topic_name_, const std::string& topic_type_, const std::string& topic_desc_ /* = "" */) 
-    : CPublisher()
-  {
-    Create(topic_name_, topic_type_, topic_desc_);
-  }
-
   CPublisher::CPublisher(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
     : CPublisher()
   {
@@ -94,16 +88,6 @@ namespace eCAL
     rhs.m_initialized = false;
 
     return *this;
-  }
-
-  bool CPublisher::Create(const std::string& topic_name_, const std::string& topic_type_ /* = "" */, const std::string& topic_desc_ /* = "" */)
-  {
-    SDataTypeInformation info;
-    auto split_type = Util::SplitCombinedTopicType(topic_type_);
-    info.encoding   = split_type.first;
-    info.name       = split_type.second;
-    info.descriptor = topic_desc_;
-    return Create(topic_name_, info);
   }
 
   bool CPublisher::Create(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
@@ -172,31 +156,6 @@ namespace eCAL
     }
 
     return(true);
-  }
-
-  bool CPublisher::SetTypeName(const std::string& topic_type_name_)
-  {
-    if (m_datawriter == nullptr) return false;
-
-    // register to description gateway for type / description checking
-    SDataTypeInformation data_type_info = m_datawriter->GetDataTypeInformation();
-    // split the topic_type_name
-    auto split_type = Util::SplitCombinedTopicType(topic_type_name_);
-    data_type_info.encoding = split_type.first;
-    data_type_info.name = split_type.second;
-
-    return m_datawriter->SetDataTypeInformation(data_type_info);
-  }
-
-  bool CPublisher::SetDescription(const std::string& topic_desc_)
-  {
-    if(m_datawriter == nullptr) return false;
-
-    // register to description gateway for type / description checking
-    SDataTypeInformation data_type_info = m_datawriter->GetDataTypeInformation();
-    data_type_info.descriptor = topic_desc_;
-
-    return m_datawriter->SetDataTypeInformation(data_type_info);
   }
 
   bool CPublisher::SetDataTypeInformation(const SDataTypeInformation& data_type_info_)

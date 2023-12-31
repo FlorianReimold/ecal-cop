@@ -233,12 +233,13 @@ extern "C"
 #endif
   }
 
-  ECALC_API int eCAL_Pub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_, const char* topic_desc_, int topic_desc_len_)
+  ECALC_API int eCAL_Pub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_encoding_, const char* topic_type_name_, const char* topic_desc_, int topic_desc_len_)
   {
 #if ECAL_CORE_PUBLISHER
     if (handle_ == nullptr) return(0);
     auto* pub = static_cast<eCAL::CPublisher*>(handle_);
-    if (!pub->Create(topic_name_, topic_type_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)))) return(0);
+    struct eCAL::SDataTypeInformation topic_info = { topic_type_encoding_, topic_type_name_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)) };
+    if (!pub->Create(topic_name_, topic_info)) return(0);
     return(1);
 #else
     return(0);
@@ -255,26 +256,6 @@ extern "C"
 #else
     return(0);
 #endif
-  }
-
-  ECALC_API int eCAL_Pub_SetTypeName(ECAL_HANDLE handle_, const char* topic_type_name_, int topic_type_name_len_)
-  {
-#if ECAL_CORE_PUBLISHER
-    if (handle_ == nullptr) return(0);
-    auto* pub = static_cast<eCAL::CPublisher*>(handle_);
-    if (pub->SetTypeName(std::string(topic_type_name_, static_cast<size_t>(topic_type_name_len_)))) return(1);
-#endif
-    return(0);
-  }
-
-  ECALC_API int eCAL_Pub_SetDescription(ECAL_HANDLE handle_, const char* topic_desc_, int topic_desc_len_)
-  {
-#if ECAL_CORE_PUBLISHER
-    if (handle_ == nullptr) return(0);
-    auto* pub = static_cast<eCAL::CPublisher*>(handle_);
-    if (pub->SetDescription(std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)))) return(1);
-#endif
-    return(0);
   }
 
   ECALC_API int eCAL_Pub_SetAttribute(ECAL_HANDLE handle_, const char* attr_name_, int attr_name_len_, const char* attr_value_, int attr_value_len_)
@@ -404,11 +385,12 @@ extern "C"
     return(sub);
   }
 
-  ECALC_API int eCAL_Sub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_, const char* topic_desc_, int topic_desc_len_)
+  ECALC_API int eCAL_Sub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_encoding_, const char* topic_type_name_, const char* topic_desc_, int topic_desc_len_)
   {
     if (handle_ == nullptr) return(0);
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
-    if (!sub->Create(topic_name_, topic_type_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)))) return(0);
+    struct eCAL::SDataTypeInformation topic_info = { topic_type_encoding_, topic_type_name_, std::string(topic_desc_, static_cast<size_t>(topic_desc_len_)) };
+    if (!sub->Create(topic_name_, topic_info)) return(0);
     return(1);
   }
 
@@ -525,22 +507,6 @@ extern "C"
     auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
     if(sub->RemReceiveCallback()) return(1);
     return(0);
-  }
-
-  ECALC_API int eCAL_Sub_GetDescription(ECAL_HANDLE handle_, void* buf_, int buf_len_)
-  {
-    if(handle_ == nullptr) return(0);
-    auto* sub = static_cast<eCAL::CSubscriber*>(handle_);
-    const std::string desc = sub->GetDescription();
-    int buffer_len = CopyBuffer(buf_, buf_len_, desc);
-    if (buffer_len != static_cast<int>(desc.size()))
-    {
-      return(0);
-    }
-    else
-    {
-      return(buffer_len);
-    }
   }
 
   ECALC_API int eCAL_Sub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)

@@ -54,11 +54,6 @@ namespace eCAL
   using ReceiveCallbackT = std::function<void(const char*, const struct SReceiveCallbackData*)>;
 
   /**
-   * @brief Timer callback function type.
-  **/
-  using TimerCallbackT = std::function<void()>;
-
-  /**
    * @brief Registration callback type.
    *
    * @param sample_       The sample protocol buffer registration payload buffer.

@@ -41,16 +41,6 @@ namespace eCAL
   namespace Util
   {
     /**
-     * @brief Retrieve eCAL home path (for starting eCAL applications).
-     *          Windows: $ECAL_HOME/eCAL
-     *          Linux:   $HOME/.ecal
-     *
-     * @return  eCAL home path.
-    **/
-    ECAL_DEPRECATE_SINCE_5_10("Please use the method std::string GeteCALConfigPath() instead. This function will be removed in eCAL6.")
-    ECAL_API std::string GeteCALHomePath();
-
-    /**
      * @brief Retrieve eCAL configuration path.
      *          This is path is for the global eCAL configuration files
      *          like ecal.ini.
@@ -84,16 +74,6 @@ namespace eCAL
      * @return  eCAL active ini file name.
     **/
     ECAL_API std::string GeteCALActiveIniFile();
-
-    /**
-     * @brief Retrieve full eCAL default ini file name.
-     *
-     * @deprecated  Use GeteCALActiveIniFile() instead
-     *
-     * @return  eCAL default ini file name.
-    **/
-    ECAL_DEPRECATE_SINCE_5_10("Please use the method std::string GeteCALActiveIniFile() instead. This function will be removed in eCAL6.")
-    ECAL_API std::string GeteCALDefaultIniFile();
 
     /**
      * @brief Enable eCAL message loop back,

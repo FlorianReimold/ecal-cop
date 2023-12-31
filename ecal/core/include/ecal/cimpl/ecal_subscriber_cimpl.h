@@ -42,17 +42,18 @@ extern "C"
   ECALC_API ECAL_HANDLE eCAL_Sub_New();
 
   /**
-   * @brief Create a subscriber. 
+   * @brief Create a subscriber.
    *
-   * @param handle_          Subscriber handle.
-   * @param topic_name_      Unique topic name.
-   * @param topic_type_      Topic type name. 
-   * @param topic_desc_      Topic description.
-   * @param topic_desc_len_  Topic type description length.
+   * @param handle_                   Publisher handle.
+   * @param topic_name_               Unique topic name.
+   * @param topic_type_encoding_      Topic type encoding (like 'base', 'proto').
+   * @param topic_type_name_          Topic type name     (like 'string', 'person').
+   * @param topic_desc_               Topic type description.
+   * @param topic_desc_len_           Topic type description length.
    *
    * @return  None zero if succeeded.
   **/
-  ECALC_API int eCAL_Sub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_, const char* topic_desc_, int topic_desc_len_);
+  ECALC_API int eCAL_Sub_Create(ECAL_HANDLE handle_, const char* topic_name_, const char* topic_type_encoding_, const char* topic_type_name_, const char* topic_desc_, int topic_desc_len_);
 
   /**
    * @brief Destroy a subscriber. 
@@ -188,18 +189,6 @@ extern "C"
    * @return  None zero if succeeded.
   **/
   ECALC_API int eCAL_Sub_RemReceiveCallback(ECAL_HANDLE handle_);
-
-  /**
-   * @brief Gets description of the connected topic. 
-   *
-   * @param       handle_   Subscriber handle. 
-   * @param [out] buf_      Pointer to store the subscriber description string. 
-   * @param       buf_len_  Length of allocated buffer or ECAL_ALLOCATE_4ME if
-   *                        eCAL should allocate the buffer for you (see eCAL_FreeMem). 
-   *
-   * @return  Description buffer length or zero if failed. 
-  **/
-  ECALC_API int eCAL_Sub_GetDescription(ECAL_HANDLE handle_, void* buf_, int buf_len_);
 
   /**
    * @brief Dump the whole class state into a string buffer. 
