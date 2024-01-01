@@ -30,54 +30,54 @@
 
 namespace cereal
 {
-  // Serialization for eCAL::TLayer
+  // eCAL::Payload::TLayer
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::TLayer& tlayer)
   {
     archive
     (
-      tlayer.type,
-      tlayer.version,
-      tlayer.confirmed
+      tlayer.type,                      // transport layer type
+      tlayer.version,                   // transport layer version
+      tlayer.confirmed                  // transport layer used ?
     );
   }
 
-  // Serialization for eCAL::Topic
+  // eCAL::Payload::Topic
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Topic& topic)
   {
     archive
     (
-      topic.hname,
-      topic.tid,
-      topic.tname,
-      topic.tlayer
+      topic.hname,                      // host name
+      topic.tid,                        // topic id
+      topic.tname,                      // topic name
+      topic.tlayer                      // active topic transport layers and it's specific parameter
     );
   }
 
-  // Serialization for eCAL::Content
+  // eCAL::Payload::Content
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Content& content)
   {
     archive
     (
-      content.id,
-      content.clock,
-      content.time,
-      content.hash,
-      content.payload
+      content.id,                       // sample id  
+      content.clock,                    // internal used clock  
+      content.time,                     // time the content was updated  
+      content.hash,                     // unique hash for that sample
+      content.payload                   // octet stream
     );
   }
 
-  // Serialization for eCAL::Sample
+  // eCAL::Payload::Sample
   template <class Archive>
   void serialize(Archive& archive, eCAL::Payload::Sample& sample)
   {
     archive
     (
-      sample.cmd_type,
-      sample.topic,
-      sample.content
+      sample.cmd_type,                  // sample command type
+      sample.topic,                     // topic information
+      sample.content                    // topic content
     );
   }
 }

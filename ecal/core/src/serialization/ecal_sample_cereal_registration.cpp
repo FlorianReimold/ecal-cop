@@ -31,148 +31,147 @@
 
 namespace cereal
 {
-  // Serialization for eCAL::OSInfo
+  // eCAL::Registration::OSInfo
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::OSInfo& os_info)
   {
     archive
     (
-      os_info.osname
+      os_info.osname                    // name
     );
   }
 
-  // Serialization for eCAL::Host
+  // eCAL::Registration::Host
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::Host& host)
   {
     archive
     (
-      host.hname,
-      host.os
+      host.hname,                       // host name
+      host.os                           // operating system details
     );
   }
 
-  // Serialization for eCAL::ProcessState
+  // eCAL::Registration::ProcessState
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::ProcessState& process_state)
   {
     archive
     (
-      process_state.severity,
-      process_state.severity_level,
-      process_state.info
+      process_state.severity,           // severity
+      process_state.severity_level,     // severity level
+      process_state.info                // info string
     );
   }
 
-  // Serialization for eCAL::LayerParUdpMC
+  // eCAL::Registration::LayerParUdpMC
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::LayerParUdpMC& layer_par_udpmc)
   {
-    // Add serialization code if LayerParUdpMC has members
     (void)archive;
     (void)layer_par_udpmc;
   }
 
-  // Serialization for eCAL::ConnectionPar
+  // eCAL::Registration::ConnectionPar
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::ConnectionPar& connection_par)
   {
     archive
     (
-      connection_par.layer_par_udpmc
+      connection_par.layer_par_udpmc    // parameter for ecal udp multicast
     );
   }
 
-  // Serialization for eCAL::TLayer
+  // eCAL::Registration::TLayer
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::TLayer& tlayer)
   {
     archive
     (
-      tlayer.type,
-      tlayer.version,
-      tlayer.confirmed,
-      tlayer.par_layer
+      tlayer.type,                      // transport layer type
+      tlayer.version,                   // transport layer version
+      tlayer.confirmed,                 // transport layer used ?
+      tlayer.par_layer                  // transport layer parameter
     );
   }
 
-  // Serialization for eCAL::SProcess
+  // eCAL::Registration::Process
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::Process& process)
   {
     archive
     (
-      process.rclock,
-      process.hname,
-      process.hgname,
-      process.pid,
-      process.pname,
-      process.uname,
-      process.pparam,
-      process.datawrite,
-      process.dataread,
-      process.state,
-      process.tsync_state,
-      process.tsync_mod_name,
-      process.component_init_state,
-      process.component_init_info,
-      process.ecal_runtime_version
+      process.rclock,                   // registration clock
+      process.hname,                    // host name
+      process.hgname,                   // host group name
+      process.pid,                      // process id
+      process.pname,                    // process name
+      process.uname,                    // unit name
+      process.pparam,                   // process parameter
+      process.datawrite,                // data write bytes per sec
+      process.dataread,                 // data read bytes per sec
+      process.state,                    // process state info
+      process.tsync_state,              // time synchronization state
+      process.tsync_mod_name,           // time synchronization module name
+      process.component_init_state,     // eCAL component initialization state (eCAL::Initialize(..))
+      process.component_init_info,      // like comp_init_state as human readable string (pub|sub|srv|mon|log|time|proc)
+      process.ecal_runtime_version      // loaded / runtime eCAL version of a component
     );
   }
 
-  // Serialization for eCAL::DataTypeInformation
+  // eCAL::Registration::DataTypeInformation
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::DataTypeInformation& datatype_info)
   {
     archive
     (
-      datatype_info.name,
-      datatype_info.encoding,
-      datatype_info.desc
+      datatype_info.name,               // name of the datatype
+      datatype_info.encoding,           // encoding of the datatype (e.g. protobuf, flatbuffers, capnproto)
+      datatype_info.desc                // descriptor information of the datatype (necessary for reflection)
     );
   }
 
-  // Serialization for eCAL::Topic
+  // eCAL::Registration::Topic
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::Topic& topic)
   {
     archive
     (
-      topic.rclock,
-      topic.hname,
-      topic.hgname,
-      topic.pid,
-      topic.pname,
-      topic.uname,
-      topic.tid,
-      topic.tname,
-      topic.direction,
-      topic.ttype,
-      topic.tdesc,
-      topic.tdatatype,
-      topic.tlayer,
-      topic.tsize,
-      topic.connections_loc,
-      topic.connections_ext,
-      topic.message_drops,
-      topic.did, 
-      topic.dclock, 
-      topic.dfreq,
-      topic.attr
+      topic.rclock,                     // registration clock (heart beat)
+      topic.hname,                      // host name
+      topic.hgname,                     // host group name
+      topic.pid,                        // process id
+      topic.pname,                      // process name
+      topic.uname,                      // unit name
+      topic.tid,                        // topic id
+      topic.tname,                      // topic name
+      topic.direction,                  // direction (publisher, subscriber)
+      topic.ttype,                      // topic type + topic encoding (deprecated)
+      topic.tdesc,                      // topic description (protocol descriptor) (deprecated)
+      topic.tdatatype,                  // topic datatype information (encoding & type & description)
+      topic.tlayer,                     // active topic transport layers and it's specific parameter
+      topic.tsize,                      // topic size
+      topic.connections_loc,            // number of local connected entities
+      topic.connections_ext,            // number of external connected entities
+      topic.message_drops,              // dropped messages
+      topic.did,                        // data send id (publisher setid)
+      topic.dclock,                     // data clock (send / receive action)
+      topic.dfreq,                      // data frequency (send / receive samples per second) [mHz]
+      topic.attr                        // generic topic description
     );
   }
 
-  // Serialization for eCAL::Sample
+  // eCAL::Registration::Sample
   template <class Archive>
   void serialize(Archive& archive, eCAL::Registration::Sample& sample)
   {
     archive
     (
-      sample.cmd_type,
-      sample.host,
-      sample.process,
-      sample.topic
-    );
+      sample.cmd_type,                  // sample command type
+      sample.host,                      // host information
+      sample.process,                   // process information
+      sample.topic                      // topic information
+    );                                  // topic content
   }
 }
 
