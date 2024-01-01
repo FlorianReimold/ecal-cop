@@ -66,7 +66,7 @@ This section provides documentation for the CMake options used in configuring th
 
 ##### `ECAL_CORE_SUBSCRIBER` (Default: ON)
 - Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
-- Requires serilization library google::protobuf or cereal
+- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
