@@ -36,10 +36,10 @@ This section provides documentation for the CMake options used in configuring th
 #### Additional Builds
 
 ##### `BUILD_SAMPLES` (Default: ON)
-- This option controls whether the eCAL samples should be built. Enabling this option will include the compilation of eCAL sample applications. If not needed, you can disable this option to reduce build time and output size.
+- This option controls whether the eCAL samples should be built. If not needed, you can disable this option to reduce build time and output size.
 
 ##### `BUILD_SAMPLES_PROTOBUF` (Default: ON)
-- This option controls whether the eCAL samples should be built. Enabling this option will include the compilation of eCAL sample applications. If not needed, you can disable this option to reduce build time and output size.
+- This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time and output size.
 - Requires serilization library google::protobuf.
 
 ##### `BUILD_ECAL_TESTS` (Default: ON)
