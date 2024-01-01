@@ -227,29 +227,29 @@ if(WIN32)
   set(CMAKE_RELWITHDEBINFO_POSTFIX   reldbg)
 endif()
 
+# --------------------------------------------------------
+# ecal core
+# --------------------------------------------------------
+add_subdirectory(src/core)
+
 if(ECAL_CORE_PROTOBUF)
 # --------------------------------------------------------
 # ecal core protobuf interface
 # --------------------------------------------------------
-add_subdirectory(ecal/core_pb)
+add_subdirectory(src/core_pb)
 endif()
-
-# --------------------------------------------------------
-# ecal core
-# --------------------------------------------------------
-add_subdirectory(ecal/core)
 
 # --------------------------------------------------------
 # ecal time plugins
 # --------------------------------------------------------
 if(ECAL_CORE_TIMEPLUGIN)
-  add_subdirectory(ecal_time)
+  add_subdirectory(src/time)
 endif()
 
 # --------------------------------------------------------
 # ecal utils
 # --------------------------------------------------------
-add_subdirectory(ecal_utils)
+add_subdirectory(src/utils)
 
 # --------------------------------------------------------
 # samples
@@ -273,9 +273,9 @@ if(BUILD_ECAL_TESTS)
 endif()
 
 # --------------------------------------------------------
-# configs
+# config
 # --------------------------------------------------------
-add_subdirectory(ecal/core/cfg)
+add_subdirectory(src/core/cfg)
 
 # --------------------------------------------------------
 # debscripts

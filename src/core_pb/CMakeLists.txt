@@ -66,4 +66,4 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
 ecal_install_library(${PROJECT_NAME})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER ecal_core)
+set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER core)
