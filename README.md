@@ -36,27 +36,37 @@ This section provides documentation for the CMake options used in configuring th
 #### Additional Builds
 
 ##### `BUILD_SAMPLES` (Default: ON)
-This option controls whether the eCAL samples should be built. Enabling this option will include the compilation of eCAL sample applications. If not needed, you can disable this option to reduce build time and output size.
+- This option controls whether the eCAL samples should be built. Enabling this option will include the compilation of eCAL sample applications. If not needed, you can disable this option to reduce build time and output size.
+
+##### `BUILD_SAMPLES_PROTOBUF` (Default: ON)
+- This option controls whether the eCAL samples should be built. Enabling this option will include the compilation of eCAL sample applications. If not needed, you can disable this option to reduce build time and output size.
+- Requires serilization library google::protobuf.
 
 ##### `BUILD_ECAL_TESTS` (Default: ON)
-This option determines whether the eCAL Google Tests should be built. If enabled, it includes the compilation of unit tests for eCAL. Disabling this option will skip the build of tests if they are not required in your development environment.
+- This option determines whether the eCAL Google Tests should be built. If enabled, it includes the compilation of unit tests for eCAL. Disabling this option will skip the build of tests if they are not required in your development environment.
+- Requires gtest library.
 
 #### Core Internal Feature Configuration
 
 ##### `ECAL_CORE_CONFIG_INIFILE` (Default: ON)
-Enabling this option allows eCAL to be configured via an `ecal.ini` file. This file is used to set various configuration parameters for eCAL, providing flexibility in adjusting its behavior without modifying the source code.
+- Enabling this option allows eCAL to be configured via an `ecal.ini` file. This file is used to set various configuration parameters for eCAL, providing flexibility in adjusting its behavior without modifying the source code.
+- Requires simpleini library.
 
 ##### `ECAL_CORE_COMMAND_LINE` (Default: ON)
-Enabling this option includes support for eCAL application command-line interfaces (cmd line). This allows you to interact with eCAL applications through the command line, providing additional runtime configuration options.
+- Enabling this option includes support for eCAL application command-line interfaces (cmd line). This allows you to interact with eCAL applications through the command line, providing additional runtime configuration options.
+- Requires tclap library.
 
 ##### `ECAL_CORE_REGISTRATION` (Default: ON)
-Enabling this option activates the eCAL registration layer. This layer is responsible for managing and registering different components within the eCAL ecosystem, facilitating communication between them.
+- Enabling this option activates the eCAL registration layer. This layer is responsible for managing and registering different components within the eCAL ecosystem, facilitating communication between them.
+- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_PUBLISHER` (Default: ON)
-Enabling this option includes the eCAL publisher functionality. This is essential for components that need to publish data to the eCAL communication infrastructure.
+- Enabling this option includes the eCAL publisher functionality. This is essential for components that need to publish data to the eCAL communication infrastructure.
+- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_SUBSCRIBER` (Default: ON)
-Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
+- Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
+- Requires serilization library google::protobuf or cereal
 
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
