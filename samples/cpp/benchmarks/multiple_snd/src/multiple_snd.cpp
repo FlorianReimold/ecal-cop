@@ -30,16 +30,13 @@
 #define PAYLOAD_SIZE      1024
 #define PRINT_LOG            0
 #define PUBLISHER_NUMBER   200
-#define SUBSCRIBER_NUMBER    0
-#define USE_OMP              0
-#define USE_RELIABILITY      0
 
-void MultipleSend(int argc, char **argv)
+int main(int argc, char **argv)
 {
   // initialize eCAL API
   eCAL::Initialize(argc, argv, "multiple_snd");
 
-  // create dummy publisher
+  // create publisher
   struct SPubCount
   {
     SPubCount()
@@ -61,9 +58,6 @@ void MultipleSend(int argc, char **argv)
   }
   send_s.resize(PAYLOAD_SIZE);
 
-#if USE_OMP
-#pragma omp parallel for shared(pub_vec)
-#endif
   for(int i = 0; i < PUBLISHER_NUMBER; i++)
   {
     std::stringstream tname;
@@ -71,44 +65,12 @@ void MultipleSend(int argc, char **argv)
 
     // publisher topic name
     std::shared_ptr<eCAL::CPublisher> pub = std::make_shared<eCAL::CPublisher>();
-#if USE_RELIABILITY
-    pub->SetQOS_Reliability(eCAL::QOS::reliable_reliability_qos);
-#endif
+
     pub->Create(tname.str());
     struct SPubCount pub_count;
     pub_count.pub = std::move(pub);
     pub_vec[i] = pub_count;
   }
-
-#if SUBSCRIBER_NUMBER
-  // create dummy subscriber
-  struct SSubCount
-  {
-    SSubCount()
-    {
-      sub  = nullptr;
-    }
-    std::shared_ptr<eCAL::string::CSubscriber<std::string>> sub;
-  };
-  typedef std::vector<SSubCount> SubMapT;
-  SubMapT sub_vec;
-  sub_vec.resize(SUBSCRIBER_NUMBER);
-
-#if USE_OMP
-#pragma omp parallel for
-#endif
-  for(int i = 0; i < SUBSCRIBER_NUMBER; i++)
-  {
-    std::stringstream tname;
-    tname << "PUB_" << i;
-
-    // publisher topic name
-    std::shared_ptr<eCAL::string::CSubscriber<std::string>> sub = std::make_shared(eCAL::string::CSubscriber<std::string>(tname.str)));
-    struct SSubCount sub_count;
-    sub_count.sub = sub;
-    sub_vec[i] = sub_count;
-  }
-#endif
 
   // loop counter
   std::atomic<int> global_written(0);
@@ -123,9 +85,6 @@ void MultipleSend(int argc, char **argv)
     cnt++;
 
     // send dummy topics
-#if USE_OMP
-#pragma omp parallel for shared(pub_vec)
-#endif
     for(int i = 0; i < PUBLISHER_NUMBER; i++)
     {
 #if PRINT_LOG
@@ -174,11 +133,8 @@ void MultipleSend(int argc, char **argv)
   // destroy publisher
   pub_vec.clear();
 
-  // destroy subscriber
-#if SUBSCRIBER_NUMBER
-  sub_vec.clear();
-#endif
-
   // finalize eCAL API
   eCAL::Finalize();
+
+  return(0);
 }

@@ -26,8 +26,6 @@ find_package(eCAL REQUIRED)
 
 set(multiple_rec_src
     src/multiple_rec.cpp
-    src/multiple_rec.h
-    src/main.cpp
 )
 
 ecal_add_sample(${PROJECT_NAME} ${multiple_rec_src})

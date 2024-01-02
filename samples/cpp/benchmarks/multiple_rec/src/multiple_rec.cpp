@@ -26,9 +26,7 @@
 #include <chrono>
 #include <thread>
 
-#define RUN_TIMEOUT          0
 #define SUBSCRIBER_NUMBER  200
-#define USE_OMP              0
 
 // globals
 struct SSubCount
@@ -59,15 +57,12 @@ void OnReceive(const char* topic_name_)
   g_overalll_read++;
 }
 
-void MultipleRec(int argc, char **argv)
+int main(int argc, char **argv)
 {
   // initialize eCAL API
   eCAL::Initialize(argc, argv, "multiple_rec_cb");
 
   // create dummy subscriber
-#if USE_OMP
-#pragma omp parallel for
-#endif
   std::cout << "create subscribers .." << std::endl;
   for(int i = 0; i < SUBSCRIBER_NUMBER; i++)
   {
@@ -141,4 +136,6 @@ void MultipleRec(int argc, char **argv)
 
   // finalize eCAL API
   eCAL::Finalize();
+
+  return(0);
 }

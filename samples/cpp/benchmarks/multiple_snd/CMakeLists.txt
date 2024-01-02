@@ -27,8 +27,6 @@ find_package(Protobuf REQUIRED)
 
 set(multiple_snd_src
     src/multiple_snd.cpp
-    src/multiple_snd.h
-    src/main.cpp
 )
 
 ecal_add_sample(${PROJECT_NAME} ${multiple_snd_src})
