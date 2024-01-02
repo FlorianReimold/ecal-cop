@@ -31,12 +31,21 @@ add_subdirectory(c/pubsub/string/minimal_snd)
 # cpp samples
 # --------------------------------------------------------
 # benchmarks
+add_subdirectory(cpp/benchmarks/counter_rec)
+add_subdirectory(cpp/benchmarks/counter_snd)
 if (ECAL_CORE_COMMAND_LINE)
+add_subdirectory(cpp/benchmarks/datarate_rec)
+add_subdirectory(cpp/benchmarks/datarate_snd)
 add_subdirectory(cpp/benchmarks/latency_rec)
 add_subdirectory(cpp/benchmarks/latency_snd)
 endif()
-add_subdirectory(cpp/benchmarks/performance_rec_cb)
+add_subdirectory(cpp/benchmarks/many_connections_rec)
+add_subdirectory(cpp/benchmarks/many_connections_snd)
+add_subdirectory(cpp/benchmarks/multiple_rec)
+add_subdirectory(cpp/benchmarks/multiple_snd)
+add_subdirectory(cpp/benchmarks/performance_rec)
 add_subdirectory(cpp/benchmarks/performance_snd)
+add_subdirectory(cpp/benchmarks/perftool)
 
 # pubsub
 add_subdirectory(cpp/pubsub/binary/binary_rec)

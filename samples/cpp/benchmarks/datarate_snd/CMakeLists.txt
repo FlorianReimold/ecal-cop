@@ -20,20 +20,23 @@ cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 
-project(performance_rec_cb)
+project(datarate_snd)
 
 find_package(eCAL REQUIRED)
+find_package(tclap REQUIRED)
 
-set(performance_rec_cb_src
-    src/performance_rec_cb.cpp
+set(datarate_snd_src
+    src/datarate_snd.cpp
 )
 
-ecal_add_sample(${PROJECT_NAME} ${performance_rec_cb_src})
+ecal_add_sample(${PROJECT_NAME} ${datarate_snd_src})
 
-target_link_libraries(${PROJECT_NAME} eCAL::core)
+target_link_libraries(${PROJECT_NAME}
+    eCAL::core
+    tclap::tclap)
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
 
 ecal_install_sample(${PROJECT_NAME})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER samples/cpp/benchmarks/performance)
+set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER samples/cpp/benchmarks/datarate)
