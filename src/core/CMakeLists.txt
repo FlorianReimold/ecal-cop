@@ -185,16 +185,41 @@ set(ecal_serialization_src
     src/serialization/ecal_sample_struct_payload.h
     src/serialization/ecal_sample_struct_registration.h
 )
-if(ECAL_CORE_CEREAL)
-  list(APPEND ecal_serialization_src
-      src/serialization/ecal_sample_cereal_payload.cpp
-      src/serialization/ecal_sample_cereal_registration.cpp
-  )
-endif()
 if(ECAL_CORE_PROTOBUF)
   list(APPEND ecal_serialization_src
       src/serialization/ecal_sample_protobuf_payload.cpp
       src/serialization/ecal_sample_protobuf_registration.cpp
+  )
+endif()
+if(ECAL_CORE_NANOPB)
+  list(APPEND ecal_serialization_src
+      src/serialization/nanopb/ecal.pb.c
+      src/serialization/nanopb/ecal.pb.h
+      src/serialization/nanopb/host.pb.c
+      src/serialization/nanopb/host.pb.h
+      src/serialization/nanopb/layer.pb.c
+      src/serialization/nanopb/layer.pb.h
+      src/serialization/nanopb/process.pb.c
+      src/serialization/nanopb/process.pb.h
+      src/serialization/nanopb/topic.pb.c
+      src/serialization/nanopb/topic.pb.h
+      src/serialization/nanopb/pb.h
+      src/serialization/nanopb/pb_common.c
+      src/serialization/nanopb/pb_common.h
+      src/serialization/nanopb/pb_decode.c
+      src/serialization/nanopb/pb_decode.h
+      src/serialization/nanopb/pb_encode.c
+      src/serialization/nanopb/pb_encode.h      
+      src/serialization/ecal_sample_nanopb_common.h
+      src/serialization/ecal_sample_nanopb_common.cpp
+      src/serialization/ecal_sample_nanopb_payload.cpp
+      src/serialization/ecal_sample_nanopb_registration.cpp
+  )
+endif()
+if(ECAL_CORE_CEREAL)
+  list(APPEND ecal_serialization_src
+      src/serialization/ecal_sample_cereal_payload.cpp
+      src/serialization/ecal_sample_cereal_registration.cpp
   )
 endif()
 

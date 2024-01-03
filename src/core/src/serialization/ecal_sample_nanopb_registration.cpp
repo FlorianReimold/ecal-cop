@@ -18,25 +18,23 @@
 */
 
 /**
- * @file   ecal_sample_protobuf_registration.cpp
- * @brief  eCAL registration sample (de)serialization - protobuf variant
+ * @file   ecal_sample_nanopb_registration.cpp
+ * @brief  eCAL registration sample (de)serialization - nanopb variant
 **/
 
 #include "ecal_sample_struct_registration.h"
 
-#ifdef _MSC_VER
-  #pragma warning(push, 0) // disable proto warnings
-#endif
-#include <ecal/core/pb/ecal.pb.h>
-#ifdef _MSC_VER
-  #pragma warning(pop)
-#endif
+#include "nanopb/ecal.pb.h"
+#include "nanopb/pb_encode.h"
+#include "nanopb/pb_decode.h"
 
 namespace
 {
-  eCAL::pb::Sample RegistrationStruct2Proto(const eCAL::Registration::Sample& registration_)
+  eCAL_pb_Sample RegistrationStruct2Proto(const eCAL::Registration::Sample& registration_)
   {
-    eCAL::pb::Sample pb_registration;
+    eCAL_pb_Sample pb_registration;
+
+#if 0
 
     // registration command type
     pb_registration.set_cmd_type(static_cast<eCAL::pb::eCmdType>(registration_.cmd_type));
@@ -103,12 +101,16 @@ namespace
       (*pb_topic->mutable_attr())[attr.first] = attr.second;
     }
 
+#endif
+
     return pb_registration;
   }
 
-  eCAL::Registration::Sample Proto2RegistrationStruct(const eCAL::pb::Sample& pb_registration_)
+  eCAL::Registration::Sample Proto2RegistrationStruct(const eCAL_pb_Sample& pb_registration_)
   {
     eCAL::Registration::Sample registration;
+
+#if 0
 
     // registration command type
     registration.cmd_type = static_cast<eCAL::eCmdType>(pb_registration_.cmd_type());
@@ -180,6 +182,8 @@ namespace
       registration.topic.attr.emplace(pb_attr.first, pb_attr.second);
     }
 
+#endif
+
     return registration;
   }
 }
@@ -188,18 +192,11 @@ namespace eCAL
 {
   std::string SerializeToBinaryString(const Registration::Sample& registration_sample_)
   {
-    pb::Sample pb_registration = RegistrationStruct2Proto(registration_sample_);
-    return pb_registration.SerializeAsString();
+    return "";
   }
 
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& registration_sample_)
   {
-    pb::Sample pb_registration;
-    if (pb_registration.ParseFromArray(data_, static_cast<int>(size_)))
-    {
-      registration_sample_ = Proto2RegistrationStruct(pb_registration);
-      return true;
-    }
     return false;
   }
 }

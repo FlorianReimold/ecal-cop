@@ -18,8 +18,8 @@
 */
 
 /**
- * @file   ecal_sample.cpp
- * @brief  eCAL sample (de)serialization - cereal variant
+ * @file   ecal_sample_cereal_registration.cpp
+ * @brief  eCAL registration sample (de)serialization - cereal variant
 **/
 
 #include "ecal_sample_struct_registration.h"

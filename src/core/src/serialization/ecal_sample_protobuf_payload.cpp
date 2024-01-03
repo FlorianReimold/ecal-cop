@@ -18,8 +18,8 @@
 */
 
 /**
- * @file   ecal_payload_protobuf.cpp
- * @brief  eCAL payload (de)serialization - protobuf variant
+ * @file   ecal_sample_protobuf_payload.cpp
+ * @brief  eCAL payload sample (de)serialization - protobuf variant
 **/
 
 #include "ecal_sample_struct_payload.h"

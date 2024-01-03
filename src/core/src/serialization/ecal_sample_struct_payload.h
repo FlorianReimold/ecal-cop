@@ -18,7 +18,7 @@
 */
 
 /**
- * @file   ecal_payload_struct.h
+ * @file   ecal_sample_struct_payload.h
  * @brief  eCAL payload as struct
 **/
 

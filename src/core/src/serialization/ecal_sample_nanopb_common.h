@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,30 +18,22 @@
 */
 
 /**
- * @file   ecal_sample_struct_common.h
- * @brief  eCAL common struct types
+ * @file   ecal_nanopb_common.h
+ * @brief  eCAL common (de)serialization - nanopb variant
 **/
 
 #pragma once
 
-namespace eCAL
-{
-  enum eCmdType
-  {
-    bct_none             = 0,
-    bct_set_sample       = 1,
-    bct_reg_publisher    = 2,
-    bct_reg_subscriber   = 3,
-    bct_reg_process      = 4,
-    bct_unreg_publisher  = 12,
-    bct_unreg_subscriber = 13,
-    bct_unreg_process    = 14
-  };
+#include "nanopb/pb_encode.h"
+#include "nanopb/pb_decode.h"
 
-  enum eTLayerType
-  {
-    tl_none        = 0,
-    tl_ecal_udp_mc = 1,
-    tl_all         = 255,
-  };
-}
+bool encode_string(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg);
+struct SNanoBytes
+{
+  pb_byte_t* content = nullptr;
+  size_t     length  = 0;
+};
+bool encode_bytes(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg);
+
+bool decode_string(pb_istream_t* stream, const pb_field_t* field, void** arg);
+bool decode_payload(pb_istream_t* stream, const pb_field_t* field, void** arg);
