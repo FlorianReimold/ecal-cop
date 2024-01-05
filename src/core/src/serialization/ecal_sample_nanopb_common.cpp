@@ -52,13 +52,13 @@ namespace eCAL
 
     void encode_string(pb_callback_t& pb_callback, const std::string& str)
     {
-      if (str.size() == 0) return;
+      if (str.empty()) return;
 
       pb_callback.funcs.encode = &encode_string_field;
       pb_callback.arg = (void*)(str.c_str());
     }
 
-    bool decode_string_field(pb_istream_t* stream, const pb_field_t* field, void** arg)
+    bool decode_string_field(pb_istream_t* stream, const pb_field_t* /*field*/, void** arg)
     {
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
@@ -90,7 +90,7 @@ namespace eCAL
       if (!pb_encode_tag_for_field(stream, field))
         return false;
 
-      SNanoBytes* bytes = (SNanoBytes*)(*arg);
+      auto* bytes = (SNanoBytes*)(*arg);
       return pb_encode_string(stream, (pb_byte_t*)bytes->content, bytes->length);
     }
 
@@ -102,7 +102,7 @@ namespace eCAL
       pb_callback.arg = (void*)(&nano_bytes);
     }
 
-    bool decode_bytes_field(pb_istream_t* stream, const pb_field_t* field, void** arg)
+    bool decode_bytes_field(pb_istream_t* stream, const pb_field_t* /*field*/, void** arg)
     {
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
@@ -131,7 +131,7 @@ namespace eCAL
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
 
-      std::vector<eCAL::Payload::TLayer>* layer_vec = (std::vector<eCAL::Payload::TLayer>*)(*arg);
+      auto* layer_vec = (std::vector<eCAL::Payload::TLayer>*)(*arg);
 
       for (auto layer : *layer_vec)
       {
@@ -163,7 +163,7 @@ namespace eCAL
       pb_callback.arg = (void*)(&layer_vec);
     }
 
-    bool decode_payload_layer_field(pb_istream_t* stream, const pb_field_t* field, void** arg)
+    bool decode_payload_layer_field(pb_istream_t* stream, const pb_field_t* /*field*/, void** arg)
     {
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
@@ -201,7 +201,7 @@ namespace eCAL
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
 
-      std::vector<eCAL::Registration::TLayer>* layer_vec = (std::vector<eCAL::Registration::TLayer>*)(*arg);
+      auto* layer_vec = (std::vector<eCAL::Registration::TLayer>*)(*arg);
 
       for (auto layer : *layer_vec)
       {
@@ -233,7 +233,7 @@ namespace eCAL
       pb_callback.arg = (void*)(&layer_vec);
     }
 
-    bool decode_registration_layer_field(pb_istream_t* stream, const pb_field_t* field, void** arg)
+    bool decode_registration_layer_field(pb_istream_t* stream, const pb_field_t* /*field*/, void** arg)
     {
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
@@ -247,7 +247,7 @@ namespace eCAL
 
       auto trg_vector = (std::vector<eCAL::Registration::TLayer>*)(*arg);
 
-      eCAL::Registration::TLayer layer;
+      eCAL::Registration::TLayer layer{};
       layer.type      = static_cast<eCAL::eTLayerType>(pb_layer.type);
       layer.version   = pb_layer.version;
       layer.confirmed = pb_layer.confirmed;

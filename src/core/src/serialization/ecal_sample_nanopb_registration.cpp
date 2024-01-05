@@ -142,7 +142,7 @@ namespace
     ///////////////////////////////////////////////
     // evaluate byte size
     ///////////////////////////////////////////////
-    pb_ostream_t pb_sizestream = { 0 };
+    pb_ostream_t pb_sizestream = { nullptr };
     pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_sample);
 
     ///////////////////////////////////////////////
