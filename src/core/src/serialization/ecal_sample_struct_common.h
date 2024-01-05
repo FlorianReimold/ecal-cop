@@ -18,8 +18,8 @@
 */
 
 /**
- * @file   ecal_payload_common.h
- * @brief  eCAL common types
+ * @file   ecal_sample_struct_common.h
+ * @brief  eCAL common struct types
 **/
 
 #pragma once

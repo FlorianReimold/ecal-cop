@@ -43,7 +43,7 @@ namespace eCAL
       m_udp_sender = std::make_shared<IO::UDP::CUDPSender>(attr_);
     }
 
-    size_t CSampleSender::Send(const std::string& sample_name_, const std::string& serialized_sample_, long bandwidth_)
+    size_t CSampleSender::Send(const std::string& sample_name_, const std::vector<char>& serialized_sample_, long bandwidth_)
     {
       if (!m_udp_sender) return(0);
 

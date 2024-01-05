@@ -185,10 +185,29 @@ set(ecal_serialization_src
     src/serialization/ecal_sample_struct_payload.h
     src/serialization/ecal_sample_struct_registration.h
 )
-if(ECAL_CORE_CEREAL)
+if(ECAL_CORE_NANOPB)
   list(APPEND ecal_serialization_src
-      src/serialization/ecal_sample_cereal_payload.cpp
-      src/serialization/ecal_sample_cereal_registration.cpp
+      src/serialization/nanopb/nanopb/pb.h
+      src/serialization/nanopb/nanopb/pb_common.c
+      src/serialization/nanopb/nanopb/pb_common.h
+      src/serialization/nanopb/nanopb/pb_decode.c
+      src/serialization/nanopb/nanopb/pb_decode.h
+      src/serialization/nanopb/nanopb/pb_encode.c
+      src/serialization/nanopb/nanopb/pb_encode.h      
+      src/serialization/nanopb/ecal.pb.c
+      src/serialization/nanopb/ecal.pb.h
+      src/serialization/nanopb/host.pb.c
+      src/serialization/nanopb/host.pb.h
+      src/serialization/nanopb/layer.pb.c
+      src/serialization/nanopb/layer.pb.h
+      src/serialization/nanopb/process.pb.c
+      src/serialization/nanopb/process.pb.h
+      src/serialization/nanopb/topic.pb.c
+      src/serialization/nanopb/topic.pb.h
+      src/serialization/ecal_sample_nanopb_common.h
+      src/serialization/ecal_sample_nanopb_common.cpp
+      src/serialization/ecal_sample_nanopb_payload.cpp
+      src/serialization/ecal_sample_nanopb_registration.cpp
   )
 endif()
 if(ECAL_CORE_PROTOBUF)
@@ -442,6 +461,8 @@ endif()
 target_include_directories(${PROJECT_NAME}
   PRIVATE 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/serialization/nanopb>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/serialization/nanopb/nanopb>
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>

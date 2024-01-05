@@ -249,7 +249,12 @@ namespace eCAL
     bool return_value {true};
 
     if (m_reg_sample_snd)
-      return_value &= (m_reg_sample_snd->Send(sample_name_, SerializeToBinaryString(sample_), -1) != 0);
+    {
+      if (SerializeToBuffer(sample_, m_sample_buffer))
+      {
+        return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer, -1) != 0);
+      }
+    }
 
     return return_value;
   }

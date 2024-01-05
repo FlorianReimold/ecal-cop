@@ -138,9 +138,7 @@ namespace eCAL
 
       // update globals
       g_process_rclock++;
-      const auto& ecal_sample_content         = ecal_sample.content;
-      const auto& ecal_sample_content_payload = ecal_sample_content.payload;
-      g_process_rbytes_sum += ecal_sample.content.payload.size();
+      g_process_rbytes_sum += ecal_sample.content.payload_rec_vec.size();
 
       std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
 
@@ -155,12 +153,13 @@ namespace eCAL
         );
       }
 
+      const auto& ecal_sample_content = ecal_sample.content;
       for (const auto& reader : readers_to_apply)
       {
         sent = reader->AddSample(
           ecal_sample.topic.tid,
-          ecal_sample_content_payload.data(),
-          ecal_sample_content_payload.size(),
+          ecal_sample_content.payload_rec_vec.data(),
+          ecal_sample_content.payload_rec_vec.size(),
           ecal_sample_content.id,
           ecal_sample_content.clock,
           ecal_sample_content.time,

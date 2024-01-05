@@ -30,6 +30,7 @@
 #include "serialization/ecal_sample.h"
 
 #include <string>
+#include <vector>
 
 namespace eCAL
 {
@@ -48,6 +49,7 @@ namespace eCAL
     bool Write(const void* buf_, const SWriterAttr& attr_) override;
 
   protected:
+    std::vector<char>                   m_sample_buffer;
     std::shared_ptr<UDP::CSampleSender> m_sample_sender_loopback;
     std::shared_ptr<UDP::CSampleSender> m_sample_sender_no_loopback;
   };

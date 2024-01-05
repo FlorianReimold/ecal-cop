@@ -18,8 +18,8 @@
 */
 
 /**
- * @file   ecal_registration_protobuf.cpp
- * @brief  eCAL registration (de)serialization - protobuf variant
+ * @file   ecal_sample_protobuf_registration.cpp
+ * @brief  eCAL registration sample (de)serialization - protobuf variant
 **/
 
 #include "ecal_sample_struct_registration.h"
@@ -34,63 +34,63 @@
 
 namespace
 {
-  eCAL::pb::Sample RegistrationStruct2Proto(const eCAL::Registration::Sample& registration_)
+  eCAL::pb::Sample RegistrationStruct2Proto(const eCAL::Registration::Sample& source_sample_)
   {
     eCAL::pb::Sample pb_registration;
 
     // registration command type
-    pb_registration.set_cmd_type(static_cast<eCAL::pb::eCmdType>(registration_.cmd_type));
+    pb_registration.set_cmd_type(static_cast<eCAL::pb::eCmdType>(source_sample_.cmd_type));
 
     // host information
     eCAL::pb::Host* pb_host = pb_registration.mutable_host();
-    pb_host->set_hname(registration_.host.hname);
+    pb_host->set_hname(source_sample_.host.hname);
 
     // process information
     eCAL::pb::Process* pb_process = pb_registration.mutable_process();
-    pb_process->set_rclock(registration_.process.rclock);
-    pb_process->set_hname(registration_.process.hname);
-    pb_process->set_hgname(registration_.process.hgname);
-    pb_process->set_pid(registration_.process.pid);
-    pb_process->set_pname(registration_.process.pname);
-    pb_process->set_uname(registration_.process.uname);
-    pb_process->set_pparam(registration_.process.pparam);
-    pb_process->set_datawrite(registration_.process.datawrite);
-    pb_process->set_dataread(registration_.process.dataread);
-    pb_process->mutable_state()->set_severity(static_cast<eCAL::pb::eProcessSeverity>(registration_.process.state.severity));
-    pb_process->mutable_state()->set_severity_level(static_cast<eCAL::pb::eProcessSeverityLevel>(registration_.process.state.severity_level));
-    pb_process->mutable_state()->set_info(registration_.process.state.info);
-    pb_process->set_tsync_state(static_cast<eCAL::pb::eTSyncState>(registration_.process.tsync_state));
-    pb_process->set_tsync_mod_name(registration_.process.tsync_mod_name);
-    pb_process->set_component_init_state(registration_.process.component_init_state);
-    pb_process->set_component_init_info(registration_.process.component_init_info);
-    pb_process->set_ecal_runtime_version(registration_.process.ecal_runtime_version);
+    pb_process->set_rclock(source_sample_.process.rclock);
+    pb_process->set_hname(source_sample_.process.hname);
+    pb_process->set_hgname(source_sample_.process.hgname);
+    pb_process->set_pid(source_sample_.process.pid);
+    pb_process->set_pname(source_sample_.process.pname);
+    pb_process->set_uname(source_sample_.process.uname);
+    pb_process->set_pparam(source_sample_.process.pparam);
+    pb_process->set_datawrite(source_sample_.process.datawrite);
+    pb_process->set_dataread(source_sample_.process.dataread);
+    pb_process->mutable_state()->set_severity(static_cast<eCAL::pb::eProcessSeverity>(source_sample_.process.state.severity));
+    pb_process->mutable_state()->set_severity_level(static_cast<eCAL::pb::eProcessSeverityLevel>(source_sample_.process.state.severity_level));
+    pb_process->mutable_state()->set_info(source_sample_.process.state.info);
+    pb_process->set_tsync_state(static_cast<eCAL::pb::eTSyncState>(source_sample_.process.tsync_state));
+    pb_process->set_tsync_mod_name(source_sample_.process.tsync_mod_name);
+    pb_process->set_component_init_state(source_sample_.process.component_init_state);
+    pb_process->set_component_init_info(source_sample_.process.component_init_info);
+    pb_process->set_ecal_runtime_version(source_sample_.process.ecal_runtime_version);
 
 
     // topic information
     eCAL::pb::Topic* pb_topic = pb_registration.mutable_topic();
-    pb_topic->set_rclock(registration_.topic.rclock);
-    pb_topic->set_hname(registration_.topic.hname);
-    pb_topic->set_hgname(registration_.topic.hgname);
-    pb_topic->set_pid(registration_.topic.pid);
-    pb_topic->set_pname(registration_.topic.pname);
-    pb_topic->set_uname(registration_.topic.uname);
-    pb_topic->set_tid(registration_.topic.tid);
-    pb_topic->set_tname(registration_.topic.tname);
-    pb_topic->set_direction(registration_.topic.direction);
-    pb_topic->set_ttype(registration_.topic.ttype);
-    pb_topic->set_tdesc(registration_.topic.tdesc.data(), registration_.topic.tdesc.size());
-    pb_topic->mutable_tdatatype()->set_name(registration_.topic.tdatatype.name);
-    pb_topic->mutable_tdatatype()->set_encoding(registration_.topic.tdatatype.encoding);
-    pb_topic->mutable_tdatatype()->set_desc(registration_.topic.tdatatype.desc.data(), registration_.topic.tdatatype.desc.size());
-    pb_topic->set_tsize(registration_.topic.tsize);
-    pb_topic->set_connections_loc(registration_.topic.connections_loc);
-    pb_topic->set_connections_ext(registration_.topic.connections_ext);
-    pb_topic->set_message_drops(registration_.topic.message_drops);
-    pb_topic->set_did(registration_.topic.did);
-    pb_topic->set_dclock(registration_.topic.dclock);
-    pb_topic->set_dfreq(registration_.topic.dfreq);
+    pb_topic->set_rclock(source_sample_.topic.rclock);
+    pb_topic->set_hname(source_sample_.topic.hname);
+    pb_topic->set_hgname(source_sample_.topic.hgname);
+    pb_topic->set_pid(source_sample_.topic.pid);
+    pb_topic->set_pname(source_sample_.topic.pname);
+    pb_topic->set_uname(source_sample_.topic.uname);
+    pb_topic->set_tid(source_sample_.topic.tid);
+    pb_topic->set_tname(source_sample_.topic.tname);
+    pb_topic->set_direction(source_sample_.topic.direction);
+    pb_topic->set_ttype(source_sample_.topic.ttype);
+    pb_topic->set_tdesc(source_sample_.topic.tdesc.data(), source_sample_.topic.tdesc.size());
+    pb_topic->mutable_tdatatype()->set_name(source_sample_.topic.tdatatype.name);
+    pb_topic->mutable_tdatatype()->set_encoding(source_sample_.topic.tdatatype.encoding);
+    pb_topic->mutable_tdatatype()->set_desc(source_sample_.topic.tdatatype.desc.data(), source_sample_.topic.tdatatype.desc.size());
+    pb_topic->set_tsize(source_sample_.topic.tsize);
+    pb_topic->set_connections_loc(source_sample_.topic.connections_loc);
+    pb_topic->set_connections_ext(source_sample_.topic.connections_ext);
+    pb_topic->set_message_drops(source_sample_.topic.message_drops);
+    pb_topic->set_did(source_sample_.topic.did);
+    pb_topic->set_dclock(source_sample_.topic.dclock);
+    pb_topic->set_dfreq(source_sample_.topic.dfreq);
 
-    for (const auto& layer : registration_.topic.tlayer)
+    for (const auto& layer : source_sample_.topic.tlayer)
     {
       eCAL::pb::TLayer* pb_layer = pb_topic->add_tlayer();
       pb_layer->set_type(static_cast<eCAL::pb::eTLayerType>(layer.type));
@@ -98,7 +98,7 @@ namespace
       pb_layer->set_confirmed(layer.confirmed);
     }
 
-    for (const auto& attr : registration_.topic.attr)
+    for (const auto& attr : source_sample_.topic.attr)
     {
       (*pb_topic->mutable_attr())[attr.first] = attr.second;
     }
@@ -106,19 +106,19 @@ namespace
     return pb_registration;
   }
 
-  eCAL::Registration::Sample Proto2RegistrationStruct(const eCAL::pb::Sample& pb_registration_)
+  eCAL::Registration::Sample Proto2RegistrationStruct(const eCAL::pb::Sample& pb_source_sample_)
   {
     eCAL::Registration::Sample registration;
 
     // registration command type
-    registration.cmd_type = static_cast<eCAL::eCmdType>(pb_registration_.cmd_type());
+    registration.cmd_type = static_cast<eCAL::eCmdType>(pb_source_sample_.cmd_type());
 
     // host information
-    const eCAL::pb::Host& pb_host = pb_registration_.host();
+    const eCAL::pb::Host& pb_host = pb_source_sample_.host();
     registration.host.hname = pb_host.hname();
 
     // process information
-    const eCAL::pb::Process& pb_process = pb_registration_.process();
+    const eCAL::pb::Process& pb_process = pb_source_sample_.process();
     registration.process.rclock = pb_process.rclock();
     registration.process.hname = pb_process.hname();
     registration.process.hgname = pb_process.hgname();
@@ -138,7 +138,7 @@ namespace
     registration.process.ecal_runtime_version = pb_process.ecal_runtime_version();
 
     // topic information
-    const eCAL::pb::Topic& pb_topic = pb_registration_.topic();
+    const eCAL::pb::Topic& pb_topic = pb_source_sample_.topic();
     registration.topic.rclock = pb_topic.rclock();
     registration.topic.hname = pb_topic.hname();
     registration.topic.hgname = pb_topic.hgname();
@@ -151,9 +151,9 @@ namespace
     registration.topic.ttype = pb_topic.ttype();
     const std::string& tdesc_str = pb_topic.tdesc();
     registration.topic.tdesc.assign(tdesc_str.begin(), tdesc_str.end());
-    registration.topic.tdatatype.name = pb_registration_.topic().tdatatype().name();
-    registration.topic.tdatatype.encoding = pb_registration_.topic().tdatatype().encoding();
-    const std::string& desc_str = pb_registration_.topic().tdatatype().desc();
+    registration.topic.tdatatype.name = pb_source_sample_.topic().tdatatype().name();
+    registration.topic.tdatatype.encoding = pb_source_sample_.topic().tdatatype().encoding();
+    const std::string& desc_str = pb_source_sample_.topic().tdatatype().desc();
     registration.topic.tdatatype.desc.assign(desc_str.begin(), desc_str.end());
     registration.topic.tsize = pb_topic.tsize();
     registration.topic.connections_loc = pb_topic.connections_loc();
@@ -186,18 +186,19 @@ namespace
 
 namespace eCAL
 {
-  std::string SerializeToBinaryString(const Registration::Sample& registration_sample_)
+  bool SerializeToBuffer(const Registration::Sample& source_sample_, std::vector<char>& target_buffer_)
   {
-    pb::Sample pb_registration = RegistrationStruct2Proto(registration_sample_);
-    return pb_registration.SerializeAsString();
+    eCAL::pb::Sample pb_sample = RegistrationStruct2Proto(source_sample_);
+    target_buffer_.resize(pb_sample.ByteSizeLong());
+    return pb_sample.SerializeToArray(target_buffer_.data(), static_cast<int>(target_buffer_.size()));
   }
 
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& registration_sample_)
+  bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& target_sample_)
   {
-    pb::Sample pb_registration;
-    if (pb_registration.ParseFromArray(data_, static_cast<int>(size_)))
+    eCAL::pb::Sample pb_sample;
+    if (pb_sample.ParseFromArray(data_, static_cast<int>(size_)))
     {
-      registration_sample_ = Proto2RegistrationStruct(pb_registration);
+      target_sample_ = Proto2RegistrationStruct(pb_sample);
       return true;
     }
     return false;

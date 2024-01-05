@@ -18,7 +18,7 @@
 */
 
 /**
- * @file   ecal_registration_struct.h
+ * @file   ecal_sample_struct_registration.h
  * @brief  eCAL registration as struct
 **/
 

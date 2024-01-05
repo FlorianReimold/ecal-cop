@@ -30,10 +30,10 @@
 namespace eCAL
 {
   // payload sample - serialize/deserialize
-  std::string SerializeToBinaryString (const Payload::Sample& payload_sample_);
-  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Payload::Sample& payload_sample_);
+  bool SerializeToBuffer     (const Payload::Sample& source_sample_, std::vector<char>& target_buffer_);
+  bool DeserializeFromBuffer (const char* data_, size_t size_, Payload::Sample& target_sample_);
 
   // registration sample - serialize/deserialize
-  std::string SerializeToBinaryString (const Registration::Sample& registration_sample_);
-  bool        DeserializeFromBuffer   (const char* data_, size_t size_, Registration::Sample& registration_sample_);
+  bool SerializeToBuffer     (const Registration::Sample& registration_sample_, std::vector<char>& target_buffer_);
+  bool DeserializeFromBuffer (const char* data_, size_t size_, Registration::Sample& registration_sample_);
 }
