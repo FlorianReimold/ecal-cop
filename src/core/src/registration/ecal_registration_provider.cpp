@@ -36,6 +36,7 @@
 #include "io/udp/ecal_udp_sample_sender.h"
 
 #include <chrono>
+#include <vector>
 
 namespace eCAL
 {
@@ -250,9 +251,10 @@ namespace eCAL
 
     if (m_reg_sample_snd)
     {
-      if (SerializeToBuffer(sample_, m_sample_buffer))
+      std::vector<char> sample_buffer;
+      if (SerializeToBuffer(sample_, sample_buffer))
       {
-        return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer, -1) != 0);
+        return_value &= (m_reg_sample_snd->Send(sample_name_, sample_buffer, -1) != 0);
       }
     }
 
