@@ -180,42 +180,32 @@ endif()
 # serialization
 ######################################
 set(ecal_serialization_src
+    src/serialization/nanopb/nanopb/pb.h
+    src/serialization/nanopb/nanopb/pb_common.c
+    src/serialization/nanopb/nanopb/pb_common.h
+    src/serialization/nanopb/nanopb/pb_decode.c
+    src/serialization/nanopb/nanopb/pb_decode.h
+    src/serialization/nanopb/nanopb/pb_encode.c
+    src/serialization/nanopb/nanopb/pb_encode.h      
+    src/serialization/nanopb/ecal.pb.c
+    src/serialization/nanopb/ecal.pb.h
+    src/serialization/nanopb/host.pb.c
+    src/serialization/nanopb/host.pb.h
+    src/serialization/nanopb/layer.pb.c
+    src/serialization/nanopb/layer.pb.h
+    src/serialization/nanopb/process.pb.c
+    src/serialization/nanopb/process.pb.h
+    src/serialization/nanopb/topic.pb.c
+    src/serialization/nanopb/topic.pb.h
     src/serialization/ecal_sample.h
-	src/serialization/ecal_sample_struct_common.h
+    src/serialization/ecal_sample_nanopb_common.cpp
+    src/serialization/ecal_sample_nanopb_common.h
+    src/serialization/ecal_sample_nanopb_payload.cpp
+    src/serialization/ecal_sample_nanopb_registration.cpp
+    src/serialization/ecal_sample_struct_common.h
     src/serialization/ecal_sample_struct_payload.h
     src/serialization/ecal_sample_struct_registration.h
 )
-if(ECAL_CORE_NANOPB)
-  list(APPEND ecal_serialization_src
-      src/serialization/nanopb/nanopb/pb.h
-      src/serialization/nanopb/nanopb/pb_common.c
-      src/serialization/nanopb/nanopb/pb_common.h
-      src/serialization/nanopb/nanopb/pb_decode.c
-      src/serialization/nanopb/nanopb/pb_decode.h
-      src/serialization/nanopb/nanopb/pb_encode.c
-      src/serialization/nanopb/nanopb/pb_encode.h      
-      src/serialization/nanopb/ecal.pb.c
-      src/serialization/nanopb/ecal.pb.h
-      src/serialization/nanopb/host.pb.c
-      src/serialization/nanopb/host.pb.h
-      src/serialization/nanopb/layer.pb.c
-      src/serialization/nanopb/layer.pb.h
-      src/serialization/nanopb/process.pb.c
-      src/serialization/nanopb/process.pb.h
-      src/serialization/nanopb/topic.pb.c
-      src/serialization/nanopb/topic.pb.h
-      src/serialization/ecal_sample_nanopb_common.h
-      src/serialization/ecal_sample_nanopb_common.cpp
-      src/serialization/ecal_sample_nanopb_payload.cpp
-      src/serialization/ecal_sample_nanopb_registration.cpp
-  )
-endif()
-if(ECAL_CORE_PROTOBUF)
-  list(APPEND ecal_serialization_src
-      src/serialization/ecal_sample_protobuf_payload.cpp
-      src/serialization/ecal_sample_protobuf_registration.cpp
-  )
-endif()
 
 ######################################
 # time
@@ -440,13 +430,6 @@ if(ECAL_CORE_TIMEPLUGIN)
     PRIVATE ECAL_CORE_TIMEPLUGIN)
   target_compile_definitions(${PROJECT_NAME}_c
     PRIVATE ECAL_CORE_TIMEPLUGIN)
-endif()
-
-if(ECAL_CORE_PROTOBUF)
-  target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-      eCAL::core_pb
-  )
 endif()
 
 if(ECAL_NPCAP_SUPPORT)
