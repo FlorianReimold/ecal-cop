@@ -33,63 +33,49 @@ namespace
 {
   std::string PayloadStruct2String(const eCAL::Payload::Sample& payload_)
   {
-    eCAL_pb_Sample pb_payload = eCAL_pb_Sample_init_default;
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
 
-    // payload command type
-    pb_payload.cmd_type = static_cast<eCAL_pb_eCmdType>(payload_.cmd_type);
+    // command type
+    pb_sample.cmd_type = static_cast<eCAL_pb_eCmdType>(payload_.cmd_type);
 
     // topic information
-    pb_payload.has_topic = true;
-    eCAL_pb_Topic& pb_topic = pb_payload.topic;
-
+    pb_sample.has_topic = true;
     // hname
-    pb_topic.hname.arg          = (void*)(payload_.topic.hname.c_str());
-    pb_topic.hname.funcs.encode = &encode_string;
-
+    eCAL::nanopb::encode_string(pb_sample.topic.hname, payload_.topic.hname);
     // tid
-    pb_topic.tid.arg = (void*)(payload_.topic.tid.c_str());
-    pb_topic.tid.funcs.encode = &encode_string;
-
+    eCAL::nanopb::encode_string(pb_sample.topic.tid, payload_.topic.tid);
     // tname
-    pb_topic.tname.arg = (void*)(payload_.topic.tname.c_str());
-    pb_topic.tname.funcs.encode = &encode_string;
-
+    eCAL::nanopb::encode_string(pb_sample.topic.tname, payload_.topic.tname);
     // tlayer
-    //pb_topic->tlayer.funcs.args   = ? ? ? ;
-    //pb_topic->tlayer.funcs.encode = ? ? ? ;
-
-    //for (size_t i = 0; i < payload_.topic.tlayer.size(); ++i)
-    //{
-      //pb_topic->tlayer[i].type = static_cast<eCAL_pb_eTLayerType>(payload_.topic.tlayer[i].type);
-      //pb_topic->tlayer[i].version = payload_.topic.tlayer[i].version;
-      //pb_topic->tlayer[i].confirmed = payload_.topic.tlayer[i].confirmed;
-    //}
+    eCAL::nanopb::encode_payload_layer(pb_sample.topic.tlayer, payload_.topic.tlayer);
 
     // topic content
-    pb_payload.has_content = true;
-    eCAL_pb_Content& pb_content = pb_payload.content;
-    pb_content.id    = payload_.content.id;
-    pb_content.clock = payload_.content.clock;
-    pb_content.time  = payload_.content.time;
-    pb_content.hash  = payload_.content.hash;
+    pb_sample.has_content = true;
+    pb_sample.content.id    = payload_.content.id;
+    pb_sample.content.clock = payload_.content.clock;
+    pb_sample.content.time  = payload_.content.time;
+    pb_sample.content.hash  = payload_.content.hash;
 
-    // topic payload
-    SNanoBytes payload;
+    // topic content payload
+    eCAL::nanopb::SNanoBytes payload;
     payload.content = (pb_byte_t*)(payload_.content.payload.data());
     payload.length  = payload_.content.payload.size();
-    pb_content.payload.arg          = &payload;
-    pb_content.payload.funcs.encode = &encode_bytes;
+    eCAL::nanopb::encode_bytes(pb_sample.content.payload, payload);
 
+    ///////////////////////////////////////////////
     // evaluate byte size
+    ///////////////////////////////////////////////
     pb_ostream_t pb_sizestream = { 0 };
-    pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_payload);
+    pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_sample);
 
+    ///////////////////////////////////////////////
     // encode it
+    ///////////////////////////////////////////////
     std::vector<pb_byte_t> pb_buffer;
     pb_buffer.resize(pb_sizestream.bytes_written);
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer(pb_buffer.data(), pb_buffer.size());
-    if (pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_payload))
+    if (pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
     {
       return std::string((char*)pb_buffer.data(), pb_ostream.bytes_written);
     }
@@ -103,53 +89,40 @@ namespace
     if (size_ == 0)       return false;
 
     // initialize
-    eCAL_pb_Sample pb_payload = eCAL_pb_Sample_init_default;
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
 
-    // topic information
-    eCAL_pb_Topic& pb_topic = pb_payload.topic;
-
+    ///////////////////////////////////////////////
+    // assign decoder
+    ///////////////////////////////////////////////
     // hname
-    pb_topic.hname.funcs.decode = &decode_string;
-    pb_topic.hname.arg          = &payload_.topic.hname;
-
+    eCAL::nanopb::decode_string(pb_sample.topic.hname, payload_.topic.hname);
     // tid
-    pb_topic.tid.funcs.decode = &decode_string;
-    pb_topic.tid.arg = &payload_.topic.tid;
-
+    eCAL::nanopb::decode_string(pb_sample.topic.tid, payload_.topic.tid);
     // tname
-    pb_topic.tname.funcs.decode = &decode_string;
-    pb_topic.tname.arg = &payload_.topic.tname;
-
-#if 0
+    eCAL::nanopb::decode_string(pb_sample.topic.tname, payload_.topic.tname);
     // tlayer
-    //for (size_t i = 0; i < pb_topic->tlayer_count; ++i)
-    //{
-    //  eCAL::Payload::TLayer tlayer;
-    //  tlayer.type = static_cast<eCAL::eTLayerType>(pb_topic->tlayer[i].type);
-    //  tlayer.version = pb_topic->tlayer[i].version;
-    //  tlayer.confirmed = pb_topic->tlayer[i].confirmed;
-    //  payload.topic.tlayer.push_back(tlayer);
-    //}
-#endif
+    eCAL::nanopb::decode_payload_layer(pb_sample.topic.tlayer, payload_.topic.tlayer);
+    // topic content payload
+    eCAL::nanopb::decode_bytes(pb_sample.content.payload, payload_.content.payload);
 
-    // topic payload
-    eCAL_pb_Content& pb_content = pb_payload.content;
-    pb_content.payload.funcs.decode = &decode_payload;
-    pb_content.payload.arg          = &payload_.content.payload;
-
+    ///////////////////////////////////////////////
     // decode it
+    ///////////////////////////////////////////////
     pb_istream_t pb_istream;
     pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
-    pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_payload);
+    pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample);
 
-    // payload command type
-    payload_.cmd_type = static_cast<eCAL::eCmdType>(pb_payload.cmd_type);
+    ///////////////////////////////////////////////
+    // assign values
+    ///////////////////////////////////////////////
+    // command type
+    payload_.cmd_type = static_cast<eCAL::eCmdType>(pb_sample.cmd_type);
 
     // topic content
-    payload_.content.id    = pb_content.id;
-    payload_.content.clock = pb_content.clock;
-    payload_.content.time  = pb_content.time;
-    payload_.content.hash  = pb_content.hash;
+    payload_.content.id    = pb_sample.content.id;
+    payload_.content.clock = pb_sample.content.clock;
+    payload_.content.time  = pb_sample.content.time;
+    payload_.content.hash  = pb_sample.content.hash;
 
     return true;
   }

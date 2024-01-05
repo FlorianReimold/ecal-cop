@@ -27,13 +27,32 @@
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
 
-bool encode_string(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg);
-struct SNanoBytes
-{
-  pb_byte_t* content = nullptr;
-  size_t     length  = 0;
-};
-bool encode_bytes(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg);
+#include "ecal_sample_struct_payload.h"
+#include "ecal_sample_struct_registration.h"
 
-bool decode_string(pb_istream_t* stream, const pb_field_t* field, void** arg);
-bool decode_payload(pb_istream_t* stream, const pb_field_t* field, void** arg);
+#include <vector>
+#include <string>
+
+namespace eCAL
+{
+  namespace nanopb
+  {
+    struct SNanoBytes
+    {
+      pb_byte_t* content = nullptr;
+      size_t     length  = 0;
+    };
+
+    void encode_string(pb_callback_t& pb_callback, const std::string& str);
+    void decode_string(pb_callback_t& pb_callback, std::string& str);
+
+    void encode_bytes(pb_callback_t& pb_callback, const SNanoBytes& nano_bytes);
+    void decode_bytes(pb_callback_t& pb_callback, std::vector<char>& vec);
+
+    void encode_payload_layer(pb_callback_t& pb_callback, const std::vector<eCAL::Payload::TLayer>& layer_vec);
+    void decode_payload_layer(pb_callback_t& pb_callback, std::vector<eCAL::Payload::TLayer>& layer_vec);
+
+    void encode_registration_layer(pb_callback_t& pb_callback, const std::vector<eCAL::Registration::TLayer>& layer_vec);
+    void decode_registration_layer(pb_callback_t& pb_callback, std::vector<eCAL::Registration::TLayer>& layer_vec);
+  }
+}

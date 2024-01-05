@@ -23,6 +23,7 @@
 **/
 
 #include "ecal_sample_struct_registration.h"
+#include "ecal_sample_nanopb_common.h"
 
 #include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"
@@ -30,161 +31,264 @@
 
 namespace
 {
-  eCAL_pb_Sample RegistrationStruct2Proto(const eCAL::Registration::Sample& registration_)
+  std::string RegistrationStruct2String(const eCAL::Registration::Sample& registration_)
   {
-    eCAL_pb_Sample pb_registration;
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
 
-#if 0
+    // command type
+    pb_sample.cmd_type = static_cast<eCAL_pb_eCmdType>(registration_.cmd_type);
 
-    // registration command type
-    pb_registration.set_cmd_type(static_cast<eCAL::pb::eCmdType>(registration_.cmd_type));
-
+    ///////////////////////////////////////////////
     // host information
-    eCAL::pb::Host* pb_host = pb_registration.mutable_host();
-    pb_host->set_hname(registration_.host.hname);
+    ///////////////////////////////////////////////
+    pb_sample.has_host = true;
 
+    // hname
+    eCAL::nanopb::encode_string(pb_sample.host.hname, registration_.host.hname);
+
+    ///////////////////////////////////////////////
     // process information
-    eCAL::pb::Process* pb_process = pb_registration.mutable_process();
-    pb_process->set_rclock(registration_.process.rclock);
-    pb_process->set_hname(registration_.process.hname);
-    pb_process->set_hgname(registration_.process.hgname);
-    pb_process->set_pid(registration_.process.pid);
-    pb_process->set_pname(registration_.process.pname);
-    pb_process->set_uname(registration_.process.uname);
-    pb_process->set_pparam(registration_.process.pparam);
-    pb_process->set_datawrite(registration_.process.datawrite);
-    pb_process->set_dataread(registration_.process.dataread);
-    pb_process->mutable_state()->set_severity(static_cast<eCAL::pb::eProcessSeverity>(registration_.process.state.severity));
-    pb_process->mutable_state()->set_severity_level(static_cast<eCAL::pb::eProcessSeverityLevel>(registration_.process.state.severity_level));
-    pb_process->mutable_state()->set_info(registration_.process.state.info);
-    pb_process->set_tsync_state(static_cast<eCAL::pb::eTSyncState>(registration_.process.tsync_state));
-    pb_process->set_tsync_mod_name(registration_.process.tsync_mod_name);
-    pb_process->set_component_init_state(registration_.process.component_init_state);
-    pb_process->set_component_init_info(registration_.process.component_init_info);
-    pb_process->set_ecal_runtime_version(registration_.process.ecal_runtime_version);
+    ///////////////////////////////////////////////
+    pb_sample.has_process = true;
 
+    // rclock
+    pb_sample.process.rclock = registration_.process.rclock;
+    // hname
+    eCAL::nanopb::encode_string(pb_sample.process.hname, registration_.process.hname);
+    // hgname
+    eCAL::nanopb::encode_string(pb_sample.process.hgname, registration_.process.hgname);
+    // pid
+    pb_sample.process.pid = registration_.process.pid;
+    // pname
+    eCAL::nanopb::encode_string(pb_sample.process.pname, registration_.process.pname);
+    // uname
+    eCAL::nanopb::encode_string(pb_sample.process.uname, registration_.process.uname);
+    // pparam
+    eCAL::nanopb::encode_string(pb_sample.process.pparam, registration_.process.pparam);
+    // datawrite
+    pb_sample.process.datawrite = registration_.process.datawrite;
+    // dataread
+    pb_sample.process.dataread = registration_.process.dataread;
+    // state.severity
+    pb_sample.process.state.severity = static_cast<eCAL_pb_eProcessSeverity>(registration_.process.state.severity);
+    // state.severity_level
+    pb_sample.process.state.severity_level = static_cast<eCAL_pb_eProcessSeverityLevel>(registration_.process.state.severity_level);
+    // state.info
+    eCAL::nanopb::encode_string(pb_sample.process.state.info, registration_.process.state.info);
+    // process.tsync_state
+    pb_sample.process.tsync_state = static_cast<eCAL_pb_eTSyncState>(registration_.process.tsync_state);
+    // tsync_mod_name
+    eCAL::nanopb::encode_string(pb_sample.process.tsync_mod_name, registration_.process.tsync_mod_name);
+    // component_init_state
+    pb_sample.process.component_init_state = registration_.process.component_init_state;
+    // component_init_info
+    eCAL::nanopb::encode_string(pb_sample.process.component_init_info, registration_.process.component_init_info);
+    // ecal_runtime_version
+    eCAL::nanopb::encode_string(pb_sample.process.ecal_runtime_version, registration_.process.ecal_runtime_version);
 
+    ///////////////////////////////////////////////
     // topic information
-    eCAL::pb::Topic* pb_topic = pb_registration.mutable_topic();
-    pb_topic->set_rclock(registration_.topic.rclock);
-    pb_topic->set_hname(registration_.topic.hname);
-    pb_topic->set_hgname(registration_.topic.hgname);
-    pb_topic->set_pid(registration_.topic.pid);
-    pb_topic->set_pname(registration_.topic.pname);
-    pb_topic->set_uname(registration_.topic.uname);
-    pb_topic->set_tid(registration_.topic.tid);
-    pb_topic->set_tname(registration_.topic.tname);
-    pb_topic->set_direction(registration_.topic.direction);
-    pb_topic->set_ttype(registration_.topic.ttype);
-    pb_topic->set_tdesc(registration_.topic.tdesc.data(), registration_.topic.tdesc.size());
-    pb_topic->mutable_tdatatype()->set_name(registration_.topic.tdatatype.name);
-    pb_topic->mutable_tdatatype()->set_encoding(registration_.topic.tdatatype.encoding);
-    pb_topic->mutable_tdatatype()->set_desc(registration_.topic.tdatatype.desc.data(), registration_.topic.tdatatype.desc.size());
-    pb_topic->set_tsize(registration_.topic.tsize);
-    pb_topic->set_connections_loc(registration_.topic.connections_loc);
-    pb_topic->set_connections_ext(registration_.topic.connections_ext);
-    pb_topic->set_message_drops(registration_.topic.message_drops);
-    pb_topic->set_did(registration_.topic.did);
-    pb_topic->set_dclock(registration_.topic.dclock);
-    pb_topic->set_dfreq(registration_.topic.dfreq);
+    ///////////////////////////////////////////////
+    pb_sample.has_topic = true;
 
-    for (const auto& layer : registration_.topic.tlayer)
+    // rclock
+    pb_sample.topic.rclock = registration_.topic.rclock;
+    // hname
+    eCAL::nanopb::encode_string(pb_sample.topic.hname, registration_.topic.hname);
+    // hgname
+    eCAL::nanopb::encode_string(pb_sample.topic.hgname, registration_.topic.hgname);
+    // pid
+    pb_sample.topic.pid = registration_.topic.pid;
+    // pname
+    eCAL::nanopb::encode_string(pb_sample.topic.pname, registration_.topic.pname);
+    // uname
+    eCAL::nanopb::encode_string(pb_sample.topic.uname, registration_.topic.uname);
+    // tid
+    eCAL::nanopb::encode_string(pb_sample.topic.tid, registration_.topic.tid);
+    // tname
+    eCAL::nanopb::encode_string(pb_sample.topic.tname, registration_.topic.tname);
+    // direction
+    eCAL::nanopb::encode_string(pb_sample.topic.direction, registration_.topic.direction);
+    // ttype
+    eCAL::nanopb::encode_string(pb_sample.topic.ttype, registration_.topic.ttype);
+    // tdesc
+    eCAL::nanopb::encode_string(pb_sample.topic.tdesc, registration_.topic.tdesc);
+    // tdatatype.name
+    eCAL::nanopb::encode_string(pb_sample.topic.tdatatype.name, registration_.topic.tdatatype.name);
+    // tdatatype.encoding
+    eCAL::nanopb::encode_string(pb_sample.topic.tdatatype.encoding, registration_.topic.tdatatype.encoding);
+    // tdatatype.desc
+    eCAL::nanopb::encode_string(pb_sample.topic.tdatatype.desc, registration_.topic.tdatatype.desc);
+    // tsize
+    pb_sample.topic.tsize = registration_.topic.tsize;
+    // connections_loc
+    pb_sample.topic.connections_loc = registration_.topic.connections_loc;
+    // connections_ext
+    pb_sample.topic.connections_ext = registration_.topic.connections_ext;
+    // message_drops
+    pb_sample.topic.message_drops = registration_.topic.message_drops;
+    // did
+    pb_sample.topic.did = registration_.topic.did;
+    // dclock
+    pb_sample.topic.dclock = registration_.topic.dclock;
+    // dfreq
+    pb_sample.topic.dfreq = registration_.topic.dfreq;
+    // tlayer
+    eCAL::nanopb::encode_registration_layer(pb_sample.topic.tlayer, registration_.topic.tlayer);
+
+    // attr
+    //eCAL::nanopb::encode_attributes(pb_sample.topic.attr, registration_.topic.attr);
+
+    ///////////////////////////////////////////////
+    // evaluate byte size
+    ///////////////////////////////////////////////
+    pb_ostream_t pb_sizestream = { 0 };
+    pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_sample);
+
+    ///////////////////////////////////////////////
+    // encode it
+    ///////////////////////////////////////////////
+    std::vector<pb_byte_t> pb_buffer;
+    pb_buffer.resize(pb_sizestream.bytes_written);
+    pb_ostream_t pb_ostream;
+    pb_ostream = pb_ostream_from_buffer(pb_buffer.data(), pb_buffer.size());
+    if (pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
     {
-      eCAL::pb::TLayer* pb_layer = pb_topic->add_tlayer();
-      pb_layer->set_type(static_cast<eCAL::pb::eTLayerType>(layer.type));
-      pb_layer->set_version(layer.version);
-      pb_layer->set_confirmed(layer.confirmed);
+      return std::string((char*)pb_buffer.data(), pb_ostream.bytes_written);
     }
 
-    for (const auto& attr : registration_.topic.attr)
-    {
-      (*pb_topic->mutable_attr())[attr.first] = attr.second;
-    }
-
-#endif
-
-    return pb_registration;
+    return "";
   }
 
-  eCAL::Registration::Sample Proto2RegistrationStruct(const eCAL_pb_Sample& pb_registration_)
+  bool Buffer2RegistrationStruct(const char* data_, size_t size_, eCAL::Registration::Sample& registration_)
   {
-    eCAL::Registration::Sample registration;
+    if (data_ == nullptr) return false;
+    if (size_ == 0)       return false;
 
-#if 0
+    // initialize
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
 
-    // registration command type
-    registration.cmd_type = static_cast<eCAL::eCmdType>(pb_registration_.cmd_type());
+    ///////////////////////////////////////////////
+    // assign decoder
+    ///////////////////////////////////////////////
 
+    ///////////////////////////////////////////////
     // host information
-    const eCAL::pb::Host& pb_host = pb_registration_.host();
-    registration.host.hname = pb_host.hname();
+    ///////////////////////////////////////////////
+    // hname
+    eCAL::nanopb::decode_string(pb_sample.host.hname, registration_.host.hname);
 
+    ///////////////////////////////////////////////
     // process information
-    const eCAL::pb::Process& pb_process = pb_registration_.process();
-    registration.process.rclock = pb_process.rclock();
-    registration.process.hname = pb_process.hname();
-    registration.process.hgname = pb_process.hgname();
-    registration.process.pid = pb_process.pid();
-    registration.process.pname = pb_process.pname();
-    registration.process.uname = pb_process.uname();
-    registration.process.pparam = pb_process.pparam();
-    registration.process.datawrite = pb_process.datawrite();
-    registration.process.dataread = pb_process.dataread();
-    registration.process.state.severity = static_cast<eCAL::Registration::eProcessSeverity>(pb_process.state().severity());
-    registration.process.state.severity_level = static_cast<eCAL::Registration::eProcessSeverityLevel>(pb_process.state().severity_level());
-    registration.process.state.info = pb_process.state().info();
-    registration.process.tsync_state = static_cast<eCAL::Registration::eTSyncState>(pb_process.tsync_state());
-    registration.process.tsync_mod_name = pb_process.tsync_mod_name();
-    registration.process.component_init_state = pb_process.component_init_state();
-    registration.process.component_init_info = pb_process.component_init_info();
-    registration.process.ecal_runtime_version = pb_process.ecal_runtime_version();
+    ///////////////////////////////////////////////
+    // hname
+    eCAL::nanopb::decode_string(pb_sample.process.hname, registration_.process.hname);
+    // hgname
+    eCAL::nanopb::decode_string(pb_sample.process.hgname, registration_.process.hgname);    
+    // pname
+    eCAL::nanopb::decode_string(pb_sample.process.pname, registration_.process.pname);
+    // uname
+    eCAL::nanopb::decode_string(pb_sample.process.uname, registration_.process.uname);
+    // pparam
+    eCAL::nanopb::decode_string(pb_sample.process.pparam, registration_.process.pparam);
+    // state.info
+    eCAL::nanopb::decode_string(pb_sample.process.state.info, registration_.process.state.info);
+    // tsync_mod_name
+    eCAL::nanopb::decode_string(pb_sample.process.tsync_mod_name, registration_.process.tsync_mod_name);
+    // component_init_info
+    eCAL::nanopb::decode_string(pb_sample.process.component_init_info, registration_.process.component_init_info);
+    // ecal_runtime_version
+    eCAL::nanopb::decode_string(pb_sample.process.ecal_runtime_version, registration_.process.ecal_runtime_version);
 
+    ///////////////////////////////////////////////
     // topic information
-    const eCAL::pb::Topic& pb_topic = pb_registration_.topic();
-    registration.topic.rclock = pb_topic.rclock();
-    registration.topic.hname = pb_topic.hname();
-    registration.topic.hgname = pb_topic.hgname();
-    registration.topic.pid = pb_topic.pid();
-    registration.topic.pname = pb_topic.pname();
-    registration.topic.uname = pb_topic.uname();
-    registration.topic.tid = pb_topic.tid();
-    registration.topic.tname = pb_topic.tname();
-    registration.topic.direction = pb_topic.direction();
-    registration.topic.ttype = pb_topic.ttype();
-    const std::string& tdesc_str = pb_topic.tdesc();
-    registration.topic.tdesc.assign(tdesc_str.begin(), tdesc_str.end());
-    registration.topic.tdatatype.name = pb_registration_.topic().tdatatype().name();
-    registration.topic.tdatatype.encoding = pb_registration_.topic().tdatatype().encoding();
-    const std::string& desc_str = pb_registration_.topic().tdatatype().desc();
-    registration.topic.tdatatype.desc.assign(desc_str.begin(), desc_str.end());
-    registration.topic.tsize = pb_topic.tsize();
-    registration.topic.connections_loc = pb_topic.connections_loc();
-    registration.topic.connections_ext = pb_topic.connections_ext();
-    registration.topic.message_drops = pb_topic.message_drops();
-    registration.topic.did = pb_topic.did();
-    registration.topic.dclock = pb_topic.dclock();
-    registration.topic.dfreq = pb_topic.dfreq();
+    ///////////////////////////////////////////////
+    // hname
+    eCAL::nanopb::decode_string(pb_sample.topic.hname, registration_.topic.hname);
+    // hgname
+    eCAL::nanopb::decode_string(pb_sample.topic.hgname, registration_.topic.hgname);
+    // pname
+    eCAL::nanopb::decode_string(pb_sample.topic.pname, registration_.topic.pname);
+    // uname
+    eCAL::nanopb::decode_string(pb_sample.topic.uname, registration_.topic.uname);
+    // tid
+    eCAL::nanopb::decode_string(pb_sample.topic.tid, registration_.topic.tid);
+    // tname
+    eCAL::nanopb::decode_string(pb_sample.topic.tname, registration_.topic.tname);
+    // direction
+    eCAL::nanopb::decode_string(pb_sample.topic.direction, registration_.topic.direction);
+    // ttype
+    eCAL::nanopb::decode_string(pb_sample.topic.ttype, registration_.topic.ttype);
+    // tdesc
+    eCAL::nanopb::decode_string(pb_sample.topic.tdesc, registration_.topic.tdesc);
+    // tdatatype.name
+    eCAL::nanopb::decode_string(pb_sample.topic.tdatatype.name, registration_.topic.tdatatype.name);
+    // tdatatype.encoding
+    eCAL::nanopb::decode_string(pb_sample.topic.tdatatype.encoding, registration_.topic.tdatatype.encoding);
+    // tdatatype.desc
+    eCAL::nanopb::decode_string(pb_sample.topic.tdatatype.desc, registration_.topic.tdatatype.desc);
+    // tlayer
+    eCAL::nanopb::decode_registration_layer(pb_sample.topic.tlayer, registration_.topic.tlayer);
 
-    const auto& pb_tlayer_list = pb_topic.tlayer();
-    registration.topic.tlayer.reserve(pb_tlayer_list.size());
-    for (const auto& pb_tlayer : pb_tlayer_list)
-    {
-      eCAL::Registration::TLayer tlayer{};
-      tlayer.type = static_cast<eCAL::eTLayerType>(pb_tlayer.type());
-      tlayer.version = pb_tlayer.version();
-      tlayer.confirmed = pb_tlayer.confirmed();
-      registration.topic.tlayer.push_back(tlayer);
-    }
+    // attr
+    //eCAL::nanopb::decode_attributes(pb_sample.topic.attr, registration_.topic.attr);
 
-    const auto& pb_attr_map = pb_topic.attr();
-    for (const auto& pb_attr : pb_attr_map)
-    {
-      registration.topic.attr.emplace(pb_attr.first, pb_attr.second);
-    }
+    ///////////////////////////////////////////////
+    // decode it
+    ///////////////////////////////////////////////
+    pb_istream_t pb_istream;
+    pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
+    pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample);
 
-#endif
+    ///////////////////////////////////////////////
+    // assign values
+    ///////////////////////////////////////////////
+    // command type
+    registration_.cmd_type = static_cast<eCAL::eCmdType>(pb_sample.cmd_type);
 
-    return registration;
+    ///////////////////////////////////////////////
+    // process information
+    ///////////////////////////////////////////////
+    // rclock
+    registration_.process.rclock = pb_sample.process.rclock;
+    // pid
+    registration_.process.pid = pb_sample.process.pid;
+    // datawrite
+    registration_.process.datawrite = pb_sample.process.datawrite;
+    // dataread
+    registration_.process.dataread = pb_sample.process.dataread;
+    // state.severity
+    registration_.process.state.severity = static_cast<eCAL::Registration::eProcessSeverity>(pb_sample.process.state.severity);
+    // state.severity_level
+    registration_.process.state.severity_level = static_cast<eCAL::Registration::eProcessSeverityLevel>(pb_sample.process.state.severity_level);
+    // tsync_state
+    registration_.process.tsync_state = static_cast<eCAL::Registration::eTSyncState>(pb_sample.process.tsync_state);
+    // component_init_state
+    registration_.process.component_init_state = pb_sample.process.component_init_state;
+
+    ///////////////////////////////////////////////
+    // topic information
+    ///////////////////////////////////////////////
+    // rclock
+    registration_.topic.rclock = pb_sample.topic.rclock;
+    // pid
+    registration_.topic.pid = pb_sample.topic.pid;
+    // tsize
+    registration_.topic.tsize = pb_sample.topic.tsize;
+    // connections_loc
+    registration_.topic.connections_loc = pb_sample.topic.connections_loc;
+    // connections_ext
+    registration_.topic.connections_ext = pb_sample.topic.connections_ext;
+    // message_drops
+    registration_.topic.message_drops = pb_sample.topic.message_drops;
+    // did
+    registration_.topic.did = pb_sample.topic.did;
+    // dclock
+    registration_.topic.dclock = pb_sample.topic.dclock;
+    // dfreq
+    registration_.topic.dfreq = pb_sample.topic.dfreq;
+
+    return true;
   }
 }
 
@@ -192,11 +296,11 @@ namespace eCAL
 {
   std::string SerializeToBinaryString(const Registration::Sample& registration_sample_)
   {
-    return "";
+    return RegistrationStruct2String(registration_sample_);
   }
 
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& registration_sample_)
   {
-    return false;
+    return Buffer2RegistrationStruct(data_, size_, registration_sample_);
   }
 }
