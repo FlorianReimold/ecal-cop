@@ -51,6 +51,22 @@ namespace eCAL
       std::vector<TLayer>                 tlayer;                       // active topic transport layers and its specific parameter
     };
 
+    // Topic content payload
+    enum ePayloadType
+    {
+      pl_none = 0,                                                      // payload not initialized
+      pl_raw  = 1,                                                      // payload represented as raw pointer + size
+      pl_vec  = 2,                                                      // payload represented std::vector<char>
+    };
+
+    struct Payload
+    {
+      ePayloadType                        type     = pl_none;
+      const char*                         raw_addr = nullptr;           // payload represented as raw pointer
+      size_t                              raw_size = 0;                 //   and its size
+      std::vector<char>                   vec;                          // payload represented as std::vector<char>
+    };
+    
     // Topic content
     struct Content
     {
@@ -58,9 +74,7 @@ namespace eCAL
       int64_t                             clock = 0;                    // internal used clock
       int64_t                             time  = 0;                    // time the content was updated
       int64_t                             hash  = 0;                    // unique hash for that payload
-      const char*                         payload_snd_ptr = nullptr;    // payload address
-      size_t                              payload_snd_size = 0;         // payload size
-      std::vector<char>                   payload_rec_vec;              // octet stream
+      Payload                             payload;                      // payload represented as raw pointer or a std::vector<char>
     };
 
     // Payload sample

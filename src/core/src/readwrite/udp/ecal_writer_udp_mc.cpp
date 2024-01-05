@@ -114,8 +114,9 @@ namespace eCAL
     ecal_sample_mutable_content.clock = attr_.clock;
     ecal_sample_mutable_content.time  = attr_.time;
     ecal_sample_mutable_content.hash  = attr_.hash;
-    ecal_sample_mutable_content.payload_snd_ptr  = static_cast<const char*>(buf_);
-    ecal_sample_mutable_content.payload_snd_size = attr_.len;
+    ecal_sample_mutable_content.payload.type     = eCAL::Payload::pl_raw;
+    ecal_sample_mutable_content.payload.raw_addr = static_cast<const char*>(buf_);
+    ecal_sample_mutable_content.payload.raw_size = attr_.len;
 
     // send it
     size_t sent = 0;

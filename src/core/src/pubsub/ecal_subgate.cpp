@@ -136,9 +136,26 @@ namespace eCAL
       }
 #endif
 
+      // extract payload
+      const char* payload_addr = nullptr;
+      size_t      payload_size = 0;
+      switch (ecal_sample.content.payload.type)
+      {
+      case eCAL::Payload::pl_raw:
+        payload_addr = ecal_sample.content.payload.raw_addr;
+        payload_size = ecal_sample.content.payload.raw_size;
+        break;
+      case eCAL::Payload::pl_vec:
+        payload_addr = ecal_sample.content.payload.vec.data();
+        payload_size = ecal_sample.content.payload.vec.size();
+        break;
+      default:
+        break;
+      }
+
       // update globals
       g_process_rclock++;
-      g_process_rbytes_sum += ecal_sample.content.payload_rec_vec.size();
+      g_process_rbytes_sum += payload_size;
 
       std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
 
@@ -158,8 +175,8 @@ namespace eCAL
       {
         sent = reader->AddSample(
           ecal_sample.topic.tid,
-          ecal_sample_content.payload_rec_vec.data(),
-          ecal_sample_content.payload_rec_vec.size(),
+          payload_addr,
+          payload_size,
           ecal_sample_content.id,
           ecal_sample_content.clock,
           ecal_sample_content.time,

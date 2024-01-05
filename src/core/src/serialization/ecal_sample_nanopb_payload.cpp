@@ -56,10 +56,27 @@ namespace
     pb_sample.content.time  = source_sample_.content.time;
     pb_sample.content.hash  = source_sample_.content.hash;
 
+    // extract payload
+    const char* payload_addr = nullptr;
+    size_t      payload_size = 0;
+    switch (source_sample_.content.payload.type)
+    {
+    case eCAL::Payload::pl_raw:
+      payload_addr = source_sample_.content.payload.raw_addr;
+      payload_size = source_sample_.content.payload.raw_size;
+      break;
+    case eCAL::Payload::pl_vec:
+      payload_addr = source_sample_.content.payload.vec.data();
+      payload_size = source_sample_.content.payload.vec.size();
+      break;
+    default:
+      break;
+    }
+
     // topic content payload
     eCAL::nanopb::SNanoBytes payload;
-    payload.content = (pb_byte_t*)(source_sample_.content.payload_snd_ptr);
-    payload.length  = source_sample_.content.payload_snd_size;
+    payload.content = (pb_byte_t*)(payload_addr);
+    payload.length  = payload_size;
     eCAL::nanopb::encode_bytes(pb_sample.content.payload, payload);
 
     ///////////////////////////////////////////////
@@ -102,7 +119,8 @@ namespace
     // tlayer
     eCAL::nanopb::decode_payload_layer(pb_sample.topic.tlayer, target_sample_.topic.tlayer);
     // topic content payload
-    eCAL::nanopb::decode_bytes(pb_sample.content.payload, target_sample_.content.payload_rec_vec);
+    target_sample_.content.payload.type = eCAL::Payload::pl_vec;
+    eCAL::nanopb::decode_bytes(pb_sample.content.payload, target_sample_.content.payload.vec);
 
     ///////////////////////////////////////////////
     // decode it
