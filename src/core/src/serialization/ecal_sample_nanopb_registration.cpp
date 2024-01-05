@@ -99,8 +99,8 @@ namespace
     eCAL::nanopb::encode_string(pb_sample.topic.hgname, source_sample_.topic.hgname);
     // pid
     pb_sample.topic.pid = source_sample_.topic.pid;
-    // pname
-    eCAL::nanopb::encode_string(pb_sample.topic.pname, source_sample_.topic.pname);
+    // pname (not needed for topic registration)
+    //eCAL::nanopb::encode_string(pb_sample.topic.pname, source_sample_.topic.pname);
     // uname
     eCAL::nanopb::encode_string(pb_sample.topic.uname, source_sample_.topic.uname);
     // tid
@@ -135,9 +135,8 @@ namespace
     pb_sample.topic.dfreq = source_sample_.topic.dfreq;
     // tlayer
     eCAL::nanopb::encode_registration_layer(pb_sample.topic.tlayer, source_sample_.topic.tlayer);
-
     // attr
-    //eCAL::nanopb::encode_attributes(pb_sample.topic.attr, registration_.topic.attr);
+    eCAL::nanopb::encode_map(pb_sample.topic.attr, source_sample_.topic.attr);
 
     ///////////////////////////////////////////////
     // evaluate byte size
@@ -206,8 +205,8 @@ namespace
     eCAL::nanopb::decode_string(pb_sample.topic.hname, registration_.topic.hname);
     // hgname
     eCAL::nanopb::decode_string(pb_sample.topic.hgname, registration_.topic.hgname);
-    // pname
-    eCAL::nanopb::decode_string(pb_sample.topic.pname, registration_.topic.pname);
+    // pname (not needed for topic registration)
+    //eCAL::nanopb::decode_string(pb_sample.topic.pname, registration_.topic.pname);
     // uname
     eCAL::nanopb::decode_string(pb_sample.topic.uname, registration_.topic.uname);
     // tid
@@ -228,9 +227,8 @@ namespace
     eCAL::nanopb::decode_string(pb_sample.topic.tdatatype.desc, registration_.topic.tdatatype.desc);
     // tlayer
     eCAL::nanopb::decode_registration_layer(pb_sample.topic.tlayer, registration_.topic.tlayer);
-
     // attr
-    //eCAL::nanopb::decode_attributes(pb_sample.topic.attr, registration_.topic.attr);
+    eCAL::nanopb::decode_map(pb_sample.topic.attr, registration_.topic.attr);
 
     ///////////////////////////////////////////////
     // decode it
