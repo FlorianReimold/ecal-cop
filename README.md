@@ -40,11 +40,15 @@ This section provides documentation for the CMake options used in configuring th
 
 ##### `BUILD_SAMPLES_PROTOBUF` (Default: OFF)
 - This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time and output size.
-- Requires serilization library google::protobuf.
+- Requires google::protobuf serialization library.
 
 ##### `BUILD_ECAL_TESTS` (Default: ON)
 - This option determines whether the eCAL Google Tests should be built. If enabled, it includes the compilation of unit tests for eCAL. Disabling this option will skip the build of tests if they are not required in your development environment.
 - Requires gtest library.
+
+##### `BUILD_ECAL_TESTS_PROTOBUF` (Default: OFF)
+- This option determines whether the eCAL Google Tests using protobuf serialization should be built. .
+- Requires gtest library and google::protobuf serialization library.
 
 #### Core Internal Feature Configuration
 
@@ -58,24 +62,15 @@ This section provides documentation for the CMake options used in configuring th
 
 ##### `ECAL_CORE_REGISTRATION` (Default: ON)
 - Enabling this option activates the eCAL registration layer. This layer is responsible for managing and registering different components within the eCAL ecosystem, facilitating communication between them.
-- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_PUBLISHER` (Default: ON)
 - Enabling this option includes the eCAL publisher functionality. This is essential for components that need to publish data to the eCAL communication infrastructure.
-- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_SUBSCRIBER` (Default: ON)
 - Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
-- Requires serilization library google::protobuf or cereal.
 
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
-
-##### `ECAL_CORE_NANOPB` (Default: ON)
-Enabling this option would use the NanoPb library for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_PROTOBUF`.
-
-##### `ECAL_CORE_PROTOBUF` (Default: OFF)
-Enabling this option uses Google Protocol Buffers for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_NANOPB`.
 
 Note: Please adjust these options based on your project's needs, ensuring that the selected features align with your desired functionality and dependencies.
 
