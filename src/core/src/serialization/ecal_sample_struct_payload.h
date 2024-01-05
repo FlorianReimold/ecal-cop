@@ -58,7 +58,9 @@ namespace eCAL
       int64_t                             clock = 0;                    // internal used clock
       int64_t                             time  = 0;                    // time the content was updated
       int64_t                             hash  = 0;                    // unique hash for that payload
-      std::vector<char>                   payload;                      // octet stream
+      const char*                         payload_snd_ptr = nullptr;    // payload address
+      size_t                              payload_snd_size = 0;         // payload size
+      std::vector<char>                   payload_rec_vec;              // octet stream
     };
 
     // Payload sample

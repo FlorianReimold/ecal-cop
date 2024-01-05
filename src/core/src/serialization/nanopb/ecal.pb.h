@@ -3,7 +3,7 @@
 
 #ifndef PB_ECAL_PB_ECAL_PB_H_INCLUDED
 #define PB_ECAL_PB_ECAL_PB_H_INCLUDED
-#include "pb.h"
+#include <pb.h>
 #include "host.pb.h"
 #include "process.pb.h"
 #include "topic.pb.h"

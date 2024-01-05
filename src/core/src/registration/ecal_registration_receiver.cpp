@@ -116,7 +116,12 @@ namespace eCAL
       || m_callback_process
       )
     {
-      reg_sample = SerializeToBinaryString(modified_ttype_sample);
+      std::vector<char> sample_buffer;
+      if (SerializeToBuffer(modified_ttype_sample, sample_buffer))
+      {
+        // TODO: Think about performance ..
+        reg_sample = std::string(sample_buffer.data(), sample_buffer.size());
+      }
     }
 
     switch(modified_ttype_sample.cmd_type)

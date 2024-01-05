@@ -34,19 +34,19 @@
 
 namespace
 {
-  eCAL::pb::Sample PayloadStruct2Proto(const eCAL::Payload::Sample& payload_)
+  eCAL::pb::Sample PayloadStruct2Proto(const eCAL::Payload::Sample& source_sample_)
   {
     eCAL::pb::Sample pb_payload;
 
     // payload command type
-    pb_payload.set_cmd_type(static_cast<eCAL::pb::eCmdType>(payload_.cmd_type));
+    pb_payload.set_cmd_type(static_cast<eCAL::pb::eCmdType>(source_sample_.cmd_type));
 
     // topic information
     eCAL::pb::Topic* pb_topic = pb_payload.mutable_topic();
-    pb_topic->set_hname(payload_.topic.hname);
-    pb_topic->set_tid(payload_.topic.tid);
-    pb_topic->set_tname(payload_.topic.tname);
-    for (const auto& layer : payload_.topic.tlayer)
+    pb_topic->set_hname(source_sample_.topic.hname);
+    pb_topic->set_tid(source_sample_.topic.tid);
+    pb_topic->set_tname(source_sample_.topic.tname);
+    for (const auto& layer : source_sample_.topic.tlayer)
     {
       eCAL::pb::TLayer* pb_layer = pb_topic->add_tlayer();
       pb_layer->set_type(static_cast<eCAL::pb::eTLayerType>(layer.type));
@@ -56,24 +56,24 @@ namespace
 
     // topic content
     eCAL::pb::Content* pb_content = pb_payload.mutable_content();
-    pb_content->set_id(payload_.content.id);
-    pb_content->set_clock(payload_.content.clock);
-    pb_content->set_time(payload_.content.time);
-    pb_content->set_hash(payload_.content.hash);
-    pb_content->set_payload(payload_.content.payload.data(), payload_.content.payload.size());
+    pb_content->set_id(source_sample_.content.id);
+    pb_content->set_clock(source_sample_.content.clock);
+    pb_content->set_time(source_sample_.content.time);
+    pb_content->set_hash(source_sample_.content.hash);
+    pb_content->set_payload(source_sample_.content.payload_snd_ptr, source_sample_.content.payload_snd_size);
 
     return pb_payload;
   }
 
-  eCAL::Payload::Sample Proto2PayloadStruct(const eCAL::pb::Sample& pb_payload_)
+  eCAL::Payload::Sample Proto2PayloadStruct(const eCAL::pb::Sample& pb_source_sample_)
   {
     eCAL::Payload::Sample payload;
 
     // payload command type
-    payload.cmd_type = static_cast<eCAL::eCmdType>(pb_payload_.cmd_type());
+    payload.cmd_type = static_cast<eCAL::eCmdType>(pb_source_sample_.cmd_type());
 
     // topic information
-    const eCAL::pb::Topic& pb_topic = pb_payload_.topic();
+    const eCAL::pb::Topic& pb_topic = pb_source_sample_.topic();
     payload.topic.hname = pb_topic.hname();
     payload.topic.tid = pb_topic.tid();
     payload.topic.tname = pb_topic.tname();
@@ -90,12 +90,12 @@ namespace
     }
 
     // topic content
-    const eCAL::pb::Content& pb_content = pb_payload_.content();
+    const eCAL::pb::Content& pb_content = pb_source_sample_.content();
     payload.content.id = pb_content.id();
     payload.content.clock = pb_content.clock();
     payload.content.time = pb_content.time();
     const std::string& payload_str = pb_content.payload();
-    payload.content.payload.assign(payload_str.begin(), payload_str.end());
+    payload.content.payload_rec_vec.assign(payload_str.begin(), payload_str.end());
     payload.content.hash = pb_content.hash();
 
     return payload;
@@ -104,18 +104,19 @@ namespace
 
 namespace eCAL
 {
-  std::string SerializeToBinaryString(const Payload::Sample& payload_sample_)
+  bool SerializeToBuffer(const Payload::Sample& source_sample_, std::vector<char>& target_buffer_)
   {
-    eCAL::pb::Sample pb_payload = PayloadStruct2Proto(payload_sample_);
-    return pb_payload.SerializeAsString();
+    eCAL::pb::Sample pb_sample = PayloadStruct2Proto(source_sample_);
+    target_buffer_.resize(pb_sample.ByteSizeLong());
+    return pb_sample.SerializeToArray(target_buffer_.data(), static_cast<int>(target_buffer_.size()));
   }
 
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Payload::Sample& payload_sample_)
+  bool DeserializeFromBuffer(const char* data_, size_t size_, Payload::Sample& target_sample_)
   {
-    eCAL::pb::Sample pb_payload;
-    if (pb_payload.ParseFromArray(data_, static_cast<int>(size_)))
+    eCAL::pb::Sample pb_sample;
+    if (pb_sample.ParseFromArray(data_, static_cast<int>(size_)))
     {
-      payload_sample_ = Proto2PayloadStruct(pb_payload);
+      target_sample_ = Proto2PayloadStruct(pb_sample);
       return true;
     }
     return false;

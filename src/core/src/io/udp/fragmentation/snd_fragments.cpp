@@ -51,7 +51,7 @@ namespace IO
 {
   namespace UDP
   {
-    size_t CreateSampleBuffer(const std::string& sample_name_, const std::string& serialized_sample_, std::vector<char>& payload_)
+    size_t CreateSampleBuffer(const std::string& sample_name_, const std::vector<char>& serialized_sample_, std::vector<char>& payload_)
     {
       const unsigned short sample_name_size = (unsigned short)sample_name_.size() + 1;
       const size_t   sample_size = serialized_sample_.size();
@@ -66,7 +66,7 @@ namespace IO
       // write topic name
       memcpy(payload_data + sizeof(sample_name_size), sample_name_.c_str(), sample_name_size);
       // write payload
-      memcpy(payload_data + sizeof(sample_name_size) + sample_name_size, serialized_sample_.c_str(), sample_size);
+      memcpy(payload_data + sizeof(sample_name_size) + sample_name_size, serialized_sample_.data(), sample_size);
 
       return data_size;
     }

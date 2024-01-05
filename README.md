@@ -38,7 +38,7 @@ This section provides documentation for the CMake options used in configuring th
 ##### `BUILD_SAMPLES` (Default: ON)
 - This option controls whether the eCAL samples should be built. If not needed, you can disable this option to reduce build time and output size.
 
-##### `BUILD_SAMPLES_PROTOBUF` (Default: ON)
+##### `BUILD_SAMPLES_PROTOBUF` (Default: OFF)
 - This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time and output size.
 - Requires serilization library google::protobuf.
 
@@ -71,11 +71,11 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
 
-##### `ECAL_CORE_CEREAL` (Default: OFF)
-Enabling this option would use the Cereal library for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_PROTOBUF`.
+##### `ECAL_CORE_NANOPB` (Default: ON)
+Enabling this option would use the NanoPb library for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_PROTOBUF`.
 
-##### `ECAL_CORE_PROTOBUF` (Default: ON)
-Enabling this option uses Google Protocol Buffers for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_CEREAL`.
+##### `ECAL_CORE_PROTOBUF` (Default: OFF)
+Enabling this option uses Google Protocol Buffers for internal serialization within eCAL. Note that this option is exclusive of `ECAL_CORE_NANOPB`.
 
 Note: Please adjust these options based on your project's needs, ensuring that the selected features align with your desired functionality and dependencies.
 

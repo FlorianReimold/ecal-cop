@@ -114,22 +114,26 @@ namespace eCAL
     ecal_sample_mutable_content.clock = attr_.clock;
     ecal_sample_mutable_content.time  = attr_.time;
     ecal_sample_mutable_content.hash  = attr_.hash;
-    std::copy(static_cast<const char*>(buf_), static_cast<const char*>(buf_) + attr_.len, std::back_inserter(ecal_sample_mutable_content.payload));
+    ecal_sample_mutable_content.payload_snd_ptr  = static_cast<const char*>(buf_);
+    ecal_sample_mutable_content.payload_snd_size = attr_.len;
 
     // send it
     size_t sent = 0;
-    if (attr_.loopback)
+    if (SerializeToBuffer(ecal_sample, m_sample_buffer))
     {
-      if (m_sample_sender_loopback)
+      if (attr_.loopback)
       {
-        sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, SerializeToBinaryString(ecal_sample), attr_.bandwidth);
+        if (m_sample_sender_loopback)
+        {
+          sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, m_sample_buffer, attr_.bandwidth);
+        }
       }
-    }
-    else
-    {
-      if (m_sample_sender_no_loopback)
+      else
       {
-        sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, SerializeToBinaryString(ecal_sample), attr_.bandwidth);
+        if (m_sample_sender_no_loopback)
+        {
+          sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, m_sample_buffer, attr_.bandwidth);
+        }
       }
     }
 

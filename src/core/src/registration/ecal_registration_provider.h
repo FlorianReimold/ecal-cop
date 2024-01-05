@@ -40,6 +40,7 @@
 #include <string>
 #include <thread>
 #include <unordered_map>
+#include <vector>
 
 namespace eCAL
 {
@@ -69,6 +70,8 @@ namespace eCAL
     int                                 m_reg_refresh;
     bool                                m_reg_topics;
     bool                                m_reg_process;
+
+    std::vector<char>                   m_sample_buffer;
 
     std::shared_ptr<UDP::CSampleSender> m_reg_sample_snd;
     std::shared_ptr<CCallbackThread>    m_reg_sample_snd_thread;

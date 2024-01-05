@@ -68,7 +68,7 @@ endif()
 
 # additional builds (adapt to your needs)
 option(BUILD_SAMPLES                                     "Build the eCAL samples"                                                                      ON)
-option(BUILD_SAMPLES_PROTOBUF                            "Build the eCAL samples using google protobuf message definition"                             ON)
+option(BUILD_SAMPLES_PROTOBUF                            "Build the eCAL samples using google protobuf message definition"                            OFF)
 option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                                                 ON)
 
 # core internal feature configuration (adapt to your needs)
@@ -78,9 +78,8 @@ option(ECAL_CORE_REGISTRATION                            "Enables the eCAL regis
 option(ECAL_CORE_PUBLISHER                               "Enables the eCAL publisher functionality"                                                    ON)
 option(ECAL_CORE_SUBSCRIBER                              "Enables the eCAL subscriber functionality"                                                   ON)
 option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time plugin functionality"                                                  ON)
-option(ECAL_CORE_PROTOBUF                                "Use google protobuf for internal serialization"                                              ON)
-option(ECAL_CORE_NANOPB                                  "Use nanopb for internal serialization"                                                      OFF)
-option(ECAL_CORE_CEREAL                                  "Use cereal for internal serialization"                                                      OFF)
+option(ECAL_CORE_NANOPB                                  "Use nanopb for internal serialization"                                                       ON)
+option(ECAL_CORE_PROTOBUF                                "Use google protobuf for internal serialization"                                             OFF)
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 # third party library options (do not change)
@@ -337,9 +336,8 @@ message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REG
 message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
 message(STATUS "ECAL_CORE_TIMEPLUGIN                           : ${ECAL_CORE_TIMEPLUGIN}")
-message(STATUS "ECAL_CORE_PROTOBUF                             : ${ECAL_CORE_PROTOBUF}")
 message(STATUS "ECAL_CORE_NANOPB                               : ${ECAL_CORE_NANOPB}")
-message(STATUS "ECAL_CORE_CEREAL                               : ${ECAL_CORE_CEREAL}")
+message(STATUS "ECAL_CORE_PROTOBUF                             : ${ECAL_CORE_PROTOBUF}")
 message(STATUS "ECAL_NPCAP_SUPPORT                             : ${ECAL_NPCAP_SUPPORT}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_ASIO                     : ${ECAL_THIRDPARTY_BUILD_ASIO}")
 message(STATUS "ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS           : ${ECAL_THIRDPARTY_BUILD_CMAKEFUNCTIONS}")
