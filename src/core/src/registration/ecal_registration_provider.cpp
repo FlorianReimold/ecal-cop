@@ -36,7 +36,6 @@
 #include "io/udp/ecal_udp_sample_sender.h"
 
 #include <chrono>
-#include <vector>
 
 namespace eCAL
 {
@@ -145,60 +144,60 @@ namespace eCAL
 
     Registration::Sample process_sample;
     process_sample.cmd_type = bct_reg_process;
-    auto& process_sample_mutable_process = process_sample.process;
-    process_sample_mutable_process.hname                = Process::GetHostName();
-    process_sample_mutable_process.hgname               = Process::GetHostGroupName();
-    process_sample_mutable_process.pid                  = Process::GetProcessID();
-    process_sample_mutable_process.pname                = Process::GetProcessName();
-    process_sample_mutable_process.uname                = Process::GetUnitName();
-    process_sample_mutable_process.pparam               = Process::GetProcessParameter();
-    process_sample_mutable_process.datawrite            = g_process_wbytes;
-    process_sample_mutable_process.dataread             = g_process_rbytes;
-    process_sample_mutable_process.state.severity       = static_cast<Registration::eProcessSeverity>(g_process_severity);
-    process_sample_mutable_process.state.severity_level = static_cast<Registration::eProcessSeverityLevel>(g_process_severity_level);
-    process_sample_mutable_process.state.info           = g_process_info;
+    auto& process_sample_process = process_sample.process;
+    process_sample_process.hname                = Process::GetHostName();
+    process_sample_process.hgname               = Process::GetHostGroupName();
+    process_sample_process.pid                  = Process::GetProcessID();
+    process_sample_process.pname                = Process::GetProcessName();
+    process_sample_process.uname                = Process::GetUnitName();
+    process_sample_process.pparam               = Process::GetProcessParameter();
+    process_sample_process.datawrite            = g_process_wbytes;
+    process_sample_process.dataread             = g_process_rbytes;
+    process_sample_process.state.severity       = static_cast<Registration::eProcessSeverity>(g_process_severity);
+    process_sample_process.state.severity_level = static_cast<Registration::eProcessSeverityLevel>(g_process_severity_level);
+    process_sample_process.state.info           = g_process_info;
 #if ECAL_CORE_TIMEPLUGIN
     if (g_timegate() == nullptr)
     {
-      process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
+      process_sample_process.tsync_state = Registration::eTSyncState::tsync_none;
     }
     else
     {
       if (!g_timegate()->IsSynchronized())
       {
-        process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
+        process_sample_process.tsync_state = Registration::eTSyncState::tsync_none;
       }
       else
       {
         switch (g_timegate()->GetSyncMode())
         {
         case CTimeGate::eTimeSyncMode::realtime:
-          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_realtime;
+          process_sample_process.tsync_state = Registration::eTSyncState::tsync_realtime;
           break;
         case CTimeGate::eTimeSyncMode::replay:
-          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_replay;
+          process_sample_process.tsync_state = Registration::eTSyncState::tsync_replay;
           break;
         default:
-          process_sample_mutable_process.tsync_state = Registration::eTSyncState::tsync_none;
+          process_sample_process.tsync_state = Registration::eTSyncState::tsync_none;
           break;
         }
       }
-      process_sample_mutable_process.tsync_mod_name = g_timegate()->GetName();
+      process_sample_process.tsync_mod_name = g_timegate()->GetName();
     }
 #endif
 
     // eCAL initialization state
     const unsigned int comp_state(g_globals()->GetComponents());
-    process_sample_mutable_process.component_init_state = comp_state;
+    process_sample_process.component_init_state = comp_state;
     std::string component_info;
     if ((comp_state & Init::Publisher)  != 0u) component_info += "|pub";
     if ((comp_state & Init::Subscriber) != 0u) component_info += "|sub";
     if ((comp_state & Init::Logging)    != 0u) component_info += "|log";
     if ((comp_state & Init::TimeSync)   != 0u) component_info += "|time";
     if (!component_info.empty()) component_info = component_info.substr(1);
-    process_sample_mutable_process.component_init_info = component_info;
+    process_sample_process.component_init_info = component_info;
 
-    process_sample_mutable_process.ecal_runtime_version = GetVersionString();
+    process_sample_process.ecal_runtime_version = GetVersionString();
 
     // apply registration sample
     const bool return_value = ApplySample(Process::GetHostName(), process_sample);
@@ -213,11 +212,11 @@ namespace eCAL
 
 	  Registration::Sample process_sample;
 	  process_sample.cmd_type = bct_unreg_process;
-	  auto& process_sample_mutable_process = process_sample.process;
-	  process_sample_mutable_process.hname = Process::GetHostName();
-	  process_sample_mutable_process.pid   = Process::GetProcessID();
-	  process_sample_mutable_process.pname = Process::GetProcessName();
-	  process_sample_mutable_process.uname = Process::GetUnitName();
+	  auto& process_sample_process = process_sample.process;
+	  process_sample_process.hname = Process::GetHostName();
+	  process_sample_process.pid   = Process::GetProcessID();
+	  process_sample_process.pname = Process::GetProcessName();
+	  process_sample_process.uname = Process::GetUnitName();
 
     // apply unregistration sample
     const bool return_value = ApplySample(Process::GetHostName(), process_sample);
@@ -251,10 +250,10 @@ namespace eCAL
 
     if (m_reg_sample_snd)
     {
-      std::vector<char> sample_buffer;
-      if (SerializeToBuffer(sample_, sample_buffer))
+      const std::lock_guard<std::mutex> lock(m_sample_buffer_sync);
+      if (SerializeToBuffer(sample_, m_sample_buffer))
       {
-        return_value &= (m_reg_sample_snd->Send(sample_name_, sample_buffer, -1) != 0);
+        return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer, -1) != 0);
       }
     }
 

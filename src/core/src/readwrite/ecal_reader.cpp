@@ -175,47 +175,47 @@ namespace eCAL
     // create command parameter
     Registration::Sample ecal_reg_sample;
     ecal_reg_sample.cmd_type = bct_reg_subscriber;
-    auto& ecal_reg_sample_mutable_topic = ecal_reg_sample.topic;
-    ecal_reg_sample_mutable_topic.hname  = m_host_name;
-    ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
-    ecal_reg_sample_mutable_topic.tname  = m_topic_name;
-    ecal_reg_sample_mutable_topic.tid    = m_topic_id;
+    auto& ecal_reg_sample_topic = ecal_reg_sample.topic;
+    ecal_reg_sample_topic.hname  = m_host_name;
+    ecal_reg_sample_topic.hgname = m_host_group_name;
+    ecal_reg_sample_topic.tname  = m_topic_name;
+    ecal_reg_sample_topic.tid    = m_topic_id;
     // topic_information
     // Remove eCAL6!!
-    if (m_use_ttype) ecal_reg_sample_mutable_topic.ttype = Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name);
-    if (m_use_tdesc) ecal_reg_sample_mutable_topic.tdesc = m_topic_info.descriptor;
+    if (m_use_ttype) ecal_reg_sample_topic.ttype = Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name);
+    if (m_use_tdesc) ecal_reg_sample_topic.tdesc = m_topic_info.descriptor;
     {
-      auto& ecal_reg_sample_mutable_tdatatype = ecal_reg_sample_mutable_topic.tdatatype;
+      auto& ecal_reg_sample_tdatatype = ecal_reg_sample_topic.tdatatype;
       if (m_use_ttype)
       {
-        ecal_reg_sample_mutable_tdatatype.encoding = m_topic_info.encoding;
-        ecal_reg_sample_mutable_tdatatype.name     = m_topic_info.name;
+        ecal_reg_sample_tdatatype.encoding = m_topic_info.encoding;
+        ecal_reg_sample_tdatatype.name     = m_topic_info.name;
       }
       if (m_use_tdesc)
       {
-        ecal_reg_sample_mutable_tdatatype.desc = m_topic_info.descriptor;
+        ecal_reg_sample_tdatatype.desc = m_topic_info.descriptor;
       }
     }
-    ecal_reg_sample_mutable_topic.attr  = m_attr;
-    ecal_reg_sample_mutable_topic.tsize = static_cast<int32_t>(m_topic_size);
+    ecal_reg_sample_topic.attr  = m_attr;
+    ecal_reg_sample_topic.tsize = static_cast<int32_t>(m_topic_size);
     // udp multicast layer
     {
-      ecal_reg_sample_mutable_topic.tlayer.resize(1);
-      auto& udp_tlayer = ecal_reg_sample_mutable_topic.tlayer[0];
+      ecal_reg_sample_topic.tlayer.resize(1);
+      auto& udp_tlayer = ecal_reg_sample_topic.tlayer[0];
       udp_tlayer.type      = tl_ecal_udp_mc;
       udp_tlayer.version   = 1;
       udp_tlayer.confirmed = m_use_udp_mc_confirmed;
     }
-    ecal_reg_sample_mutable_topic.pid           = m_pid;
-    ecal_reg_sample_mutable_topic.pname         = m_pname;
-    ecal_reg_sample_mutable_topic.uname         = Process::GetUnitName();
-    ecal_reg_sample_mutable_topic.dclock        = m_clock;
-    ecal_reg_sample_mutable_topic.dfreq         = m_freq;
-    ecal_reg_sample_mutable_topic.message_drops = static_cast<int32_t>(m_message_drops);
+    ecal_reg_sample_topic.pid           = m_pid;
+    ecal_reg_sample_topic.pname         = m_pname;
+    ecal_reg_sample_topic.uname         = Process::GetUnitName();
+    ecal_reg_sample_topic.dclock        = m_clock;
+    ecal_reg_sample_topic.dfreq         = m_freq;
+    ecal_reg_sample_topic.message_drops = static_cast<int32_t>(m_message_drops);
 
     // we do not know the number of connections ..
-    ecal_reg_sample_mutable_topic.connections_loc = 0;
-    ecal_reg_sample_mutable_topic.connections_ext = 0;
+    ecal_reg_sample_topic.connections_loc = 0;
+    ecal_reg_sample_topic.connections_ext = 0;
 
     // register subscriber
     if(g_registration_provider() != nullptr) g_registration_provider()->RegisterTopic(m_topic_name, m_topic_id, ecal_reg_sample, force_);
@@ -236,14 +236,14 @@ namespace eCAL
     // create command parameter
     Registration::Sample ecal_unreg_sample;
     ecal_unreg_sample.cmd_type = bct_unreg_subscriber;
-    auto& ecal_reg_sample_mutable_topic = ecal_unreg_sample.topic;
-    ecal_reg_sample_mutable_topic.hname  = m_host_name;
-    ecal_reg_sample_mutable_topic.hgname = m_host_group_name;
-    ecal_reg_sample_mutable_topic.pname  = m_pname;
-    ecal_reg_sample_mutable_topic.pid    = m_pid;
-    ecal_reg_sample_mutable_topic.tname  = m_topic_name;
-    ecal_reg_sample_mutable_topic.tid    = m_topic_id;
-    ecal_reg_sample_mutable_topic.uname  = Process::GetUnitName();
+    auto& ecal_reg_sample_topic = ecal_unreg_sample.topic;
+    ecal_reg_sample_topic.hname  = m_host_name;
+    ecal_reg_sample_topic.hgname = m_host_group_name;
+    ecal_reg_sample_topic.pname  = m_pname;
+    ecal_reg_sample_topic.pid    = m_pid;
+    ecal_reg_sample_topic.tname  = m_topic_name;
+    ecal_reg_sample_topic.tid    = m_topic_id;
+    ecal_reg_sample_topic.uname  = Process::GetUnitName();
 
     // unregister subscriber
     if (g_registration_provider() != nullptr) g_registration_provider()->UnregisterTopic(m_topic_name, m_topic_id, ecal_unreg_sample, true);

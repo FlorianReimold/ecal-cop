@@ -74,6 +74,9 @@ namespace eCAL
     std::shared_ptr<UDP::CSampleSender> m_reg_sample_snd;
     std::shared_ptr<CCallbackThread>    m_reg_sample_snd_thread;
 
+    std::mutex                          m_sample_buffer_sync;
+    std::vector<char>                   m_sample_buffer;
+
     using SampleMapT = std::unordered_map<std::string, eCAL::Registration::Sample>;
     std::mutex                          m_topics_map_sync;
     SampleMapT                          m_topics_map;
