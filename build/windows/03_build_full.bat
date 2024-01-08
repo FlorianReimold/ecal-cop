@@ -19,6 +19,6 @@ mkdir _build
 cd _build
 
 cmake .. -A x64 %CMAKE_OPTIONS%
-cmake --build . --config Release
+cmake --build . --parallel --config Release
 
 popd

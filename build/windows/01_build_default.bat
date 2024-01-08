@@ -6,6 +6,6 @@ mkdir _build
 cd _build
 
 cmake .. -A x64
-cmake --build . --config Release
+cmake --build . --parallel --config Release
 
 popd
