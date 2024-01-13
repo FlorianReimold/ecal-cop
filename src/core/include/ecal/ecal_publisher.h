@@ -193,15 +193,6 @@ namespace eCAL
     ECAL_API bool ShareDescription(bool state_ = true);
 
     /**
-     * @brief Set publisher maximum transmit bandwidth for the udp layer.
-     *
-     * @param bandwidth_  Maximum bandwidth in bytes/s (-1 == unlimited).
-     *
-     * @return  True if it succeeds, false if it fails.
-    **/
-    ECAL_API bool SetMaxBandwidthUDP(long bandwidth_);
-
-    /**
      * @brief Set the specific topic id.
      *
      * @param id_     The topic id for subscriber side filtering (0 == no id).

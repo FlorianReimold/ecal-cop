@@ -48,8 +48,6 @@
 
 #define  NET_UDP_MULTICAST_JOIN_ALL_IF_ENABLED_S   "multicast_join_all_if"
 
-#define  NET_BANDWIDTH_MAX_UDP_S                   "bandwidth_max_udp"
-
 #define  NET_UDP_MC_REC_ENABLED_S                  "udp_mc_rec_enabled"
 #define  NET_SHM_REC_ENABLED_S                     "shm_rec_enabled"
 #define  NET_TCP_REC_ENABLED_S                     "tcp_rec_enabled"

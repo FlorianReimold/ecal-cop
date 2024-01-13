@@ -77,7 +77,6 @@ namespace eCAL
     m_clock(0),
     m_clock_old(0),
     m_freq(0),
-    m_bandwidth_max_udp(NET_BANDWIDTH_MAX_UDP),
     m_loc_subscribed(false),
     m_ext_subscribed(false),
     m_use_ttype(true),
@@ -116,7 +115,6 @@ namespace eCAL
     m_clock_old              = 0;
     m_snd_time               = std::chrono::steady_clock::time_point();
     m_freq                   = 0;
-    m_bandwidth_max_udp      = Config::GetMaxUdpBandwidthBytesPerSecond();
     m_buffering_shm          = Config::GetMemfileBufferCount();
     m_zero_copy              = Config::IsMemfileZerocopyEnabled();
     m_acknowledge_timeout_ms = Config::GetMemfileAckTimeoutMs();
@@ -196,7 +194,6 @@ namespace eCAL
     m_clock_old              = 0;
     m_snd_time               = std::chrono::steady_clock::time_point();
     m_freq                   = 0;
-    m_bandwidth_max_udp      = Config::GetMaxUdpBandwidthBytesPerSecond();
     m_buffering_shm          = Config::GetMemfileBufferCount();
     m_zero_copy              = Config::IsMemfileZerocopyEnabled();
     m_acknowledge_timeout_ms = Config::GetMemfileAckTimeoutMs();
@@ -320,12 +317,6 @@ namespace eCAL
     default:
       break;
     }
-    return true;
-  }
-
-  bool CDataWriter::SetMaxBandwidthUDP(long bandwidth_)
-  {
-    m_bandwidth_max_udp = bandwidth_;
     return true;
   }
 
@@ -537,7 +528,6 @@ namespace eCAL
         wattr.clock     = m_clock;
         wattr.hash      = snd_hash;
         wattr.time      = time_;
-        wattr.bandwidth = m_bandwidth_max_udp;
         wattr.loopback  = loopback;
 
         // prepare send

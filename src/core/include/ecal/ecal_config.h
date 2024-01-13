@@ -60,8 +60,6 @@ namespace eCAL
 
     ECAL_API bool              IsUdpMulticastJoinAllIfEnabled       ();
 
-    ECAL_API int               GetMaxUdpBandwidthBytesPerSecond     ();
-
     ECAL_API bool              IsUdpMulticastRecEnabled             ();
     ECAL_API bool              IsShmRecEnabled                      ();
     ECAL_API bool              IsTcpRecEnabled                      ();

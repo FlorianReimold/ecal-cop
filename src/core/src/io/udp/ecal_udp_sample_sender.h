@@ -37,7 +37,7 @@ namespace eCAL
     {
     public:
       CSampleSender(const IO::UDP::SSenderAttr& attr_);
-      size_t Send(const std::string& sample_name_, const std::vector<char>& serialized_sample_, long bandwidth_);
+      size_t Send(const std::string& sample_name_, const std::vector<char>& serialized_sample_);
 
     private:
       IO::UDP::SSenderAttr                 m_attr;

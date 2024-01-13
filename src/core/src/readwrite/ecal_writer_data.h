@@ -34,7 +34,6 @@ namespace eCAL
     long long    clock                  = 0;
     size_t       hash                   = 0;
     long long    time                   = 0;
-    long         bandwidth              = 0;
     bool         loopback               = false;
   };
 }

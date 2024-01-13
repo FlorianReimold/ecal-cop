@@ -94,7 +94,6 @@ namespace eCAL
     void ShareDescription(bool state_);
 
     bool SetLayerMode(TLayer::eTransportLayer layer_, TLayer::eSendMode mode_);
-    bool SetMaxBandwidthUDP(long bandwidth_);
 
     bool ShmSetBufferCount(size_t buffering_);
     bool ShmEnableZeroCopy(bool state_);
@@ -179,8 +178,6 @@ namespace eCAL
     long long                              m_clock_old;
     std::chrono::steady_clock::time_point  m_snd_time;
     long                                   m_freq;
-
-    long                                   m_bandwidth_max_udp;
 
     std::atomic<bool>                      m_loc_subscribed;
     std::atomic<bool>                      m_ext_subscribed;

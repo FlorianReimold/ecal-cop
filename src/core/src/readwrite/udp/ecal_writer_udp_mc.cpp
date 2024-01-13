@@ -104,12 +104,6 @@ namespace eCAL
     ecal_sample_topic.tname = m_topic_name;
     ecal_sample_topic.tid   = m_topic_id;
 
-    // udp multicast layer
-    //eCAL::Payload::TLayer udp_tlayer;
-    //udp_tlayer.type      = eCAL::eTLayerType::tl_ecal_udp_mc;
-    //udp_tlayer.confirmed = true;
-    //ecal_sample_topic.tlayer.push_back(udp_tlayer);
-
     // append content
     auto& ecal_sample_content = ecal_sample.content;
     ecal_sample_content.id               = attr_.id;
@@ -128,14 +122,14 @@ namespace eCAL
       {
         if (m_sample_sender_loopback)
         {
-          sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, m_sample_buffer, attr_.bandwidth);
+          sent = m_sample_sender_loopback->Send(ecal_sample.topic.tname, m_sample_buffer);
         }
       }
       else
       {
         if (m_sample_sender_no_loopback)
         {
-          sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, m_sample_buffer, attr_.bandwidth);
+          sent = m_sample_sender_no_loopback->Send(ecal_sample.topic.tname, m_sample_buffer);
         }
       }
     }

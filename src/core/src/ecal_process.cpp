@@ -164,15 +164,6 @@ namespace eCAL
       const int port = Config::GetUdpMulticastPort();
       sstream << "Multicast ports          : " << port << " - " << port + 10 << std::endl;
       sstream << "Multicast join all IFs   : " << (Config::IsUdpMulticastJoinAllIfEnabled() ? "on" : "off") << std::endl;
-      auto bandwidth = Config::GetMaxUdpBandwidthBytesPerSecond();
-      if (bandwidth < 0)
-      {
-        sstream << "Bandwidth limit (udp)    : not limited" << std::endl;
-      }
-      else
-      {
-        sstream << "Bandwidth limit udp      : " << GetBufferStr(bandwidth) + "/s" << std::endl;
-      }
       sstream << std::endl;
 
 #if ECAL_CORE_TIMEPLUGIN

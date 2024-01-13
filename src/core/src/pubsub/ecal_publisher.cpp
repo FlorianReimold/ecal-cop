@@ -190,12 +190,6 @@ namespace eCAL
     return true;
   }
 
-  bool CPublisher::SetMaxBandwidthUDP(long bandwidth_)
-  {
-    if (!m_created) return(false);
-    return m_datawriter->SetMaxBandwidthUDP(bandwidth_);
-  }
-
   bool CPublisher::SetID(long long id_)
   {
     m_id = id_;
@@ -354,11 +348,6 @@ namespace eCAL
   }
 
   bool CPublisher::ShareDescription(bool state_ /*= true*/)
-  {
-    return false;
-  }
-
-  bool CPublisher::SetMaxBandwidthUDP(long bandwidth_)
   {
     return false;
   }

@@ -71,7 +71,7 @@ namespace IO
       return data_size;
     }
 
-    size_t SendFragmentedMessage(char* buf_, size_t buf_len_, long bandwidth_, const TransmitCallbackT& transmit_cb_)
+    size_t SendFragmentedMessage(char* buf_, size_t buf_len_, const TransmitCallbackT& transmit_cb_)
     {
       if (buf_ == nullptr) return(0);
 
@@ -109,15 +109,6 @@ namespace IO
       break;
       default:
       {
-        // calculate bandwidth timing parameter
-        long long send_sleep_us(0);
-        if (bandwidth_ > 0)
-        {
-          send_sleep_us = MSG_BUFFER_SIZE;
-          send_sleep_us *= 1000 * 1000;
-          send_sleep_us /= bandwidth_;
-        }
-
         // create start package
         msg_header.type = msg_type_header;
         {
@@ -171,11 +162,6 @@ namespace IO
             // send data package
             sent = transmit_cb_(buf_ + static_cast<size_t>(current_packet_num) * MSG_PAYLOAD_SIZE, sizeof(struct SUDPMessageHead) + current_snd_len);
             if (sent == 0) return(sent);
-            if (send_sleep_us != 0)
-            {
-              auto start = std::chrono::steady_clock::now();
-              std::this_thread::sleep_until(start + std::chrono::microseconds(send_sleep_us));
-            }
 
 #ifndef NDEBUG
             // log it

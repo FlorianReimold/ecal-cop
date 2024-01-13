@@ -302,16 +302,6 @@ extern "C"
 #endif
   }
 
-  ECALC_API int eCAL_Pub_SetMaxBandwidthUDP(ECAL_HANDLE handle_, long bandwidth_)
-  {
-#if ECAL_CORE_PUBLISHER
-    if (handle_ == nullptr) return(0);
-    auto* pub = static_cast<eCAL::CPublisher*>(handle_);
-    if (pub->SetMaxBandwidthUDP(bandwidth_)) return(1);
-#endif
-    return(0);
-  }
-
   ECALC_API int eCAL_Pub_SetID(ECAL_HANDLE handle_, long long id_)
   {
 #if ECAL_CORE_PUBLISHER

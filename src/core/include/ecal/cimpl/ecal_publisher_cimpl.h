@@ -110,17 +110,7 @@ extern "C"
   ECALC_API int eCAL_Pub_ShareDescription(ECAL_HANDLE handle_, int state_);
 
   /**
-   * @brief Set publisher maximum transmit bandwidth for the udp layer.
-   *
-   * @param handle_     Publisher handle.
-   * @param bandwidth_  Maximum bandwidth in bytes/s (-1 == unlimited).
-   *
-   * @return  True if it succeeds, false if it fails.
-  **/
-  ECALC_API int eCAL_Pub_SetMaxBandwidthUDP(ECAL_HANDLE handle_, long bandwidth_);
-
-  /**
-   * @brief Set publisher maximum transmit bandwidth for the udp layer.
+   * @brief Set the specific topic id.
    *
    * @param handle_  Publisher handle.
    * @param id_      The topic id for subscriber side filtering (0 == no id).
