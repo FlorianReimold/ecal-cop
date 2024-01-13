@@ -31,7 +31,16 @@ git submodule init
 git submodule update
 ```
 
-### Set CMake Options
+### Build it
+
+```bash
+mkdir _build
+cd _build
+cmake .. -A x64
+cmake --build .
+```
+
+### CMake Options
 
 This section provides documentation for the CMake options used in configuring the eCAL library. These options allow you to customize the build and enable or disable specific features. Please adapt the options according to your project requirements.
 
@@ -86,12 +95,3 @@ This section provides documentation for the CMake options used in configuring th
 - Requires udpcap library.
 
 Note: Please adjust these options based on your project's needs, ensuring that the selected features align with your desired functionality and dependencies.
-
-### Build it
-
-```bash
-mkdir _build
-cd _build
-cmake .. -A x64
-cmake --build .
-```
