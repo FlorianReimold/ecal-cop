@@ -25,8 +25,8 @@ Apart from these limitations, this functional reduced eCAL core version is fully
 ### Clone the repository and its submodules
 
 ```bash
-git clone https://github.com/ecal-io/ecal-core-udp.git
-cd ecal-core-udp
+git clone https://github.com/ecal-io/ecal-cop.git
+cd ecal-cop
 git submodule init
 git submodule update
 ```
