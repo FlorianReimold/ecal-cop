@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include "serialization/ecal_sample_struct_registration.h"
+
 #include <memory>
 #include <string>
 
@@ -32,11 +34,11 @@ namespace eCAL
   // transmitted from a writer to a reader
   struct SReaderLayerPar
   {
-    std::string host_name;
-    std::string process_id;
-    std::string topic_name;
-    std::string topic_id;
-    std::string parameter;
+    std::string                 host_name;
+    std::string                 process_id;
+    std::string                 topic_name;
+    std::string                 topic_id;
+    Registration::ConnectionPar parameter;
   };
 
   // ecal data layer base class

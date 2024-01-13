@@ -29,8 +29,11 @@
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
 
+#include <iostream>
+
 namespace
 {
+  // TODO: Mach es durch 8 teilbar! Nutze dazu das padding Feld.
   bool PayloadStruct2Buffer(const eCAL::Payload::Sample& source_sample_, std::vector<char>& target_buffer_)
   {
     eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
@@ -46,8 +49,6 @@ namespace
     eCAL::nanopb::encode_string(pb_sample.topic.tid, source_sample_.topic.tid);
     // tname
     eCAL::nanopb::encode_string(pb_sample.topic.tname, source_sample_.topic.tname);
-    // tlayer
-    eCAL::nanopb::encode_payload_layer(pb_sample.topic.tlayer, source_sample_.topic.tlayer);
 
     // topic content
     pb_sample.has_content = true;
@@ -55,8 +56,10 @@ namespace
     pb_sample.content.clock = source_sample_.content.clock;
     pb_sample.content.time  = source_sample_.content.time;
     pb_sample.content.hash  = source_sample_.content.hash;
+    pb_sample.content.size = source_sample_.content.size;
 
     // extract payload
+    // payload may be stored as std::vector<char> or raw pointer + size
     const char* payload_addr = nullptr;
     size_t      payload_size = 0;
     switch (source_sample_.content.payload.type)
@@ -75,9 +78,12 @@ namespace
 
     // topic content payload
     eCAL::nanopb::SNanoBytes payload;
-    payload.content = (pb_byte_t*)(payload_addr);
-    payload.length  = payload_size;
-    eCAL::nanopb::encode_bytes(pb_sample.content.payload, payload);
+    if ((payload_addr != nullptr) && (payload_size > 0))
+    {
+      payload.content = (pb_byte_t*)(payload_addr);
+      payload.length  = payload_size;
+      eCAL::nanopb::encode_bytes(pb_sample.content.payload, payload);
+    }
 
     ///////////////////////////////////////////////
     // evaluate byte size
@@ -91,7 +97,11 @@ namespace
     target_buffer_.resize(pb_sizestream.bytes_written);
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
+    if (!pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb payload encode failed: " << pb_ostream.errmsg << std::endl;
+    }
+    else
     {
       return true;
     }
@@ -116,8 +126,6 @@ namespace
     eCAL::nanopb::decode_string(pb_sample.topic.tid, target_sample_.topic.tid);
     // tname
     eCAL::nanopb::decode_string(pb_sample.topic.tname, target_sample_.topic.tname);
-    // tlayer
-    eCAL::nanopb::decode_payload_layer(pb_sample.topic.tlayer, target_sample_.topic.tlayer);
     // topic content payload
     target_sample_.content.payload.type = eCAL::Payload::pl_vec;
     eCAL::nanopb::decode_bytes(pb_sample.content.payload, target_sample_.content.payload.vec);
@@ -127,7 +135,10 @@ namespace
     ///////////////////////////////////////////////
     pb_istream_t pb_istream;
     pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
-    pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample);
+    if (!pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb payload decode failed: " << pb_istream.errmsg << std::endl;
+    }
 
     ///////////////////////////////////////////////
     // assign values
@@ -140,6 +151,7 @@ namespace
     target_sample_.content.clock = pb_sample.content.clock;
     target_sample_.content.time  = pb_sample.content.time;
     target_sample_.content.hash  = pb_sample.content.hash;
+    target_sample_.content.size  = pb_sample.content.size;
 
     return true;
   }

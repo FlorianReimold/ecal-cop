@@ -46,7 +46,9 @@ namespace eCAL
     bool Unregister(const std::string& topic_name_, const std::shared_ptr<CDataReader>& datareader_);
 
     bool HasSample(const std::string& sample_name_);
-    bool ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_);
+
+    bool ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_, eTLayerType layer_);
+    bool ApplySample(const std::string& topic_name_, const std::string& topic_id_, const char* buf_, size_t len_, long long id_, long long clock_, long long time_, size_t hash_, eTLayerType layer_);
 
     void ApplyLocPubRegistration(const Registration::Sample& ecal_sample_);
     void ApplyLocPubUnregistration(const Registration::Sample& ecal_sample_);

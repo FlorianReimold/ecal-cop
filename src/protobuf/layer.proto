@@ -25,15 +25,33 @@ message LayerParUdpMC
 {
 }
 
+message LayerParShm
+{
+  repeated string  memory_file_list   =   1;    // list of memory file names
+}
+
+message LayerParInproc
+{
+}
+
+message LayerParTcp
+{
+  int32            port               =   1;    // tcp writers port number
+}
+
 message ConnnectionPar                          // connection parameter for reader / writer
 {
   LayerParUdpMC    layer_par_udpmc    =   1;    // parameter for ecal udp multicast
+  LayerParShm      layer_par_shm      =   2;    // parameter for ecal shared memory
+  LayerParTcp      layer_par_tcp      =   4;    // parameter for ecal tcp
 }
 
 enum eTLayerType                                // transport layer
 {
   tl_none                             =   0;    // undefined
   tl_ecal_udp_mc                      =   1;    // ecal udp multicast
+  tl_ecal_shm                         =   4;    // ecal shared memory
+  tl_ecal_tcp                         =   5;    // ecal tcp
   tl_all                              = 255;    // all layer
 }
 

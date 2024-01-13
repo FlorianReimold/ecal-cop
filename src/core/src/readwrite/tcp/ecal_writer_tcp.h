@@ -18,23 +18,28 @@
 */
 
 /**
- * @brief  udp data writer
+ * @brief  tcp writer
 **/
 
 #pragma once
 
-#include "io/udp/ecal_udp_sample_sender.h"
 #include "readwrite/ecal_writer_base.h"
 
+#include <tcp_pubsub/executor.h>
+#include <tcp_pubsub/publisher.h>
+
+#include <mutex>
 #include <string>
 #include <vector>
 
 namespace eCAL
 {
-  class CDataWriterUdpMC : public CDataWriterBase
+  // ecal tcp writer
+  class CDataWriterTCP : public CDataWriterBase
   {
   public:
-    ~CDataWriterUdpMC() override;
+    CDataWriterTCP();
+    ~CDataWriterTCP() override;
 
     SWriterInfo GetInfo() override;
 
@@ -45,9 +50,15 @@ namespace eCAL
 
     bool Write(const void* buf_, const SWriterAttr& attr_) override;
 
-  protected:
-    std::vector<char>                   m_sample_buffer;
-    std::shared_ptr<UDP::CSampleSender> m_sample_sender_loopback;
-    std::shared_ptr<UDP::CSampleSender> m_sample_sender_no_loopback;
+    Registration::ConnectionPar GetConnectionParameter() override;
+
+  private:
+    std::vector<char>                            m_header_buffer;
+
+    static std::mutex                            g_tcp_writer_executor_mtx;
+    static std::shared_ptr<tcp_pubsub::Executor> g_tcp_writer_executor;
+
+    std::shared_ptr<tcp_pubsub::Publisher>       m_publisher;
+    uint16_t                                     m_port;
   };
 }

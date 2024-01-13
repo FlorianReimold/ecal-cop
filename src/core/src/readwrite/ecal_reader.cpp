@@ -29,8 +29,19 @@
 #endif
 #include "ecal_reader.h"
 #include "ecal_global_accessors.h"
+#include "ecal_reader_layer.h"
 
-#include "readwrite/udp/ecal_reader_udp_mc.h"
+#if ECAL_CORE_TRANSPORT_UDP
+#include "udp/ecal_reader_udp_mc.h"
+#endif
+
+#if ECAL_CORE_TRANSPORT_SHM
+#include "shm/ecal_reader_shm.h"
+#endif
+
+#if ECAL_CORE_TRANSPORT_TCP
+#include "tcp/ecal_reader_tcp.h"
+#endif
 
 #include <iterator>
 #include <sstream>
@@ -48,15 +59,21 @@ namespace eCAL
                  m_pid(Process::GetProcessID()),
                  m_pname(Process::GetProcessName()),
                  m_topic_size(0),
+                 m_connected(false),
                  m_read_buf_received(false),
                  m_read_time(0),
+                 m_receive_time(0),
                  m_clock(0),
                  m_clock_old(0),
                  m_freq(0),
                  m_message_drops(0),
+                 m_loc_published(false),
+                 m_ext_published(false),
                  m_use_ttype(true),
                  m_use_tdesc(true),
                  m_use_udp_mc_confirmed(false),
+                 m_use_shm_confirmed(false),
+                 m_use_tcp_confirmed(false),
                  m_created(false)
   {
   }
@@ -71,15 +88,14 @@ namespace eCAL
     if(m_created) return(false);
 
     // set defaults
-    m_topic_name           = topic_name_;
+    m_topic_name    = topic_name_;
     m_topic_id.clear();
-    m_topic_info           = topic_info_;
-    m_clock                = 0;
-    m_clock_old            = 0;
-    m_message_drops        = 0;
-    m_rec_time             = std::chrono::steady_clock::time_point();
-    m_use_udp_mc_confirmed = false;
-    m_created              = false;
+    m_topic_info    = topic_info_;
+    m_clock         = 0;
+    m_clock_old     = 0;
+    m_message_drops = 0;
+    m_rec_time      = std::chrono::steady_clock::time_point();
+    m_created       = false;
 #ifndef NDEBUG
     // log it
     Logging::Log(log_level_debug1, m_topic_name + "::CDataReader::Create");
@@ -88,6 +104,11 @@ namespace eCAL
     std::stringstream counter;
     counter << std::chrono::steady_clock::now().time_since_epoch().count();
     m_topic_id = counter.str();
+
+    // set registration expiration
+    const std::chrono::milliseconds registration_timeout(Config::GetRegistrationTimeoutMs());
+    m_loc_pub_map.set_expiration(registration_timeout);
+    m_ext_pub_map.set_expiration(registration_timeout);
 
     // allow to share topic type
     m_use_ttype = Config::IsTopicTypeSharingEnabled();
@@ -125,17 +146,26 @@ namespace eCAL
       m_receive_callback = nullptr;
     }
 
+    // reset event callback map
+    {
+      const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+      m_event_callback_map.clear();
+    }
+
     // unregister
     Unregister();
 
     // reset defaults
-    m_created              = false;
-    m_clock                = 0;
-    m_clock_old            = 0;
-    m_freq                 = 0;
-    m_message_drops        = 0;
-    m_rec_time             = std::chrono::steady_clock::time_point();
-    m_use_udp_mc_confirmed = false;
+    m_created                 = false;
+    m_clock                   = 0;
+    m_clock_old               = 0;
+    m_freq                    = 0;
+    m_message_drops           = 0;
+    m_rec_time                = std::chrono::steady_clock::time_point();
+
+    m_use_udp_mc_confirmed    = false;
+    m_use_shm_confirmed       = false;
+    m_use_tcp_confirmed       = false;
 
     return(true);
   }
@@ -143,28 +173,58 @@ namespace eCAL
   void CDataReader::InitializeLayers()
   {
     // initialize udp multicast layer
+#if ECAL_CORE_TRANSPORT_UDP
     if (Config::IsUdpMulticastRecEnabled())
     {
       CUDPReaderLayer::Get()->Initialize();
     }
+#endif
+
+    // initialize tcp layer
+#if ECAL_CORE_TRANSPORT_TCP
+    if (Config::IsTcpRecEnabled())
+    {
+      CTCPReaderLayer::Get()->Initialize();
+    }
+#endif
   }
 
   void CDataReader::SubscribeToLayers()
   {
     // subscribe topic to udp multicast layer
+#if ECAL_CORE_TRANSPORT_UDP
     if (Config::IsUdpMulticastRecEnabled())
     {
       CUDPReaderLayer::Get()->AddSubscription(m_host_name, m_topic_name, m_topic_id);
     }
+#endif
+
+    // subscribe topic to tcp layer
+#if ECAL_CORE_TRANSPORT_TCP
+    if (Config::IsTcpRecEnabled())
+    {
+      CTCPReaderLayer::Get()->AddSubscription(m_host_name, m_topic_name, m_topic_id);
+    }
+#endif
   }
   
   void CDataReader::UnsubscribeFromLayers()
   {
     // unsubscribe topic from udp multicast layer
+#if ECAL_CORE_TRANSPORT_UDP
     if (Config::IsUdpMulticastRecEnabled())
     {
       CUDPReaderLayer::Get()->RemSubscription(m_host_name, m_topic_name, m_topic_id);
     }
+#endif
+
+    // unsubscribe topic from tcp multicast layer
+#if ECAL_CORE_TRANSPORT_TCP
+    if (Config::IsTcpRecEnabled())
+    {
+      CTCPReaderLayer::Get()->RemSubscription(m_host_name, m_topic_name, m_topic_id);
+    }
+#endif
   }
 
   bool CDataReader::Register(const bool force_)
@@ -198,14 +258,40 @@ namespace eCAL
     }
     ecal_reg_sample_topic.attr  = m_attr;
     ecal_reg_sample_topic.tsize = static_cast<int32_t>(m_topic_size);
+
+#if ECAL_CORE_TRANSPORT_UDP
     // udp multicast layer
     {
-      ecal_reg_sample_topic.tlayer.resize(1);
-      auto& udp_tlayer = ecal_reg_sample_topic.tlayer[0];
+      Registration::TLayer udp_tlayer;
       udp_tlayer.type      = tl_ecal_udp_mc;
       udp_tlayer.version   = 1;
       udp_tlayer.confirmed = m_use_udp_mc_confirmed;
+      ecal_reg_sample_topic.tlayer.push_back(udp_tlayer);
     }
+#endif
+
+#if ECAL_CORE_TRANSPORT_SHM
+    // shm layer
+    {
+      Registration::TLayer shm_tlayer;
+      shm_tlayer.type      = tl_ecal_shm;
+      shm_tlayer.version   = 1;
+      shm_tlayer.confirmed = m_use_shm_confirmed;
+      ecal_reg_sample_topic.tlayer.push_back(shm_tlayer);
+    }
+#endif
+
+#if ECAL_CORE_TRANSPORT_TCP
+    // tcp layer
+    {
+      Registration::TLayer tcp_tlayer;
+      tcp_tlayer.type      = tl_ecal_tcp;
+      tcp_tlayer.version   = 1;
+      tcp_tlayer.confirmed = m_use_tcp_confirmed;
+      ecal_reg_sample_topic.tlayer.push_back(tcp_tlayer);
+    }
+#endif
+
     ecal_reg_sample_topic.pid           = m_pid;
     ecal_reg_sample_topic.pname         = m_pname;
     ecal_reg_sample_topic.uname         = Process::GetUnitName();
@@ -340,6 +426,8 @@ namespace eCAL
 
     // store receive layer
     m_use_udp_mc_confirmed |= layer_ == tl_ecal_udp_mc;
+    m_use_shm_confirmed    |= layer_ == tl_ecal_shm;
+    m_use_tcp_confirmed    |= layer_ == tl_ecal_tcp;
 
     // number of hash values to track for duplicates
     constexpr int hash_queue_size(64);
@@ -385,6 +473,9 @@ namespace eCAL
 
     // increase read clock
     m_clock++;
+
+    // reset timeout
+    m_receive_time = 0;
 
     // store size
     m_topic_size = size_;
@@ -467,27 +558,213 @@ namespace eCAL
     return(true);
   }
 
+  bool CDataReader::AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_)
+  {
+    if (!m_created) return(false);
+
+    // store event callback
+    {
+#ifndef NDEBUG
+      // log it
+      Logging::Log(log_level_debug2, m_topic_name + "::CDataReader::AddEventCallback");
+#endif
+      const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+      m_event_callback_map[type_] = std::move(callback_);
+    }
+
+    return(true);
+  }
+
+  bool CDataReader::RemEventCallback(eCAL_Subscriber_Event type_)
+  {
+    if (!m_created) return(false);
+
+    // reset event callback
+    {
+#ifndef NDEBUG
+      // log it
+      Logging::Log(log_level_debug2, m_topic_name + "::CDataReader::RemEventCallback");
+#endif
+      const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+      m_event_callback_map[type_] = nullptr;
+    }
+
+    return(true);
+  }
+
   void CDataReader::SetID(const std::set<long long>& id_set_)
   {
     m_id_set = id_set_;
   }
 
-  void CDataReader::ApplyLocPublication(const std::string& /*process_id_*/, const std::string& /*tid_*/, const SDataTypeInformation& /*tinfo_*/)
+  void CDataReader::ApplyLocPublication(const std::string& process_id_, const std::string& tid_, const SDataTypeInformation& tinfo_)
   {
+    Connect(tid_, tinfo_);
+
+    // add key to local publisher map
+    const std::string topic_key = process_id_ + tid_;
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      m_loc_pub_map[topic_key] = true;
+    }
+
+    m_loc_published = true;
   }
 
-  void CDataReader::RemoveLocPublication(const std::string& /*process_id_*/, const std::string& /*tid_*/)
+  void CDataReader::RemoveLocPublication(const std::string& process_id_, const std::string& tid_)
   {
+    // remove key from local publisher map
+    const std::string topic_key = process_id_ + tid_;
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      m_loc_pub_map.erase(topic_key);
+    }
   }
 
-  void CDataReader::ApplyExtPublication(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*tid_*/, const SDataTypeInformation& /*tinfo_*/)
+  void CDataReader::ApplyExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_, const SDataTypeInformation& tinfo_)
   {
+    Connect(tid_, tinfo_);
+
+    // add key to external publisher map
+    const std::string topic_key = host_name_ + process_id_ + tid_;
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      m_ext_pub_map[topic_key] = true;
+    }
+
+    m_ext_published = true;
   }
 
-  void CDataReader::RemoveExtPublication(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*tid_*/)
+  void CDataReader::RemoveExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_)
   {
+    // remove key from external publisher map
+    const std::string topic_key = host_name_ + process_id_ + tid_;
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      m_ext_pub_map.erase(topic_key);
+    }
   }
   
+  void CDataReader::ApplyLocLayerParameter(const std::string& process_id_, const std::string& topic_id_, eTLayerType type_, const Registration::ConnectionPar& parameter_)
+  {
+    // process only for shm and tcp layer
+    switch (type_)
+    {
+    case tl_ecal_shm:
+    case tl_ecal_tcp:
+      break;
+    default:
+      return;
+    }
+
+    SReaderLayerPar par;
+    par.host_name  = m_host_name;
+    par.process_id = process_id_;
+    par.topic_name = m_topic_name;
+    par.topic_id   = topic_id_;
+    par.parameter  = parameter_;
+
+    switch (type_)
+    {
+    case tl_ecal_shm:
+#if ECAL_CORE_TRANSPORT_SHM
+      CSHMReaderLayer::Get()->SetConnectionParameter(par);
+#endif
+      break;
+    case tl_ecal_tcp:
+#if ECAL_CORE_TRANSPORT_TCP
+      CTCPReaderLayer::Get()->SetConnectionParameter(par);
+#endif
+      break;
+    default:
+      break;
+    }
+  }
+
+  void CDataReader::ApplyExtLayerParameter(const std::string& host_name_, eTLayerType type_, const Registration::ConnectionPar& parameter_)
+  {
+    // process only for tcp layer
+    switch (type_)
+    {
+    case tl_ecal_tcp:
+#if ECAL_CORE_TRANSPORT_TCP
+    {
+        SReaderLayerPar par;
+        par.host_name  = host_name_;
+        par.topic_name = m_topic_name;
+        par.topic_id   = m_topic_id;
+        par.parameter  = parameter_;
+
+        // process only for tcp layer
+        CTCPReaderLayer::Get()->SetConnectionParameter(par);
+      }
+#endif
+      break;
+    default:
+      return;
+    }
+  }
+
+  void CDataReader::Connect(const std::string& tid_, const SDataTypeInformation& tinfo_)
+  {
+    SSubEventCallbackData data;
+    data.time  = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    data.clock = 0;
+
+    if (!m_connected)
+    {
+      m_connected = true;
+
+      // fire sub_event_connected
+      {
+        const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+        auto iter = m_event_callback_map.find(sub_event_connected);
+        if (iter != m_event_callback_map.end())
+        {
+          data.type      = sub_event_connected;
+          data.tid       = tid_;
+          data.tdatatype = tinfo_;
+          (iter->second)(m_topic_name.c_str(), &data);
+        }
+      }
+    }
+
+    // fire sub_event_update_connection
+    {
+      const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+      auto iter = m_event_callback_map.find(sub_event_update_connection);
+      if (iter != m_event_callback_map.end())
+      {
+        data.type      = sub_event_update_connection;
+        data.tid       = tid_;
+        data.tdatatype = tinfo_;
+        (iter->second)(m_topic_name.c_str(), &data);
+      }
+    }
+  }
+
+  void CDataReader::Disconnect()
+  {
+    if (m_connected)
+    {
+      m_connected = false;
+
+      // fire sub_event_disconnected
+      {
+        const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+        auto iter = m_event_callback_map.find(sub_event_disconnected);
+        if (iter != m_event_callback_map.end())
+        {
+          SSubEventCallbackData data;
+          data.type  = sub_event_disconnected;
+          data.time  = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+          data.clock = 0;
+          (iter->second)(m_topic_name.c_str(), &data);
+        }
+      }
+    }
+  }
+
   bool CDataReader::CheckMessageClock(const std::string& tid_, long long current_clock_)
   {
     auto iter = m_writer_counter_map.find(tid_);
@@ -542,6 +819,20 @@ namespace eCAL
         msg += "\')";
         Logging::Log(log_level_warning, msg);
 #endif
+        // we fire the message drop event
+        {
+          const std::lock_guard<std::mutex> lock(m_event_callback_map_sync);
+          auto citer = m_event_callback_map.find(sub_event_dropped);
+          if (citer != m_event_callback_map.end())
+          {
+            SSubEventCallbackData data;
+            data.type  = sub_event_dropped;
+            data.time  = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
+            data.clock = current_clock_;
+            (citer->second)(m_topic_name.c_str(), &data);
+          }
+        }
+
         // increase the drop counter
         m_message_drops += clock_difference;
 
@@ -551,14 +842,15 @@ namespace eCAL
         // process it
         return true;
       }
-      else
+
       // a negative clock difference may happen if a publisher
       // is using a shm ringbuffer and messages arrive in the wrong order
+      if (clock_difference < 0)
       {
         // -----------------------------------
         // drop messages in the wrong order
         // -----------------------------------
-        if (Config::GetDropOutOfOrderMessages())
+        if (Config::Experimental::GetDropOutOfOrderMessages())
         {
           // do not update the internal clock counter
 
@@ -587,6 +879,9 @@ namespace eCAL
         }
       }
     }
+
+    // should never be reached
+    return false;
   }
     
   void CDataReader::RefreshRegistration()
@@ -622,6 +917,22 @@ namespace eCAL
 
     // register without send
     Register(false);
+
+    // check connection timeouts
+    const std::shared_ptr<std::list<std::string>> loc_timeouts = std::make_shared<std::list<std::string>>();
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      m_loc_pub_map.remove_deprecated(loc_timeouts.get());
+      m_ext_pub_map.remove_deprecated();
+
+      m_loc_published = !m_loc_pub_map.empty();
+      m_ext_published = !m_ext_pub_map.empty();
+    }
+
+    if (!m_loc_published && !m_ext_published)
+    {
+      Disconnect();
+    }
   }
 
   std::string CDataReader::Dump(const std::string& indent_ /* = "" */)

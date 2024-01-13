@@ -29,6 +29,8 @@
 #include "util/advanced_tclap_output.h"
 #endif
 
+#include <algorithm>
+
 namespace
 {
   const eCAL::EventHandleT& ShutdownProcEvent()

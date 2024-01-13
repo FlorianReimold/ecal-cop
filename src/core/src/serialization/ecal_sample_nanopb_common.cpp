@@ -124,76 +124,6 @@ namespace eCAL
     }
 
     ///////////////////////////////////////////////
-    // payload_layer
-    ///////////////////////////////////////////////
-    bool encode_payload_layer_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
-    {
-      if (arg == nullptr)  return false;
-      if (*arg == nullptr) return false;
-
-      auto* layer_vec = (std::vector<eCAL::Payload::TLayer>*)(*arg);
-
-      for (auto layer : *layer_vec)
-      {
-        if (!pb_encode_tag_for_field(stream, field))
-        {
-          return false;
-        }
-
-        eCAL_pb_TLayer pb_layer = eCAL_pb_TLayer_init_default;
-        pb_layer.type      = static_cast<eCAL_pb_eTLayerType>(layer.type);
-        pb_layer.version   = layer.version;
-        pb_layer.confirmed = layer.confirmed;
-
-        //pb_layer.has_par_layer = true;
-        //pb_layer.par_layer     = layer.par_layer;
-
-        if (!pb_encode_submessage(stream, eCAL_pb_TLayer_fields, &pb_layer))
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    void encode_payload_layer(pb_callback_t& pb_callback, const std::vector<eCAL::Payload::TLayer>& layer_vec)
-    {
-      pb_callback.funcs.encode = &encode_payload_layer_field;
-      pb_callback.arg = (void*)(&layer_vec);
-    }
-
-    bool decode_payload_layer_field(pb_istream_t* stream, const pb_field_iter_t* /*field*/, void** arg)
-    {
-      if (arg == nullptr)  return false;
-      if (*arg == nullptr) return false;
-
-      eCAL_pb_TLayer pb_layer = eCAL_pb_TLayer_init_default;
-
-      if (!pb_decode(stream, eCAL_pb_TLayer_fields, &pb_layer))
-      {
-        return false;
-      }
-
-      auto trg_vector = (std::vector<eCAL::Payload::TLayer>*)(*arg);
-
-      eCAL::Payload::TLayer layer;
-      layer.type      = static_cast<eCAL::eTLayerType>(pb_layer.type);
-      layer.version   = pb_layer.version;
-      layer.confirmed = pb_layer.confirmed;
-
-      trg_vector->push_back(layer);
-
-      return true;
-    }
-
-    void decode_payload_layer(pb_callback_t& pb_callback, std::vector<eCAL::Payload::TLayer>& layer_vec)
-    {
-      pb_callback.funcs.decode = &decode_payload_layer_field;
-      pb_callback.arg = &layer_vec;
-    }
-
-    ///////////////////////////////////////////////
     // map<string, string>
     ///////////////////////////////////////////////
     bool encode_map_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
@@ -278,8 +208,20 @@ namespace eCAL
         pb_layer.version   = layer.version;
         pb_layer.confirmed = layer.confirmed;
 
-        //pb_layer.has_par_layer = true;
-        //pb_layer.par_layer     = layer.par_layer;
+        // layer
+        pb_layer.has_par_layer = true;
+        
+        // udp layer parameter
+        pb_layer.par_layer.has_layer_par_udpmc = false;
+
+        // tcp layer parameter
+        pb_layer.par_layer.has_layer_par_tcp = true;
+        pb_layer.par_layer.layer_par_tcp.port = layer.par_layer.layer_par_tcp.port;
+
+        // shm layer parameter
+        pb_layer.par_layer.has_layer_par_shm = false;
+        //pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.encode = ..
+        //pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = ..
 
         if (!pb_encode_submessage(stream, eCAL_pb_TLayer_fields, &pb_layer))
         {
@@ -314,7 +256,13 @@ namespace eCAL
       layer.type      = static_cast<eCAL::eTLayerType>(pb_layer.type);
       layer.version   = pb_layer.version;
       layer.confirmed = pb_layer.confirmed;
-      //layer.par_layer = pb_layer.par_layer;
+
+      // tcp layer parameter
+      layer.par_layer.layer_par_tcp.port = pb_layer.par_layer.layer_par_tcp.port;
+
+      // shm layer parameter
+      //pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.decode = ..
+      //pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = ..
 
       trg_vector->push_back(layer);
 

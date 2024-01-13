@@ -26,6 +26,7 @@
 
 #include "ecal_writer_udp_mc.h"
 #include "io/udp/ecal_udp_configurations.h"
+#include "serialization/ecal_sample.h"
 
 #include <iterator>
 
@@ -41,7 +42,7 @@ namespace eCAL
     SWriterInfo info_;
 
     info_.name                 = "udp";
-    info_.description          = "UDP multicast data writer";
+    info_.description          = "udp multicast data writer";
 
     info_.has_mode_local       = true;
     info_.has_mode_cloud       = true;
@@ -97,16 +98,17 @@ namespace eCAL
     // create new sample
     eCAL::Payload::Sample ecal_sample;
     ecal_sample.cmd_type = eCAL::eCmdType::bct_set_sample;
+
     auto& ecal_sample_topic = ecal_sample.topic;
     ecal_sample_topic.hname = m_host_name;
     ecal_sample_topic.tname = m_topic_name;
     ecal_sample_topic.tid   = m_topic_id;
 
     // udp multicast layer
-    ecal_sample_topic.tlayer.resize(1);
-    auto& udp_tlayer = ecal_sample_topic.tlayer[0];
-    udp_tlayer.type      = eCAL::eTLayerType::tl_ecal_udp_mc;
-    udp_tlayer.confirmed = true;
+    //eCAL::Payload::TLayer udp_tlayer;
+    //udp_tlayer.type      = eCAL::eTLayerType::tl_ecal_udp_mc;
+    //udp_tlayer.confirmed = true;
+    //ecal_sample_topic.tlayer.push_back(udp_tlayer);
 
     // append content
     auto& ecal_sample_content = ecal_sample.content;

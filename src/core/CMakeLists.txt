@@ -18,15 +18,22 @@
 
 project(core VERSION ${eCAL_VERSION_STRING})
 
-find_package(asio       REQUIRED)
+find_package(asio             REQUIRED)
+
 if (ECAL_CORE_CONFIG_INIFILE)
-find_package(simpleini  REQUIRED)
+  find_package(simpleini      REQUIRED)
 endif()
+
 if (ECAL_CORE_COMMAND_LINE)
-find_package(tclap      REQUIRED)
+  find_package(tclap          REQUIRED)
 endif()
-if (ECAL_NPCAP_SUPPORT)
-  find_package(udpcap   REQUIRED)
+
+if (ECAL_CORE_TRANSPORT_TCP)
+  find_package(tcp_pubsub     REQUIRED)
+endif()
+
+if (ECAL_CORE_NPCAP_SUPPORT)
+  find_package(udpcap         REQUIRED)
 endif()
 
 # If we're currently doing a build within a git repository, we will configure the header files.
@@ -59,7 +66,7 @@ set(ecal_io_udp_fragmentation_src
 )
 
 # io/udp/sendreceive (npcap)
-if(ECAL_NPCAP_SUPPORT)
+if(ECAL_CORE_NPCAP_SUPPORT)
 set(ecal_io_udp_sendreceive_src_npcap 
    src/io/udp/sendreceive/udp_receiver_npcap.cpp
    src/io/udp/sendreceive/udp_receiver_npcap.h
@@ -146,10 +153,19 @@ if(ECAL_CORE_PUBLISHER)
       src/readwrite/ecal_writer_data.h
       src/readwrite/ecal_writer_info.h
   )
-  set(ecal_writer_udp_src
-      src/readwrite/udp/ecal_writer_udp_mc.cpp
-      src/readwrite/udp/ecal_writer_udp_mc.h
-  )
+  if(ECAL_CORE_TRANSPORT_UDP)
+    list(APPEND ecal_writer_src
+        src/readwrite/udp/ecal_writer_udp_mc.cpp
+        src/readwrite/udp/ecal_writer_udp_mc.h
+    )
+  endif()
+  if(ECAL_CORE_TRANSPORT_TCP)
+    list(APPEND ecal_writer_src
+        src/readwrite/tcp/ecal_tcp_pubsub_logger.h
+        src/readwrite/tcp/ecal_writer_tcp.cpp
+        src/readwrite/tcp/ecal_writer_tcp.h
+    )
+  endif()
 endif()
 
 if(ECAL_CORE_SUBSCRIBER)
@@ -158,10 +174,18 @@ if(ECAL_CORE_SUBSCRIBER)
       src/readwrite/ecal_reader.h
       src/readwrite/ecal_reader_layer.h
   )
-  set(ecal_reader_udp_src
-      src/readwrite/udp/ecal_reader_udp_mc.cpp
-      src/readwrite/udp/ecal_reader_udp_mc.h
-  )
+  if(ECAL_CORE_TRANSPORT_UDP)
+    list(APPEND ecal_reader_src
+        src/readwrite/udp/ecal_reader_udp_mc.cpp
+        src/readwrite/udp/ecal_reader_udp_mc.h
+    )
+  endif()
+  if(ECAL_CORE_TRANSPORT_TCP)
+    list(APPEND ecal_reader_src
+        src/readwrite/tcp/ecal_reader_tcp.cpp
+        src/readwrite/tcp/ecal_reader_tcp.h
+    )
+  endif()
 endif()
 
 ######################################
@@ -300,6 +324,7 @@ set(ecal_header_cmn
     include/ecal/ecal_subscriber.h
     include/ecal/ecal_time.h
     include/ecal/ecal_util.h
+    include/ecal/ecal_tlayer.h
     include/ecal/ecal_types.h
 )
 
@@ -341,9 +366,7 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_pub_src} 
     ${ecal_sub_src} 
     ${ecal_writer_src} 
-    ${ecal_writer_udp_src}
     ${ecal_reader_src} 
-    ${ecal_reader_udp_src}
     ${ecal_registration_src}
     ${ecal_serialization_src}	
     ${ecal_time_src}
@@ -386,9 +409,29 @@ target_compile_definitions(${PROJECT_NAME}
     ECAL_NO_DEPRECATION_WARNINGS
 )
 
+set(ECAL_CORE_FEATURES
+  ECAL_CORE_CONFIG_INIFILE
+  ECAL_CORE_COMMAND_LINE
+  ECAL_CORE_REGISTRATION
+  ECAL_CORE_PUBLISHER
+  ECAL_CORE_SUBSCRIBER
+  ECAL_CORE_TIMEPLUGIN
+  ECAL_CORE_TRANSPORT_UDP
+  ECAL_CORE_TRANSPORT_TCP
+  ECAL_CORE_TRANSPORT_SHM
+  ECAL_CORE_NPCAP_SUPPORT
+)
+
+foreach(CORE_FEATURE ${ECAL_CORE_FEATURES})
+  if(${CORE_FEATURE})
+    target_compile_definitions(${PROJECT_NAME}
+      PRIVATE ${CORE_FEATURE})
+    target_compile_definitions(${PROJECT_NAME}_c
+      PRIVATE ${CORE_FEATURE})
+  endif()
+endforeach()
+
 if(ECAL_CORE_CONFIG_INIFILE)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_CONFIG_INIFILE)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       simpleini::simpleini
@@ -396,45 +439,20 @@ if(ECAL_CORE_CONFIG_INIFILE)
 endif()
 
 if(ECAL_CORE_COMMAND_LINE)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_COMMAND_LINE)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       tclap::tclap
   )
 endif()
 
-if(ECAL_CORE_REGISTRATION)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_REGISTRATION)
-  target_compile_definitions(${PROJECT_NAME}_c
-    PRIVATE ECAL_CORE_REGISTRATION)
+if(ECAL_CORE_TRANSPORT_TCP)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      tcp_pubsub::tcp_pubsub
+  )
 endif()
 
-if(ECAL_CORE_PUBLISHER)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_PUBLISHER)
-  target_compile_definitions(${PROJECT_NAME}_c
-    PRIVATE ECAL_CORE_PUBLISHER)
-endif()
-
-if(ECAL_CORE_SUBSCRIBER)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_SUBSCRIBER)
-  target_compile_definitions(${PROJECT_NAME}_c
-    PRIVATE ECAL_CORE_SUBSCRIBER)
-endif()
-
-if(ECAL_CORE_TIMEPLUGIN)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_CORE_TIMEPLUGIN)
-  target_compile_definitions(${PROJECT_NAME}_c
-    PRIVATE ECAL_CORE_TIMEPLUGIN)
-endif()
-
-if(ECAL_NPCAP_SUPPORT)
-  target_compile_definitions(${PROJECT_NAME}
-    PRIVATE ECAL_NPCAP_SUPPORT)
+if(ECAL_CORE_NPCAP_SUPPORT)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       udpcap::udpcap

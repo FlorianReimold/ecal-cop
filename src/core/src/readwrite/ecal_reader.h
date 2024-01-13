@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,6 +57,9 @@ namespace eCAL
     bool AddReceiveCallback(ReceiveCallbackT callback_);
     bool RemReceiveCallback();
 
+    bool AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_);
+    bool RemEventCallback(eCAL_Subscriber_Event type_);
+
     bool SetAttribute(const std::string& attr_name_, const std::string& attr_value_);
     bool ClearAttribute(const std::string& attr_name_);
 
@@ -68,13 +71,22 @@ namespace eCAL
     void ApplyExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_, const SDataTypeInformation& tinfo_);
     void RemoveExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_);
 
+    void ApplyLocLayerParameter(const std::string& process_id_, const std::string& topic_id_, eCAL::eTLayerType type_, const Registration::ConnectionPar& parameter_);
+    void ApplyExtLayerParameter(const std::string& host_name_, eCAL::eTLayerType type_, const Registration::ConnectionPar& parameter_);
+
     std::string Dump(const std::string& indent_ = "");
 
-    bool IsCreated() const {return(m_created);}
+    bool IsCreated() const { return(m_created); }
 
-    std::string          GetTopicName()           const {return(m_topic_name);}
-    std::string          GetTopicID()             const {return(m_topic_id);}
-    SDataTypeInformation GetDataTypeInformation() const {return(m_topic_info);}
+    size_t GetPublisherCount() const
+    {
+      const std::lock_guard<std::mutex> lock(m_pub_map_sync);
+      return(m_loc_pub_map.size() + m_ext_pub_map.size());
+    }
+
+    std::string          GetTopicName()        const { return(m_topic_name); }
+    std::string          GetTopicID()          const { return(m_topic_id); }
+    SDataTypeInformation GetDataTypeInformation() const { return(m_topic_info); }
 
     void RefreshRegistration();
 
@@ -87,6 +99,8 @@ namespace eCAL
     bool Register(bool force_);
     bool Unregister();
 
+    void Connect(const std::string& tid_, const SDataTypeInformation& tinfo_);
+    void Disconnect();
     bool CheckMessageClock(const std::string& tid_, long long current_clock_);
 
     std::string                               m_host_name;
@@ -99,6 +113,12 @@ namespace eCAL
     std::map<std::string, std::string>        m_attr;
     std::atomic<size_t>                       m_topic_size;
 
+    std::atomic<bool>                         m_connected;
+    using ConnectedMapT = Util::CExpMap<std::string, bool>;
+    mutable std::mutex                        m_pub_map_sync;
+    ConnectedMapT                             m_loc_pub_map;
+    ConnectedMapT                             m_ext_pub_map;
+
     mutable std::mutex                        m_read_buf_mutex;
     std::condition_variable                   m_read_buf_cv;
     bool                                      m_read_buf_received;
@@ -107,8 +127,13 @@ namespace eCAL
 
     std::mutex                                m_receive_callback_sync;
     ReceiveCallbackT                          m_receive_callback;
+    std::atomic<int>                          m_receive_time;
 
     std::deque<size_t>                        m_sample_hash_queue;
+
+    using EventCallbackMapT = std::map<eCAL_Subscriber_Event, SubEventCallbackT>;
+    std::mutex                                m_event_callback_map_sync;
+    EventCallbackMapT                         m_event_callback_map;
 
     std::atomic<long long>                    m_clock;
     long long                                 m_clock_old;
@@ -116,15 +141,20 @@ namespace eCAL
     long                                      m_freq;
 
     std::set<long long>                       m_id_set;
-    
+
     using WriterCounterMapT = std::unordered_map<std::string, long long>;
     WriterCounterMapT                         m_writer_counter_map;
     long long                                 m_message_drops;
+
+    std::atomic<bool>                         m_loc_published;
+    std::atomic<bool>                         m_ext_published;
 
     bool                                      m_use_ttype;
     bool                                      m_use_tdesc;
 
     bool                                      m_use_udp_mc_confirmed;
+    bool                                      m_use_shm_confirmed;
+    bool                                      m_use_tcp_confirmed;
 
     std::atomic<bool>                         m_created;
   };

@@ -28,6 +28,8 @@
 #include "ecal_writer_data.h"
 #include "ecal_writer_info.h"
 
+#include "serialization/ecal_sample_struct_registration.h"
+
 #include <atomic>
 #include <string>
 
@@ -44,7 +46,13 @@ namespace eCAL
     virtual bool Create(const std::string& host_name_, const std::string& topic_name_, const std::string & topic_id_) = 0;
     virtual bool Destroy() = 0;
 
-    virtual std::string GetConnectionParameter() { return ""; };
+    virtual void AddLocConnection(const std::string& /*process_id_*/, const std::string& /*topic_id_*/, const std::string& /*conn_par_*/) {};
+    virtual void RemLocConnection(const std::string& /*process_id_*/, const std::string& /*topic_id_*/) {};
+
+    virtual void AddExtConnection(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*topic_id_*/, const std::string& /*conn_par_*/) {};
+    virtual void RemExtConnection(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*topic_id_*/) {};
+
+    virtual Registration::ConnectionPar GetConnectionParameter() { return Registration::ConnectionPar(); };
 
     virtual bool PrepareWrite(const SWriterAttr& /*attr_*/) { return false; };
     virtual bool Write(CPayloadWriter& /*payload_*/, const SWriterAttr& /*attr_*/) { return false; };

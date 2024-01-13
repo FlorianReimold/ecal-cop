@@ -19,9 +19,9 @@
 
 syntax = "proto3";
 
-import "ecal/core/pb/host.proto";
-import "ecal/core/pb/process.proto";
-import "ecal/core/pb/topic.proto";
+import "host.proto";
+import "process.proto";
+import "topic.proto";
 
 package eCAL.pb;
 
@@ -31,6 +31,7 @@ message Content                                // topic content
   int64        clock                 =  2;     // internal used clock
   int64        time                  =  3;     // time the content was updated
   int64        hash                  =  7;     // unique hash for that sample
+  int32        size                  =  6;     // size (additional for none payload "header only samples")
   bytes        payload               =  4;     // octet stream
 }
 

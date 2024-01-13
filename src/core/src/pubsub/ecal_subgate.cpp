@@ -112,24 +112,21 @@ namespace eCAL
     return(m_topic_name_datareader_map.find(sample_name_) != m_topic_name_datareader_map.end());
   }
 
-  bool CSubGate::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
+  bool CSubGate::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_, eTLayerType layer_)
   {
     if(!m_created) return false;
 
     Payload::Sample ecal_sample;
     if (!DeserializeFromBuffer(serialized_sample_data_, serialized_sample_size_, ecal_sample)) return false;
 
-    // TODO: Extract correct layer here
-    eTLayerType layer = tl_ecal_udp_mc;
-
-    size_t sent(0);
+    size_t applied_size(0);
     switch (ecal_sample.cmd_type)
     {
     case bct_set_sample:
     {
 #ifndef NDEBUG
       // check layer
-      if (layer == eTLayerType::tl_none)
+      if (layer_ == eTLayerType::tl_none)
       {
         // log it
         Logging::Log(log_level_error, ecal_sample.topic.tname + " : payload received without layer definition !");
@@ -173,7 +170,7 @@ namespace eCAL
       const auto& ecal_sample_content = ecal_sample.content;
       for (const auto& reader : readers_to_apply)
       {
-        sent = reader->AddSample(
+        applied_size = reader->AddSample(
           ecal_sample.topic.tid,
           payload_addr,
           payload_size,
@@ -181,7 +178,7 @@ namespace eCAL
           ecal_sample_content.clock,
           ecal_sample_content.time,
           static_cast<size_t>(ecal_sample_content.hash),
-          layer
+          layer_
         );
       }
     }
@@ -190,7 +187,38 @@ namespace eCAL
       break;
     }
 
-    return (sent > 0);
+    return (applied_size > 0);
+  }
+
+  bool CSubGate::ApplySample(const std::string& topic_name_, const std::string& topic_id_, const char* buf_, size_t len_, long long id_, long long clock_, long long time_, size_t hash_, eTLayerType layer_)
+  {
+    if (!m_created) return false;
+
+    // update globals
+    g_process_rclock++;
+    g_process_rbytes_sum += len_;
+
+    // apply sample to data reader
+    size_t applied_size(0);
+    std::vector<std::shared_ptr<CDataReader>> readers_to_apply;
+
+    // Lock the sync map only while extracting the relevant shared pointers to the Datareaders.
+    // Apply the samples to the readers afterwards.
+    {
+      const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);
+      auto res = m_topic_name_datareader_map.equal_range(topic_name_);
+      std::transform(
+        res.first, res.second, std::back_inserter(readers_to_apply), [](const auto& match) { return match.second; }
+      );
+    }
+
+
+    for (const auto& reader : readers_to_apply)
+    {
+      applied_size = reader->AddSample(topic_id_, buf_, len_, id_, clock_, time_, hash_, layer_);
+    }
+
+    return (applied_size > 0);
   }
 
   void CSubGate::ApplyLocPubRegistration(const Registration::Sample& ecal_sample_)
@@ -202,7 +230,7 @@ namespace eCAL
     const std::string& topic_name = ecal_sample.tname;
     if (topic_name.empty()) return;
 
-    const std::string& topic_id   = ecal_sample.tid;
+    const std::string& topic_id = ecal_sample.tid;
     const SDataTypeInformation topic_info{ eCALSampleToTopicInformation(ecal_sample_) };
 
     // get process id
@@ -213,6 +241,11 @@ namespace eCAL
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
     for (auto iter = res.first; iter != res.second; ++iter)
     {
+      // apply layer specific parameter
+      for (const auto& tlayer : ecal_sample_.topic.tlayer)
+      {
+        iter->second->ApplyLocLayerParameter(process_id, topic_id, tlayer.type, tlayer.par_layer);
+      }
       // inform for local publisher connection
       iter->second->ApplyLocPublication(process_id, topic_id, topic_info);
     }
@@ -253,6 +286,12 @@ namespace eCAL
     auto res = m_topic_name_datareader_map.equal_range(topic_name);
     for (auto iter = res.first; iter != res.second; ++iter)
     {
+      // apply layer specific parameter
+      for (const auto& tlayer : ecal_sample_.topic.tlayer)
+      {
+        iter->second->ApplyExtLayerParameter(host_name, tlayer.type, tlayer.par_layer);
+      }
+
       // inform for external publisher connection
       iter->second->ApplyExtPublication(host_name, process_id, topic_id, topic_info);
     }

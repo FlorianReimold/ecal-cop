@@ -29,6 +29,8 @@
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
 
+#include <iostream>
+
 namespace
 {
   bool RegistrationStruct2Buffer(const eCAL::Registration::Sample& source_sample_, std::vector<char>& target_buffer_)
@@ -150,7 +152,11 @@ namespace
     target_buffer_.resize(pb_sizestream.bytes_written);
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
+    if (!pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb registration encode failed: " << pb_ostream.errmsg << std::endl;
+    }
+    else
     {
       return true;
     }
@@ -235,7 +241,10 @@ namespace
     ///////////////////////////////////////////////
     pb_istream_t pb_istream;
     pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
-    pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample);
+    if (!pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb registration decode failed: " << pb_istream.errmsg << std::endl;
+    }
 
     ///////////////////////////////////////////////
     // assign values

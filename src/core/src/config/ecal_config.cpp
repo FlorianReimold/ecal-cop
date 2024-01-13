@@ -18,6 +18,7 @@
 */
 
 #include <ecal/ecal_config.h>
+#include <ecal/ecal_log_level.h>
 
 #include "ecal_config_reader.h"
 #include "ecal_config_reader_hlp.h"
@@ -118,10 +119,18 @@ namespace eCAL
     ECAL_API int               GetUdpMulticastRcvBufSizeBytes       () { return eCALPAR(NET, UDP_MULTICAST_RCVBUF); }
     ECAL_API bool              IsUdpMulticastJoinAllIfEnabled       () { return eCALPAR(NET, UDP_MULTICAST_JOIN_ALL_IF_ENABLED); }
 
+
     ECAL_API int               GetMaxUdpBandwidthBytesPerSecond     () { return eCALPAR(NET, BANDWIDTH_MAX_UDP); }
 
     ECAL_API bool              IsUdpMulticastRecEnabled             () { return eCALPAR(NET, UDP_MC_REC_ENABLED); }
+    ECAL_API bool              IsShmRecEnabled                      () { return eCALPAR(NET, SHM_REC_ENABLED); }
+    ECAL_API bool              IsTcpRecEnabled                      () { return eCALPAR(NET, TCP_REC_ENABLED); }
+
     ECAL_API bool              IsNpcapEnabled                       () { return eCALPAR(NET, NPCAP_ENABLED); }
+
+    ECAL_API int               GetTcpPubsubReaderThreadpoolSize     () { return eCALPAR(NET, TCP_PUBSUB_NUM_EXECUTOR_READER); }
+    ECAL_API int               GetTcpPubsubWriterThreadpoolSize     () { return eCALPAR(NET, TCP_PUBSUB_NUM_EXECUTOR_WRITER); }
+    ECAL_API int               GetTcpPubsubMaxReconnectionAttemps   () { return eCALPAR(NET, TCP_PUBSUB_MAX_RECONNECTIONS); }
 
     ECAL_API std::string       GetHostGroupName                     () { return eCALPAR(NET, HOST_GROUP_NAME); }
     
@@ -132,23 +141,62 @@ namespace eCAL
     ECAL_API std::string       GetTimesyncModuleName                () { return eCALPAR(TIME, SYNC_MOD_RT); }
 
     /////////////////////////////////////
-    // logging
+    // process
     /////////////////////////////////////
     
+    ECAL_API std::string       GetTerminalEmulatorCommand           () { return eCALPAR(PROCESS, TERMINAL_EMULATOR); }
+
+    /////////////////////////////////////
+    // monitoring
+    /////////////////////////////////////
+    
+    ECAL_API int                 GetMonitoringTimeoutMs               () { return eCALPAR(MON, TIMEOUT); }
+    ECAL_API std::string         GetMonitoringFilterExcludeList       () { return eCALPAR(MON, FILTER_EXCL); }
+    ECAL_API std::string         GetMonitoringFilterIncludeList       () { return eCALPAR(MON, FILTER_INCL); }
     ECAL_API eCAL_Logging_Filter GetConsoleLogFilter                  () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_CON)); }
     ECAL_API eCAL_Logging_Filter GetFileLogFilter                     () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_FILE)); }
+    ECAL_API eCAL_Logging_Filter GetUdpLogFilter                      () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_UDP)); }
+
+    /////////////////////////////////////
+    // sys
+    /////////////////////////////////////
+    
+    ECAL_API std::string       GetEcalSysFilterExcludeList            () { return eCALPAR(SYS, FILTER_EXCL); }
 
     /////////////////////////////////////
     // publisher
     /////////////////////////////////////
     
+    ECAL_API TLayer::eSendMode GetPublisherUdpMulticastMode         () { return TLayer::eSendMode(eCALPAR(PUB, USE_UDP_MC)); }
+    ECAL_API TLayer::eSendMode GetPublisherShmMode                  () { return TLayer::eSendMode(eCALPAR(PUB, USE_SHM)); }
+    ECAL_API TLayer::eSendMode GetPublisherTcpMode                  () { return TLayer::eSendMode(eCALPAR(PUB, USE_TCP)); }
+
+    ECAL_API size_t            GetMemfileMinsizeBytes               () { return static_cast<size_t>(eCALPAR(PUB, MEMFILE_MINSIZE)); }
+    ECAL_API size_t            GetMemfileOverprovisioningPercentage () { return static_cast<size_t>(eCALPAR(PUB, MEMFILE_RESERVE)); }
+    ECAL_API int               GetMemfileAckTimeoutMs               () { return eCALPAR(PUB, MEMFILE_ACK_TO); }
+    ECAL_API bool              IsMemfileZerocopyEnabled             () { return (eCALPAR(PUB, MEMFILE_ZERO_COPY) != 0); }
+    ECAL_API size_t            GetMemfileBufferCount                () { return static_cast<size_t>(eCALPAR(PUB, MEMFILE_BUF_COUNT)); }
+
     ECAL_API bool              IsTopicTypeSharingEnabled            () { return (eCALPAR(PUB, SHARE_TTYPE) != 0); }
     ECAL_API bool              IsTopicDescriptionSharingEnabled     () { return (eCALPAR(PUB, SHARE_TDESC) != 0); }
 
     /////////////////////////////////////
-    // suzbscriber
+    // service
+    /////////////////////////////////////
+    ECAL_API bool              IsServiceProtocolV0Enabled           () { return (eCALPAR(SERVICE, PROTOCOL_V0) != 0); }
+    ECAL_API bool              IsServiceProtocolV1Enabled           () { return (eCALPAR(SERVICE, PROTOCOL_V1) != 0); }
+
+    /////////////////////////////////////
+    // experimemtal
     /////////////////////////////////////
 
-    ECAL_API bool              GetDropOutOfOrderMessages            () { return eCALPAR(EXP, DROP_OUT_OF_ORDER_MESSAGES); }
+    namespace Experimental
+    {
+      ECAL_API bool              IsShmMonitoringEnabled             () { return eCALPAR(EXP, SHM_MONITORING_ENABLED); }
+      ECAL_API bool              IsNetworkMonitoringDisabled        () { return eCALPAR(EXP, NETWORK_MONITORING_DISABLED); }
+      ECAL_API size_t            GetShmMonitoringQueueSize          () { return static_cast<size_t>(eCALPAR(EXP, SHM_MONITORING_QUEUE_SIZE)); }
+      ECAL_API std::string       GetShmMonitoringDomain             () { return eCALPAR(EXP, SHM_MONITORING_DOMAIN);}
+      ECAL_API bool              GetDropOutOfOrderMessages          () { return eCALPAR(EXP, DROP_OUT_OF_ORDER_MESSAGES); }
+    }
   }
 }

@@ -49,9 +49,6 @@ namespace eCAL
     void encode_bytes(pb_callback_t& pb_callback, const SNanoBytes& nano_bytes);
     void decode_bytes(pb_callback_t& pb_callback, std::vector<char>& vec);
 
-    void encode_payload_layer(pb_callback_t& pb_callback, const std::vector<eCAL::Payload::TLayer>& layer_vec);
-    void decode_payload_layer(pb_callback_t& pb_callback, std::vector<eCAL::Payload::TLayer>& layer_vec);
-
     void encode_map(pb_callback_t& pb_callback, const std::map<std::string, std::string>& str_map);
     void decode_map(pb_callback_t& pb_callback, std::map<std::string, std::string>& str_map);
 

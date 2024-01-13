@@ -86,10 +86,17 @@ namespace eCAL
     {
     };
 
+    // Transport layer parameters for ecal tcp
+    struct LayerParTcp
+    {
+      int32_t                             port = 0;                     // tcp writers port number
+    };
+
     // Connection parameter for reader/writer
     struct ConnectionPar
     {
       LayerParUdpMC                       layer_par_udpmc;              // parameter for ecal udp multicast
+      LayerParTcp                         layer_par_tcp;                // parameter for ecal tcp
     };
 
     // Transport layer information

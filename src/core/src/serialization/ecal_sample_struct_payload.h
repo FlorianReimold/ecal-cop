@@ -34,21 +34,12 @@ namespace eCAL
 {
   namespace Payload
   {
-    // Transport layer information
-    struct TLayer
-    {
-      eTLayerType                         type      = tl_none;          // transport layer type
-      int32_t                             version   = 0;                // transport layer version
-      bool                                confirmed = false;            // transport layer used?
-    };
-
     // Topic information
     struct Topic
     {
       std::string                         hname;                        // host name
       std::string                         tid;                          // topic id
       std::string                         tname;                        // topic name
-      std::vector<TLayer>                 tlayer;                       // active topic transport layers and its specific parameter
     };
 
     // Topic content payload
@@ -74,6 +65,7 @@ namespace eCAL
       int64_t                             clock = 0;                    // internal used clock
       int64_t                             time  = 0;                    // time the content was updated
       int64_t                             hash  = 0;                    // unique hash for that payload
+      int32_t                             size = 0;                     // size (additional for none payload "header only samples")
       Payload                             payload;                      // payload represented as raw pointer or a std::vector<char>
     };
 

@@ -30,6 +30,7 @@ typedef struct _eCAL_pb_Content {
     int64_t clock; /* internal used clock */
     int64_t time; /* time the content was updated */
     pb_callback_t payload; /* octet stream */
+    int32_t size; /* size (additional for none payload "header only samples") */
     int64_t hash; /* unique hash for that sample */
 } eCAL_pb_Content;
 
@@ -61,9 +62,9 @@ extern "C" {
 
 
 /* Initializer values for message structs */
-#define eCAL_pb_Content_init_default             {0, 0, 0, {{NULL}, NULL}, 0}
+#define eCAL_pb_Content_init_default             {0, 0, 0, {{NULL}, NULL}, 0, 0}
 #define eCAL_pb_Sample_init_default              {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_default, false, eCAL_pb_Process_init_default, false, eCAL_pb_Topic_init_default, false, eCAL_pb_Content_init_default, {{NULL}, NULL}}
-#define eCAL_pb_Content_init_zero                {0, 0, 0, {{NULL}, NULL}, 0}
+#define eCAL_pb_Content_init_zero                {0, 0, 0, {{NULL}, NULL}, 0, 0}
 #define eCAL_pb_Sample_init_zero                 {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_zero, false, eCAL_pb_Process_init_zero, false, eCAL_pb_Topic_init_zero, false, eCAL_pb_Content_init_zero, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
@@ -71,6 +72,7 @@ extern "C" {
 #define eCAL_pb_Content_clock_tag                2
 #define eCAL_pb_Content_time_tag                 3
 #define eCAL_pb_Content_payload_tag              4
+#define eCAL_pb_Content_size_tag                 6
 #define eCAL_pb_Content_hash_tag                 7
 #define eCAL_pb_Sample_cmd_type_tag              1
 #define eCAL_pb_Sample_host_tag                  2
@@ -85,6 +87,7 @@ X(a, STATIC,   SINGULAR, INT64,    id,                1) \
 X(a, STATIC,   SINGULAR, INT64,    clock,             2) \
 X(a, STATIC,   SINGULAR, INT64,    time,              3) \
 X(a, CALLBACK, SINGULAR, BYTES,    payload,           4) \
+X(a, STATIC,   SINGULAR, INT32,    size,              6) \
 X(a, STATIC,   SINGULAR, INT64,    hash,              7)
 #define eCAL_pb_Content_CALLBACK pb_default_field_callback
 #define eCAL_pb_Content_DEFAULT NULL

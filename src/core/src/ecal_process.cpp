@@ -194,7 +194,7 @@ namespace eCAL
 #if ECAL_CORE_SUBSCRIBER
       sstream << "------------------------- SUBSCRIPTION LAYER DEFAULTS ------------" << std::endl;
       sstream << "Layer Mode UDP MC        : " << LayerMode(Config::IsUdpMulticastRecEnabled()) << std::endl;
-      sstream << "Drop out-of-order msgs   : " << (Config::GetDropOutOfOrderMessages() ? "on" : "off") << std::endl;
+      sstream << "Drop out-of-order msgs   : " << (Config::Experimental::GetDropOutOfOrderMessages() ? "on" : "off") << std::endl;
 #endif
 #ifdef ECAL_NPCAP_SUPPORT
       sstream << "Npcap UDP Reciever       : " << LayerMode(Config::IsNpcapEnabled());

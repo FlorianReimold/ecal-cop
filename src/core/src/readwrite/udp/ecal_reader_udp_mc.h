@@ -23,9 +23,8 @@
 
 #pragma once
 
-#include "readwrite/ecal_reader_layer.h"
-
 #include "io/udp/ecal_udp_sample_receiver.h"
+#include "readwrite/ecal_reader_layer.h"
 
 #include <map>
 #include <memory>
