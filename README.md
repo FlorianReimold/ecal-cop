@@ -14,7 +14,7 @@ Visit the eCAL Documentation at 🌐 https://ecal.io for more information.
 ## Differences to Eclipse-eCAL
   - communication core only, no additional eco system tools
   - C++ and C language support only
-  - udp transport layer only (no shared memory, no tcp)
+  - udp and tcp transport layer only (no shared memory currently)
   - no monitoring API
   - no logging over udp (console and file target still supported)
 
@@ -72,7 +72,18 @@ This section provides documentation for the CMake options used in configuring th
 - Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
 
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
-Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
+- Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
+
+##### `ECAL_CORE_TRANSPORT_UDP` (Default: ON)
+- Enabling this option includes the eCAL UDP Multicast message transport layer.
+
+##### `ECAL_CORE_TRANSPORT_TPC` (Default: OFF)
+- Enabling this option includes the eCAL TCP message transport layer.
+- Requires tcp_pubsub library.
+
+##### `ECAL_CORE_NPCAP_SUPPORT` (Default: OFF)
+- Enabling this option replaces the standard ASIO UDP receiver by a NPCAP based UDP receiver to increase the performance on Windows platforms.
+- Requires udpcap library.
 
 Note: Please adjust these options based on your project's needs, ensuring that the selected features align with your desired functionality and dependencies.
 
