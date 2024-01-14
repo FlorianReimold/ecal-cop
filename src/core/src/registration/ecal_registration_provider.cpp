@@ -253,7 +253,7 @@ namespace eCAL
       const std::lock_guard<std::mutex> lock(m_sample_buffer_sync);
       if (SerializeToBuffer(sample_, m_sample_buffer))
       {
-        return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer, -1) != 0);
+        return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer) != 0);
       }
     }
 
