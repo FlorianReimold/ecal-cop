@@ -113,6 +113,17 @@ endif()
 
 cmake_dependent_option(ECAL_THIRDPARTY_BUILD_UDPCAP      "Build udpcap library with eCAL"      ON   "ECAL_CORE_NPCAP_SUPPORT"                                   OFF)
 
+if(NOT ECAL_CORE_REGISTRATION)
+  if(ECAL_CORE_TRANSPORT_TCP)
+    message(STATUS "Switching ECAL_CORE_TRANSPORT_TCP to OFF because registration (ECAL_CORE_REGISTRATION) is not activated")
+	set(ECAL_CORE_TRANSPORT_TCP OFF)
+  endif()
+  if(ECAL_CORE_TRANSPORT_SHM)
+    message(STATUS "Switching ECAL_CORE_TRANSPORT_SHM to OFF because registration (ECAL_CORE_REGISTRATION) is not activated")
+	set(ECAL_CORE_TRANSPORT_SHM OFF)
+  endif()
+endif()
+
 set(ECAL_BUILD_VERSION "0.0.0" CACHE STRING "Inject a build version if not building from a git repository")
 
 include(build_location)
