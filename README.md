@@ -14,7 +14,7 @@ Visit the eCAL Documentation at 🌐 https://ecal.io for more information.
 ## Differences to Eclipse-eCAL
   - communication core only, no additional eco system tools
   - C++ and C language support only
-  - udp and tcp transport layer only (no shared memory currently)
+  - publish/subscribe only (no client/server communication currently)
   - no monitoring API
   - no logging over udp (console and file target still supported)
 
@@ -89,6 +89,9 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_TRANSPORT_TPC` (Default: OFF)
 - Enabling this option includes the eCAL TCP message transport layer.
 - Requires tcp_pubsub library.
+
+##### `ECAL_CORE_TRANSPORT_SHM` (Default: ON)
+- Enabling this option includes the eCAL local shared memory message transport layer.
 
 ##### `ECAL_CORE_NPCAP_SUPPORT` (Default: OFF)
 - Enabling this option replaces the standard ASIO UDP receiver by a NPCAP based UDP receiver to increase the performance on Windows platforms.

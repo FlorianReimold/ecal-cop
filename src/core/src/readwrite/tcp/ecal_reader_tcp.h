@@ -48,7 +48,7 @@ namespace eCAL
   private:
     void OnTcpMessage(const tcp_pubsub::CallbackData& callback_data);
 
-    eCAL::Payload::Sample                   m_ecal_header;
+    Payload::Sample                         m_ecal_header;
 
     std::shared_ptr<tcp_pubsub::Subscriber> m_subscriber;
     bool                                    m_callback_active;

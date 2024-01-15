@@ -36,6 +36,10 @@
 #if ECAL_CORE_SUBSCRIBER
 #include "pubsub/ecal_subgate.h"
 #endif
+#if ECAL_CORE_TRANSPORT_SHM
+#include "io/shm/ecal_memfile_pool.h"
+#include "io/shm/ecal_memfile_db.h"
+#endif
 
 #include <memory>
 
@@ -69,6 +73,10 @@ namespace eCAL
     const std::unique_ptr<CRegistrationProvider>&                         registration_provider()  { return registration_provider_instance; };
     const std::unique_ptr<CRegistrationReceiver>&                         registration_receiver()  { return registration_receiver_instance; };
 #endif
+#if ECAL_CORE_TRANSPORT_SHM
+    const std::unique_ptr<CMemFileThreadPool>&                            memfile_pool()           { return memfile_pool_instance; };
+    const std::unique_ptr<CMemFileMap>&                                   memfile_map()            { return memfile_map_instance; };
+#endif
 
   private:
     bool                                                                  initialized;
@@ -87,6 +95,10 @@ namespace eCAL
 #if ECAL_CORE_REGISTRATION
     std::unique_ptr<CRegistrationProvider>                                registration_provider_instance;
     std::unique_ptr<CRegistrationReceiver>                                registration_receiver_instance;
+#endif
+#if ECAL_CORE_TRANSPORT_SHM
+    std::unique_ptr<CMemFileThreadPool>                                   memfile_pool_instance;
+    std::unique_ptr<CMemFileMap>                                          memfile_map_instance;
 #endif
   };
 }

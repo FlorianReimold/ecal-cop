@@ -18,25 +18,29 @@
 */
 
 /**
- * @brief  data writer struct
+ * @brief  memory file utility functions os specific
 **/
 
 #pragma once
 
-#include <cstddef>
+#include <string>
+
+#include "ecal_memfile.h"
 
 namespace eCAL
 {
-  struct SWriterAttr
+  namespace memfile
   {
-    size_t       len                    = 0;
-    long long    id                     = 0;
-    long long    clock                  = 0;
-    size_t       hash                   = 0;
-    long long    time                   = 0;
-    size_t       buffering              = 1;
-    bool         loopback               = false;
-    bool         zero_copy              = false;
-    long long    acknowledge_timeout_ms = 0;
-  };
+    namespace os
+    {
+      bool AllocFile(const std::string& name_, const bool create_, SMemFileInfo& mem_file_info_);
+      bool DeAllocFile(SMemFileInfo& mem_file_info_);
+      bool RemoveFile(const SMemFileInfo& mem_file_info_);
+
+      bool MapFile(const bool create_, SMemFileInfo& mem_file_info_);
+      bool UnMapFile(SMemFileInfo& mem_file_info_);
+
+      bool CheckFileSize(const size_t len_, const bool create_, SMemFileInfo& mem_file_info_);
+    }
+  }
 }

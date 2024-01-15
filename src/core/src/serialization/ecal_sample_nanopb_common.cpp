@@ -64,10 +64,10 @@ namespace eCAL
       if (*arg == nullptr) return false;
 
       size_t len = stream->bytes_left;
-      auto trg_string = (std::string*)(*arg);
-      trg_string->resize(len);
+      auto tgt_string = (std::string*)(*arg);
+      tgt_string->resize(len);
 
-      if (!pb_read(stream, (pb_byte_t*)(trg_string->data()), trg_string->size()))
+      if (!pb_read(stream, (pb_byte_t*)(tgt_string->data()), tgt_string->size()))
         return false;
 
       return true;
@@ -108,10 +108,10 @@ namespace eCAL
       if (*arg == nullptr) return false;
 
       size_t len = stream->bytes_left;
-      auto trg_vector = (std::vector<char>*)(*arg);
-      trg_vector->resize(len);
+      auto tgt_vector = (std::vector<char>*)(*arg);
+      tgt_vector->resize(len);
 
-      if (!pb_read(stream, (pb_byte_t*)(trg_vector->data()), trg_vector->size()))
+      if (!pb_read(stream, (pb_byte_t*)(tgt_vector->data()), tgt_vector->size()))
         return false;
 
       return true;
@@ -174,8 +174,8 @@ namespace eCAL
         return false;
       }
 
-      auto trg_map = (std::map<std::string, std::string>*)(*arg);
-      (*trg_map)[key] = value;
+      auto tgt_map = (std::map<std::string, std::string>*)(*arg);
+      (*tgt_map)[key] = value;
 
       return true;
     }
@@ -184,6 +184,50 @@ namespace eCAL
     {
       pb_callback.funcs.decode = &decode_map_field;
       pb_callback.arg = &str_map;
+    }
+
+    ///////////////////////////////////////////////
+    // list<std::string>
+    ///////////////////////////////////////////////
+    bool encode_string_list_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
+    {
+      if (arg == nullptr)  return false;
+      if (*arg == nullptr) return false;
+
+      auto* str_list = (std::list<std::string>*)(*arg);
+
+      for (auto str : *str_list)
+      {
+        if (!pb_encode_tag_for_field(stream, field))
+        {
+          return false;
+        }
+
+        if (!pb_encode_string(stream, (pb_byte_t*)str.c_str(), str.size()))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    bool decode_string_list_field(pb_istream_t* stream, const pb_field_iter_t* /*field*/, void** arg)
+    {
+      if (arg == nullptr)  return false;
+      if (*arg == nullptr) return false;
+
+      size_t len = stream->bytes_left;
+      std::string tgt_string;
+      tgt_string.resize(len);
+
+      if (!pb_read(stream, (pb_byte_t*)(tgt_string.data()), tgt_string.size()))
+        return false;
+
+      auto tgt_list = (std::list<std::string>*)(*arg);
+      tgt_list->push_back(tgt_string);
+
+      return true;
     }
 
     ///////////////////////////////////////////////
@@ -219,9 +263,9 @@ namespace eCAL
         pb_layer.par_layer.layer_par_tcp.port = layer.par_layer.layer_par_tcp.port;
 
         // shm layer parameter
-        pb_layer.par_layer.has_layer_par_shm = false;
-        //pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.encode = ..
-        //pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = ..
+        pb_layer.par_layer.has_layer_par_shm = true;
+        pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.encode = &encode_string_list_field;
+        pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = (void*)(&layer.par_layer.layer_par_shm.memory_file_list);
 
         if (!pb_encode_submessage(stream, eCAL_pb_TLayer_fields, &pb_layer))
         {
@@ -243,28 +287,29 @@ namespace eCAL
       if (arg == nullptr)  return false;
       if (*arg == nullptr) return false;
 
-      eCAL_pb_TLayer pb_layer = eCAL_pb_TLayer_init_default;
+      eCAL_pb_TLayer             pb_layer = eCAL_pb_TLayer_init_default;
+      eCAL::Registration::TLayer layer{};
+
+      // decode shm layer parameter
+      pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.decode = &decode_string_list_field;
+      pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = (void*)(&layer.par_layer.layer_par_shm.memory_file_list);
 
       if (!pb_decode(stream, eCAL_pb_TLayer_fields, &pb_layer))
       {
         return false;
       }
 
-      auto trg_vector = (std::vector<eCAL::Registration::TLayer>*)(*arg);
-
-      eCAL::Registration::TLayer layer{};
+      // apply commons
       layer.type      = static_cast<eCAL::eTLayerType>(pb_layer.type);
       layer.version   = pb_layer.version;
       layer.confirmed = pb_layer.confirmed;
 
-      // tcp layer parameter
+      // apply tcp layer parameter
       layer.par_layer.layer_par_tcp.port = pb_layer.par_layer.layer_par_tcp.port;
 
-      // shm layer parameter
-      //pb_layer.par_layer.layer_par_shm.memory_file_list.funcs.decode = ..
-      //pb_layer.par_layer.layer_par_shm.memory_file_list.arg          = ..
-
-      trg_vector->push_back(layer);
+      // add layer
+      auto tgt_vector = (std::vector<eCAL::Registration::TLayer>*)(*arg);
+      tgt_vector->push_back(layer);
 
       return true;
     }

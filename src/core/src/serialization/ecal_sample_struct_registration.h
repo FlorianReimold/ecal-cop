@@ -26,6 +26,7 @@
 
 #include "ecal_sample_struct_common.h"
 
+#include <list>
 #include <map>
 #include <string>
 #include <vector>
@@ -92,11 +93,18 @@ namespace eCAL
       int32_t                             port = 0;                     // tcp writers port number
     };
 
+    // Transport layer parameters for ecal shm
+    struct LayerParShm
+    {
+      std::list<std::string>              memory_file_list;             // list of memory file names
+    };
+
     // Connection parameter for reader/writer
     struct ConnectionPar
     {
       LayerParUdpMC                       layer_par_udpmc;              // parameter for ecal udp multicast
       LayerParTcp                         layer_par_tcp;                // parameter for ecal tcp
+      LayerParShm                         layer_par_shm;                // parameter for ecal shm
     };
 
     // Transport layer information

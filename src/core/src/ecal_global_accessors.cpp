@@ -107,4 +107,17 @@ namespace eCAL
     return(g_globals()->pubgate().get());
   }
 #endif
+#if ECAL_CORE_TRANSPORT_SHM
+  CMemFileThreadPool* g_memfile_pool()
+  {
+    if (g_globals() == nullptr) return(nullptr);
+    return(g_globals()->memfile_pool().get());
+  }
+
+  CMemFileMap* g_memfile_map()
+  {
+    if (g_globals() == nullptr) return(nullptr);
+    return(g_globals()->memfile_map().get());
+  }
+#endif
 }

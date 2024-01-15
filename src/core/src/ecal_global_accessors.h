@@ -47,6 +47,10 @@ namespace eCAL
 #if ECAL_CORE_PUBLISHER
   class  CPubGate;
 #endif
+#if ECAL_CORE_TRANSPORT_SHM
+  class  CMemFileThreadPool;
+  class  CMemFileMap;
+#endif
 
   // Declaration of getter functions for globally accessible variable instances
   CGlobals*               g_globals();
@@ -64,6 +68,10 @@ namespace eCAL
 #endif
 #if ECAL_CORE_PUBLISHER
   CPubGate*               g_pubgate();
+#endif
+#if ECAL_CORE_TRANSPORT_SHM
+  CMemFileThreadPool*     g_memfile_pool();
+  CMemFileMap*            g_memfile_map();
 #endif
 
   // declaration of globally accessible variables

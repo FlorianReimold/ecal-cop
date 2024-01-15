@@ -71,7 +71,7 @@ endif()
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 option(BUILD_SAMPLES                                     "Build the eCAL samples"                                                                                ON)
 option(BUILD_SAMPLES_PROTOBUF                            "Build the eCAL samples using google protobuf message definition"                                      OFF)
-option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                                                           ON)
+option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                                                          OFF)
 option(BUILD_ECAL_TESTS_PROTOBUF                         "Build the eCAL google tests using google protobuf message definition"                                 OFF)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 option(ECAL_CORE_TRANSPORT_UDP                           "Enables the eCAL to transport payload via UDP multicast"                                               ON)
 option(ECAL_CORE_TRANSPORT_TCP                           "Enables the eCAL to transport payload via TCP"                                                        OFF)
-option(ECAL_CORE_TRANSPORT_SHM                           "Enables the eCAL to transport payload via local shared memory"                                        OFF)
+option(ECAL_CORE_TRANSPORT_SHM                           "Enables the eCAL to transport payload via local shared memory"                                         ON)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # third party library options (do not change)

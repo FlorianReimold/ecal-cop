@@ -43,6 +43,24 @@ if     (IS_GIT_TREE OR NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/ecal/ecal
   configure_file(src/ecal_defs.h.in "${CMAKE_CURRENT_BINARY_DIR}/include/ecal/ecal_defs.h" @ONLY)
 endif  (IS_GIT_TREE OR NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/ecal/ecal_defs.h")
 
+if(UNIX)
+ include (CheckSymbolExists)
+ set(CMAKE_REQUIRED_DEFINITIONS "-D__USE_GNU"
+                                "-D_GNU_SOURCE")
+  set(CMAKE_REQUIRED_LIBRARIES "pthread")
+  check_symbol_exists(pthread_mutex_clocklock "pthread.h" ECAL_HAS_CLOCKLOCK_MUTEX)
+  check_symbol_exists(pthread_mutexattr_setrobust "pthread.h" ECAL_HAS_ROBUST_MUTEX)
+  unset(CMAKE_REQUIRED_DEFINITIONS)
+  unset(CMAKE_REQUIRED_LIBRARIES)
+  if(NOT ECAL_HAS_ROBUST_MUTEX)
+    if(NOT ECAL_HAS_CLOCKLOCK_MUTEX)
+      message(WARNING "This OS does not support robust mutexes with monotonic clock which can cause dead locks under certain circumstances. (e.g. memfile monitoring).")
+    else()
+      message(WARNING "This OS does not support robust mutexes which can cause dead locks under certain circumstances (e.g. memfile monitoring).")
+    endif()
+  endif()
+endif()
+
 ######################################
 # config
 ######################################
@@ -52,6 +70,70 @@ set(ecal_config_src
     src/config/ecal_config_reader.h
     src/config/ecal_config_reader_hlp.h
 )
+
+######################################
+# io/mtx
+######################################
+if(ECAL_CORE_TRANSPORT_SHM)
+  set(ecal_io_mtx_src
+      src/io/mtx/ecal_named_mutex.cpp
+      src/io/mtx/ecal_named_mutex.h
+      src/io/mtx/ecal_named_mutex_base.h
+  )
+
+  # io/mtx/linux
+  if(UNIX)
+    set(ecal_io_mtx_linux_src
+        src/io/mtx/linux/ecal_named_mutex_impl.cpp
+        $<$<OR:$<BOOL:${ECAL_HAS_CLOCKLOCK_MUTEX}>,$<BOOL:${ECAL_HAS_ROBUST_MUTEX}>>:src/io/mtx/linux/ecal_named_mutex_robust_clocklock_impl.cpp>
+        src/io/mtx/linux/ecal_named_mutex_impl.h
+        $<$<OR:$<BOOL:${ECAL_HAS_CLOCKLOCK_MUTEX}>,$<BOOL:${ECAL_HAS_ROBUST_MUTEX}>>:src/io/mtx/linux/ecal_named_mutex_robust_clocklock_impl.h>
+    )
+  endif()
+
+  # io/mtx/win32
+  if(WIN32)
+    set(ecal_io_mtx_win_src
+        src/io/mtx/win32/ecal_named_mutex_impl.cpp
+        src/io/mtx/win32/ecal_named_mutex_impl.h
+    )
+  endif()
+endif()
+
+######################################
+# io/shm
+######################################
+if(ECAL_CORE_TRANSPORT_SHM)
+  set(ecal_io_shm_src
+      src/io/shm/ecal_memfile.cpp
+      src/io/shm/ecal_memfile_db.cpp
+      src/io/shm/ecal_memfile_naming.cpp      
+      src/io/shm/ecal_memfile_pool.cpp
+      src/io/shm/ecal_memfile_sync.cpp
+      src/io/shm/ecal_memfile.h
+      src/io/shm/ecal_memfile_db.h
+      src/io/shm/ecal_memfile_header.h
+      src/io/shm/ecal_memfile_info.h
+      src/io/shm/ecal_memfile_naming.h
+      src/io/shm/ecal_memfile_os.h
+      src/io/shm/ecal_memfile_pool.h
+      src/io/shm/ecal_memfile_sync.h
+  )
+
+  # io/shm/linux
+  if(UNIX)
+    set(ecal_io_shm_linux_src
+        src/io/shm/linux/ecal_memfile_os.cpp
+    )
+  endif()
+
+  # io/shm/win32
+  if(WIN32)
+    set(ecal_io_shm_win_src
+       src/io/shm/win32/ecal_memfile_os.cpp
+    )
+  endif()
+endif()
 
 ######################################
 # io/udp
@@ -166,6 +248,12 @@ if(ECAL_CORE_PUBLISHER)
         src/readwrite/tcp/ecal_writer_tcp.h
     )
   endif()
+  if(ECAL_CORE_TRANSPORT_SHM)
+    list(APPEND ecal_writer_src
+        src/readwrite/shm/ecal_writer_shm.cpp
+        src/readwrite/shm/ecal_writer_shm.h
+    )
+  endif()
 endif()
 
 if(ECAL_CORE_SUBSCRIBER)
@@ -184,6 +272,12 @@ if(ECAL_CORE_SUBSCRIBER)
     list(APPEND ecal_reader_src
         src/readwrite/tcp/ecal_reader_tcp.cpp
         src/readwrite/tcp/ecal_reader_tcp.h
+    )
+  endif()
+  if(ECAL_CORE_TRANSPORT_SHM)
+    list(APPEND ecal_reader_src
+        src/readwrite/shm/ecal_reader_shm.cpp
+        src/readwrite/shm/ecal_reader_shm.h
     )
   endif()
 endif()
@@ -357,6 +451,12 @@ set(ecal_header_public
 
 ecal_add_ecal_shared_library(${PROJECT_NAME} 
     ${ecal_config_src}
+	${ecal_io_mtx_src}
+	${ecal_io_mtx_linux_src}
+	${ecal_io_mtx_win_src}
+	${ecal_io_shm_src}
+	${ecal_io_shm_linux_src}
+	${ecal_io_shm_win_src}
     ${ecal_io_udp_fragmentation_src}
     ${ecal_io_udp_sendreceive_src}
     ${ecal_io_udp_src}
@@ -505,6 +605,12 @@ install(DIRECTORY
 if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0") 
   source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES 
     ${ecal_config_src}
+	${ecal_io_mtx_src}
+	${ecal_io_mtx_linux_src}
+	${ecal_io_mtx_win_src}
+	${ecal_io_shm_src}
+	${ecal_io_shm_linux_src}
+	${ecal_io_shm_win_src}
     ${ecal_io_udp_fragmentation_src}
     ${ecal_io_udp_sendreceive_src}
     ${ecal_io_udp_src}

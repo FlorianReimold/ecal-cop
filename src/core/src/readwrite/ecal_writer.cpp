@@ -34,6 +34,7 @@
 
 #include "ecal_writer.h"
 #include "ecal_writer_base.h"
+#include "ecal_writer_buffer_payload.h"
 
 #include "pubsub/ecal_pubgate.h"
 
@@ -454,7 +455,7 @@ namespace eCAL
         wattr.clock                  = m_clock;
         wattr.hash                   = snd_hash;
         wattr.time                   = time_;
-        //wattr.buffering              = m_buffering_shm;
+        wattr.buffering              = m_buffering_shm;
         wattr.zero_copy              = m_zero_copy;
         wattr.acknowledge_timeout_ms = m_acknowledge_timeout_ms;
 
@@ -851,12 +852,12 @@ namespace eCAL
 #if ECAL_CORE_TRANSPORT_SHM
     // shm layer
     {
-      auto* shm_tlayer = ecal_reg_sample_mutable_topic->add_tlayer();
-      shm_tlayer->set_type(eCAL::pb::tl_ecal_shm);
-      shm_tlayer->set_version(1);
-      shm_tlayer->set_confirmed(m_writer.shm_mode.confirmed);
-      const std::string par_layer_s = m_writer.shm.GetConnectionParameter();
-      shm_tlayer->mutable_par_layer()->ParseFromString(par_layer_s);
+      eCAL::Registration::TLayer shm_tlayer;
+      shm_tlayer.type                    = tl_ecal_shm;
+      shm_tlayer.version                 = 1;
+      shm_tlayer.confirmed               = m_writer.shm_mode.confirmed;
+      shm_tlayer.par_layer.layer_par_shm = m_writer.shm.GetConnectionParameter().layer_par_shm;
+      ecal_reg_sample_topic.tlayer.push_back(shm_tlayer);
     }
 #endif
 

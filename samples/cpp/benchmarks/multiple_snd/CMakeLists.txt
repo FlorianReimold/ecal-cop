@@ -23,7 +23,6 @@ set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 project(multiple_snd)
 
 find_package(eCAL REQUIRED)
-find_package(Protobuf REQUIRED)
 
 set(multiple_snd_src
     src/multiple_snd.cpp

@@ -18,25 +18,43 @@
 */
 
 /**
- * @brief  data writer struct
+ * @brief  eCAL memory file info structure
 **/
 
 #pragma once
 
-#include <cstddef>
+#include <string>
+#include <memory>
+
+#include <ecal/ecal_os.h>
+
+#ifdef ECAL_OS_WINDOWS
+
+#include "ecal_win_main.h"
+
+using MemFileT = HANDLE;
+using MapRegionT = HANDLE;
+
+#endif /* ECAL_OS_WINDOWS */
+
+#ifdef ECAL_OS_LINUX
+
+typedef int  MemFileT;
+typedef int  MapRegionT;
+
+#endif /* ECAL_OS_LINUX */
 
 namespace eCAL
 {
-  struct SWriterAttr
+  struct SMemFileInfo
   {
-    size_t       len                    = 0;
-    long long    id                     = 0;
-    long long    clock                  = 0;
-    size_t       hash                   = 0;
-    long long    time                   = 0;
-    size_t       buffering              = 1;
-    bool         loopback               = false;
-    bool         zero_copy              = false;
-    long long    acknowledge_timeout_ms = 0;
+    int          refcnt      = 0;
+    bool         remove      = false;
+    MemFileT     memfile     = 0;
+    MapRegionT   map_region  = 0;
+    void*        mem_address = 0;
+    std::string  name;
+    size_t       size        = 0;
+    bool         exists      = false;
   };
 }

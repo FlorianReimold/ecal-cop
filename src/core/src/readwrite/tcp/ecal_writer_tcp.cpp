@@ -100,7 +100,7 @@ namespace eCAL
     if (!m_publisher) return false;
 
     // create new payload sample (header information only, no payload)
-    eCAL::Payload::Sample proto_header;
+    Payload::Sample proto_header;
     auto& proto_header_topic = proto_header.topic;
     proto_header_topic.tname = m_topic_name;
     proto_header_topic.tid   = m_topic_id;
@@ -159,7 +159,7 @@ namespace eCAL
 
   Registration::ConnectionPar CDataWriterTCP::GetConnectionParameter()
   {
-    eCAL::Registration::ConnectionPar connection_par;
+    Registration::ConnectionPar connection_par;
     connection_par.layer_par_tcp.port = m_port;
     return connection_par;
   }

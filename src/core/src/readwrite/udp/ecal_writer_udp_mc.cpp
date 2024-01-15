@@ -96,8 +96,8 @@ namespace eCAL
     if (!m_created) return false;
 
     // create new sample
-    eCAL::Payload::Sample ecal_sample;
-    ecal_sample.cmd_type = eCAL::eCmdType::bct_set_sample;
+    Payload::Sample ecal_sample;
+    ecal_sample.cmd_type = eCmdType::bct_set_sample;
 
     auto& ecal_sample_topic = ecal_sample.topic;
     ecal_sample_topic.hname = m_host_name;
@@ -110,7 +110,7 @@ namespace eCAL
     ecal_sample_content.clock            = attr_.clock;
     ecal_sample_content.time             = attr_.time;
     ecal_sample_content.hash             = attr_.hash;
-    ecal_sample_content.payload.type     = eCAL::Payload::pl_raw;
+    ecal_sample_content.payload.type     = Payload::pl_raw;
     ecal_sample_content.payload.raw_addr = static_cast<const char*>(buf_);
     ecal_sample_content.payload.raw_size = attr_.len;
 

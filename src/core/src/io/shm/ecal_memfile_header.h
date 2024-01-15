@@ -18,25 +18,32 @@
 */
 
 /**
- * @brief  data writer struct
+ * @brief  eCAL common message format
 **/
 
 #pragma once
 
-#include <cstddef>
+#include <cstdint>
 
 namespace eCAL
 {
-  struct SWriterAttr
-  {
-    size_t       len                    = 0;
-    long long    id                     = 0;
-    long long    clock                  = 0;
-    size_t       hash                   = 0;
-    long long    time                   = 0;
-    size_t       buffering              = 1;
-    bool         loopback               = false;
-    bool         zero_copy              = false;
-    long long    acknowledge_timeout_ms = 0;
+  struct SMemFileHeader
+  { //-V802
+    uint16_t   hdr_size   = sizeof(SMemFileHeader);
+    uint64_t   data_size  = 0;
+    uint64_t   id         = 0;
+    uint64_t   clock      = 0;
+    int64_t    time       = 0;
+    uint64_t   hash       = 0;
+    // ----- > 5.8 -----
+    struct optflags
+    {
+      unsigned char zero_copy : 1;    // allow reader to access memory without copying
+      unsigned char unused    : 7;
+    };
+    optflags   options = { 0, 0 };
+    // ----- > 5.11 ----
+    int64_t    ack_timout_ms = 0;
   };
 }
+ 

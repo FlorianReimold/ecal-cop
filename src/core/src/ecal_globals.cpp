@@ -93,6 +93,26 @@ namespace eCAL
     }
 #endif // ECAL_CORE_REGISTRATION
 
+#if ECAL_CORE_TRANSPORT_SHM
+    /////////////////////
+    // MEMFILE MAP
+    /////////////////////
+    if (memfile_map_instance == nullptr)
+    {
+      memfile_map_instance = std::make_unique<CMemFileMap>();
+      new_initialization = true;
+    }
+
+    /////////////////////
+    // MEMFILE POOL
+    /////////////////////
+    if (memfile_pool_instance == nullptr)
+    {
+      memfile_pool_instance = std::make_unique<CMemFileThreadPool>();
+      new_initialization = true;
+    }
+#endif // ECAL_CORE_TRANSPORT_SHM
+
 #if ECAL_CORE_SUBSCRIBER
     /////////////////////
     // SUBSCRIBER GATE
@@ -156,6 +176,9 @@ namespace eCAL
 #if ECAL_CORE_REGISTRATION
     if (registration_provider_instance)                                   registration_provider_instance->Create(true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
+#endif
+#if ECAL_CORE_TRANSPORT_SHM
+    if (memfile_pool_instance)                                            memfile_pool_instance->Create();
 #endif
 #if ECAL_CORE_SUBSCRIBER
     if (subgate_instance && ((components_ & Init::Subscriber) != 0u))     subgate_instance->Create();
@@ -221,6 +244,10 @@ namespace eCAL
     if (registration_receiver_instance)  registration_receiver_instance->Destroy();
     if (registration_provider_instance)  registration_provider_instance->Destroy();
 #endif
+#if ECAL_CORE_TRANSPORT_SHM
+    if (memfile_pool_instance)           memfile_pool_instance->Destroy();
+    if (memfile_map_instance)            memfile_map_instance->Destroy();
+#endif
     if (log_instance)                    log_instance->Destroy();
     //if (config_instance)                 config_instance->Destroy();
 
@@ -236,6 +263,10 @@ namespace eCAL
 #if ECAL_CORE_REGISTRATION
     registration_receiver_instance  = nullptr;
     registration_provider_instance  = nullptr;
+#endif
+#if ECAL_CORE_TRANSPORT_SHM
+    memfile_pool_instance           = nullptr;
+    memfile_map_instance            = nullptr;
 #endif
     log_instance                    = nullptr;
     config_instance                 = nullptr;
