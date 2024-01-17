@@ -14,7 +14,6 @@ Visit the eCAL Documentation at 🌐 https://ecal.io for more information.
 ## Differences to Eclipse-eCAL
   - communication core only, no additional eco system tools
   - C++ and C language support only
-  - publish/subscribe only (no client/server communication currently)
   - no monitoring API
   - no logging over udp (console and file target still supported)
 
@@ -79,6 +78,9 @@ This section provides documentation for the CMake options used in configuring th
 
 ##### `ECAL_CORE_SUBSCRIBER` (Default: ON)
 - Enabling this option includes the eCAL subscriber functionality. This is crucial for components that need to subscribe to and receive data from the eCAL communication infrastructure.
+
+##### `ECAL_CORE_SERVICE` (Default: ON)
+- Enabling this option includes the eCAL server/client functionality.
 
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 - Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.

@@ -13,11 +13,8 @@
 typedef enum _eCAL_pb_eTLayerType {
     eCAL_pb_eTLayerType_tl_none = 0, /* undefined */
     eCAL_pb_eTLayerType_tl_ecal_udp_mc = 1, /* ecal udp multicast */
-    /* 2 = ecal udp unicast (not supported anymore)
- 3 = ecal udp metal (not supported anymore) */
     eCAL_pb_eTLayerType_tl_ecal_shm = 4, /* ecal shared memory */
     eCAL_pb_eTLayerType_tl_ecal_tcp = 5, /* ecal tcp */
-    eCAL_pb_eTLayerType_tl_inproc = 42, /* inproc (inner process) */
     eCAL_pb_eTLayerType_tl_all = 255 /* all layer */
 } eCAL_pb_eTLayerType;
 
@@ -43,8 +40,6 @@ typedef struct _eCAL_pb_ConnnectionPar {
     eCAL_pb_LayerParUdpMC layer_par_udpmc; /* parameter for ecal udp multicast */
     bool has_layer_par_shm;
     eCAL_pb_LayerParShm layer_par_shm; /* parameter for ecal shared memory */
-    bool has_layer_par_inproc;
-    eCAL_pb_LayerParInproc layer_par_inproc; /* parameter for ecal inner process */
     bool has_layer_par_tcp;
     eCAL_pb_LayerParTcp layer_par_tcp; /* parameter for ecal tcp */
 } eCAL_pb_ConnnectionPar;
@@ -80,13 +75,13 @@ extern "C" {
 #define eCAL_pb_LayerParShm_init_default         {{{NULL}, NULL}}
 #define eCAL_pb_LayerParInproc_init_default      {0}
 #define eCAL_pb_LayerParTcp_init_default         {0}
-#define eCAL_pb_ConnnectionPar_init_default      {false, eCAL_pb_LayerParUdpMC_init_default, false, eCAL_pb_LayerParShm_init_default, false, eCAL_pb_LayerParInproc_init_default, false, eCAL_pb_LayerParTcp_init_default}
+#define eCAL_pb_ConnnectionPar_init_default      {false, eCAL_pb_LayerParUdpMC_init_default, false, eCAL_pb_LayerParShm_init_default, false, eCAL_pb_LayerParTcp_init_default}
 #define eCAL_pb_TLayer_init_default              {_eCAL_pb_eTLayerType_MIN, 0, 0, false, eCAL_pb_ConnnectionPar_init_default}
 #define eCAL_pb_LayerParUdpMC_init_zero          {0}
 #define eCAL_pb_LayerParShm_init_zero            {{{NULL}, NULL}}
 #define eCAL_pb_LayerParInproc_init_zero         {0}
 #define eCAL_pb_LayerParTcp_init_zero            {0}
-#define eCAL_pb_ConnnectionPar_init_zero         {false, eCAL_pb_LayerParUdpMC_init_zero, false, eCAL_pb_LayerParShm_init_zero, false, eCAL_pb_LayerParInproc_init_zero, false, eCAL_pb_LayerParTcp_init_zero}
+#define eCAL_pb_ConnnectionPar_init_zero         {false, eCAL_pb_LayerParUdpMC_init_zero, false, eCAL_pb_LayerParShm_init_zero, false, eCAL_pb_LayerParTcp_init_zero}
 #define eCAL_pb_TLayer_init_zero                 {_eCAL_pb_eTLayerType_MIN, 0, 0, false, eCAL_pb_ConnnectionPar_init_zero}
 
 /* Field tags (for use in manual encoding/decoding) */
@@ -94,7 +89,6 @@ extern "C" {
 #define eCAL_pb_LayerParTcp_port_tag             1
 #define eCAL_pb_ConnnectionPar_layer_par_udpmc_tag 1
 #define eCAL_pb_ConnnectionPar_layer_par_shm_tag 2
-#define eCAL_pb_ConnnectionPar_layer_par_inproc_tag 3
 #define eCAL_pb_ConnnectionPar_layer_par_tcp_tag 4
 #define eCAL_pb_TLayer_type_tag                  1
 #define eCAL_pb_TLayer_version_tag               2
@@ -125,13 +119,11 @@ X(a, STATIC,   SINGULAR, INT32,    port,              1)
 #define eCAL_pb_ConnnectionPar_FIELDLIST(X, a) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  layer_par_udpmc,   1) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  layer_par_shm,     2) \
-X(a, STATIC,   OPTIONAL, MESSAGE,  layer_par_inproc,   3) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  layer_par_tcp,     4)
 #define eCAL_pb_ConnnectionPar_CALLBACK NULL
 #define eCAL_pb_ConnnectionPar_DEFAULT NULL
 #define eCAL_pb_ConnnectionPar_layer_par_udpmc_MSGTYPE eCAL_pb_LayerParUdpMC
 #define eCAL_pb_ConnnectionPar_layer_par_shm_MSGTYPE eCAL_pb_LayerParShm
-#define eCAL_pb_ConnnectionPar_layer_par_inproc_MSGTYPE eCAL_pb_LayerParInproc
 #define eCAL_pb_ConnnectionPar_layer_par_tcp_MSGTYPE eCAL_pb_LayerParTcp
 
 #define eCAL_pb_TLayer_FIELDLIST(X, a) \

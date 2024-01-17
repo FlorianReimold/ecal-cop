@@ -18,6 +18,7 @@
 */
 
 /**
+ * @file   ecal_proto_hlp.h
  * @brief  protobuf message description handling
 **/
 

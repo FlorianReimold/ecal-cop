@@ -27,7 +27,7 @@
 
 #include "ecal_def.h"
 #include "readwrite/ecal_writer.h"
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_payload.h"
 #include "ecal_writer_shm.h"
 
 namespace eCAL

@@ -30,7 +30,7 @@
 
 #include "io/udp/ecal_udp_sample_sender.h"
 #include "util/ecal_thread.h"
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_registration.h"
 
 #include <ecal/ecal_types.h>
 
@@ -50,17 +50,26 @@ namespace eCAL
     CRegistrationProvider();
     ~CRegistrationProvider();
 
-    void Create(bool topics_, bool process_);
+    void Create(bool topics_, bool services_, bool process_);
     void Destroy();
 
-    bool RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Registration::Sample& ecal_sample_, bool force_);
-    bool UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const eCAL::Registration::Sample& ecal_sample_, bool force_);
+    bool RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const Registration::Sample& ecal_sample_, bool force_);
+    bool UnregisterTopic(const std::string& topic_name_, const std::string& topic_id_, const Registration::Sample& ecal_sample_, bool force_);
+
+    bool RegisterServer(const std::string& service_name_, const std::string& service_id_, const Registration::Sample& ecal_sample_, bool force_);
+    bool UnregisterServer(const std::string& service_name_, const std::string& service_id_, const Registration::Sample& ecal_sample_, bool force_);
+
+    bool RegisterClient(const std::string& client_name_, const std::string& client_id_, const Registration::Sample& ecal_sample_, bool force_);
+    bool UnregisterClient(const std::string& client_name_, const std::string& client_id_, const Registration::Sample& ecal_sample_, bool force_);
 
   protected:
     bool RegisterProcess();
     bool UnregisterProcess();
       
     bool RegisterTopics();
+
+    bool RegisterServer();
+    bool RegisterClient();
 
     bool ApplySample(const std::string& sample_name_, const eCAL::Registration::Sample& sample_);
       
@@ -69,6 +78,7 @@ namespace eCAL
     static std::atomic<bool>            m_created;
     int                                 m_reg_refresh;
     bool                                m_reg_topics;
+    bool                                m_reg_services;
     bool                                m_reg_process;
 
     std::shared_ptr<UDP::CSampleSender> m_reg_sample_snd;
@@ -80,5 +90,11 @@ namespace eCAL
     using SampleMapT = std::unordered_map<std::string, eCAL::Registration::Sample>;
     std::mutex                          m_topics_map_sync;
     SampleMapT                          m_topics_map;
+
+    std::mutex                          m_server_map_sync;
+    SampleMapT                          m_server_map;
+
+    std::mutex                          m_client_map_sync;
+    SampleMapT                          m_client_map;
   };
 }

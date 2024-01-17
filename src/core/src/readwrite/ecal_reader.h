@@ -27,7 +27,8 @@
 #include <ecal/ecal_callback.h>
 #include <ecal/ecal_types.h>
 
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_payload.h"
+#include "serialization/ecal_serialize_sample_registration.h"
 #include "util/ecal_expmap.h"
 
 #include <condition_variable>
@@ -71,8 +72,8 @@ namespace eCAL
     void ApplyExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_, const SDataTypeInformation& tinfo_);
     void RemoveExtPublication(const std::string& host_name_, const std::string& process_id_, const std::string& tid_);
 
-    void ApplyLocLayerParameter(const std::string& process_id_, const std::string& topic_id_, eCAL::eTLayerType type_, const Registration::ConnectionPar& parameter_);
-    void ApplyExtLayerParameter(const std::string& host_name_, eCAL::eTLayerType type_, const Registration::ConnectionPar& parameter_);
+    void ApplyLocLayerParameter(const std::string& process_id_, const std::string& topic_id_, eTLayerType type_, const Registration::ConnectionPar& parameter_);
+    void ApplyExtLayerParameter(const std::string& host_name_, eTLayerType type_, const Registration::ConnectionPar& parameter_);
 
     std::string Dump(const std::string& indent_ = "");
 
@@ -90,7 +91,7 @@ namespace eCAL
 
     void RefreshRegistration();
 
-    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eCAL::eTLayerType layer_);
+    size_t AddSample(const std::string& tid_, const char* payload_, size_t size_, long long id_, long long clock_, long long time_, size_t hash_, eTLayerType layer_);
 
   protected:
     void SubscribeToLayers();

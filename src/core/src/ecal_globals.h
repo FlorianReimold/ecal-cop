@@ -40,6 +40,10 @@
 #include "io/shm/ecal_memfile_pool.h"
 #include "io/shm/ecal_memfile_db.h"
 #endif
+#if ECAL_CORE_SERVICE
+#include "service/ecal_servicegate.h"
+#include "service/ecal_clientgate.h"
+#endif
 
 #include <memory>
 
@@ -69,6 +73,10 @@ namespace eCAL
 #if ECAL_CORE_PUBLISHER
     const std::unique_ptr<CPubGate>&                                      pubgate()                { return pubgate_instance; };
 #endif
+#if ECAL_CORE_SERVICE
+    const std::unique_ptr<CServiceGate>&                                  servicegate()            { return servicegate_instance; };
+    const std::unique_ptr<CClientGate>&                                   clientgate()             { return clientgate_instance; };
+#endif
 #if ECAL_CORE_REGISTRATION
     const std::unique_ptr<CRegistrationProvider>&                         registration_provider()  { return registration_provider_instance; };
     const std::unique_ptr<CRegistrationReceiver>&                         registration_receiver()  { return registration_receiver_instance; };
@@ -91,6 +99,10 @@ namespace eCAL
 #endif
 #if ECAL_CORE_PUBLISHER
     std::unique_ptr<CPubGate>                                             pubgate_instance;
+#endif
+#if ECAL_CORE_SERVICE
+    std::unique_ptr<CServiceGate>                                         servicegate_instance;
+    std::unique_ptr<CClientGate>                                          clientgate_instance;
 #endif
 #if ECAL_CORE_REGISTRATION
     std::unique_ptr<CRegistrationProvider>                                registration_provider_instance;

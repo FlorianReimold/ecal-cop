@@ -47,6 +47,10 @@ namespace eCAL
 #if ECAL_CORE_PUBLISHER
   class  CPubGate;
 #endif
+#if ECAL_CORE_SERVICE
+  class  CServiceGate;
+  class  CClientGate;
+#endif
 #if ECAL_CORE_TRANSPORT_SHM
   class  CMemFileThreadPool;
   class  CMemFileMap;
@@ -68,6 +72,10 @@ namespace eCAL
 #endif
 #if ECAL_CORE_PUBLISHER
   CPubGate*               g_pubgate();
+#endif
+#if ECAL_CORE_SERVICE
+  CServiceGate*           g_servicegate();
+  CClientGate*            g_clientgate();
 #endif
 #if ECAL_CORE_TRANSPORT_SHM
   CMemFileThreadPool*     g_memfile_pool();

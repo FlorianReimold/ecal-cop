@@ -40,6 +40,8 @@ if(MSVC)
   message(STATUS "MSVC detected - Adding flags")
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)
   add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+  # support Windows 7 and newer
+  add_definitions(-D_WIN32_WINNT=0x0601)
 endif()
 
 # --------------------------------------------------------
@@ -71,7 +73,7 @@ endif()
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 option(BUILD_SAMPLES                                     "Build the eCAL samples"                                                                                ON)
 option(BUILD_SAMPLES_PROTOBUF                            "Build the eCAL samples using google protobuf message definition"                                      OFF)
-option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                                                          OFF)
+option(BUILD_ECAL_TESTS                                  "Build the eCAL google tests"                                                                           ON)
 option(BUILD_ECAL_TESTS_PROTOBUF                         "Build the eCAL google tests using google protobuf message definition"                                 OFF)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -82,6 +84,7 @@ option(ECAL_CORE_COMMAND_LINE                            "Enables eCAL applicati
 option(ECAL_CORE_REGISTRATION                            "Enables the eCAL registration layer"                                                                   ON)
 option(ECAL_CORE_PUBLISHER                               "Enables the eCAL publisher functionality"                                                              ON)
 option(ECAL_CORE_SUBSCRIBER                              "Enables the eCAL subscriber functionality"                                                             ON)
+option(ECAL_CORE_SERVICE                                 "Enables the eCAL server/client functionality"                                                          ON)
 option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time plugin functionality"                                                            ON)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -257,6 +260,13 @@ endif()
 add_subdirectory(src/core)
 
 # --------------------------------------------------------
+# ecal services
+# --------------------------------------------------------
+if(ECAL_CORE_SERVICE)
+  add_subdirectory(src/service)
+endif()
+
+# --------------------------------------------------------
 # ecal time plugins
 # --------------------------------------------------------
 if(ECAL_CORE_TIMEPLUGIN)
@@ -281,12 +291,23 @@ endif()
 if(BUILD_ECAL_TESTS)
   enable_testing()
   add_subdirectory(testing/expmap_test)
-  if(BUILD_ECAL_TESTS_PROTOBUF)
-    add_subdirectory(testing/pubsub_proto_test)
-  endif()
-  add_subdirectory(testing/pubsub_test)
   add_subdirectory(testing/topic2mcast_test)
   add_subdirectory(testing/util_test)
+
+  if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
+    add_subdirectory(testing/pubsub_test)
+    if(BUILD_ECAL_TESTS_PROTOBUF)
+      add_subdirectory(testing/pubsub_proto_test)
+    endif()
+  endif()
+
+  if(ECAL_CORE_SERVICE)
+    add_subdirectory(testing/clientserver_test)
+    if(BUILD_ECAL_TESTS_PROTOBUF)
+      add_subdirectory(testing/clientserver_proto_test)
+    endif()
+  endif()
+
 endif()
 
 # --------------------------------------------------------
@@ -356,6 +377,7 @@ message(STATUS "ECAL_CORE_COMMAND_LINE                         : ${ECAL_CORE_COM
 message(STATUS "ECAL_CORE_REGISTRATION                         : ${ECAL_CORE_REGISTRATION}")
 message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUBLISHER}")
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
+message(STATUS "ECAL_CORE_SERVICE                              : ${ECAL_CORE_SERVICE}")
 message(STATUS "ECAL_CORE_TIMEPLUGIN                           : ${ECAL_CORE_TIMEPLUGIN}")
 message(STATUS "ECAL_CORE_TRANSPORT_UDP                        : ${ECAL_CORE_TRANSPORT_UDP}")
 message(STATUS "ECAL_CORE_TRANSPORT_TCP                        : ${ECAL_CORE_TRANSPORT_TCP}")

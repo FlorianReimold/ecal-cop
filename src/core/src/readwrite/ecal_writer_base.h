@@ -28,7 +28,7 @@
 #include "ecal_writer_data.h"
 #include "ecal_writer_info.h"
 
-#include "serialization/ecal_sample_struct_registration.h"
+#include "serialization/ecal_struct_sample_registration.h"
 
 #include <atomic>
 #include <string>

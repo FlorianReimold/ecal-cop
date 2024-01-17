@@ -28,6 +28,10 @@
 #include <iostream>
 #include <stdexcept>
 
+#if ECAL_CORE_SERVICE
+#include "service/ecal_service_singleton_manager.h"
+#endif
+
 namespace eCAL
 {
   CGlobals::CGlobals() : initialized(false), components(0)
@@ -141,6 +145,32 @@ namespace eCAL
     }
 #endif // ECAL_CORE_PUBLISHER
 
+#if ECAL_CORE_SERVICE
+    if ((components_ & Init::Service) != 0u)
+    {
+      // Reset the service manager, so it will be able to create new services, again
+      eCAL::service::ServiceManager::instance()->reset();
+
+      /////////////////////
+      // SERVICE GATE
+      /////////////////////
+      if (servicegate_instance == nullptr)
+      {
+        servicegate_instance = std::make_unique<CServiceGate>();
+        new_initialization = true;
+      }
+
+      /////////////////////
+      // CLIENT GATE
+      /////////////////////
+      if (clientgate_instance == nullptr)
+      {
+        clientgate_instance = std::make_unique<CClientGate>();
+        new_initialization = true;
+      }
+    }
+#endif // ECAL_CORE_SERVICE
+
 #if ECAL_CORE_TIMEPLUGIN
     /////////////////////
     // TIMEGATE
@@ -154,7 +184,6 @@ namespace eCAL
       }
     }
 #endif // ECAL_CORE_TIMEPLUGIN
-
 
     /////////////////////
     // LOGGING
@@ -174,7 +203,7 @@ namespace eCAL
     //if (config_instance)                                                config_instance->Create();
     if (log_instance && ((components_ & Init::Logging) != 0u))            log_instance->Create();
 #if ECAL_CORE_REGISTRATION
-    if (registration_provider_instance)                                   registration_provider_instance->Create(true, (components_ & Init::ProcessReg) != 0x0);
+    if (registration_provider_instance)                                   registration_provider_instance->Create(true, true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
 #endif
 #if ECAL_CORE_TRANSPORT_SHM
@@ -185,6 +214,10 @@ namespace eCAL
 #endif
 #if ECAL_CORE_PUBLISHER
     if (pubgate_instance && ((components_ & Init::Publisher) != 0u))      pubgate_instance->Create();
+#endif
+#if ECAL_CORE_SERVICE
+    if (servicegate_instance && ((components_ & Init::Service) != 0u))    servicegate_instance->Create();
+    if (clientgate_instance && ((components_ & Init::Service) != 0u))     clientgate_instance->Create();
 #endif
 #if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance && ((components_ & Init::TimeSync) != 0u))      timegate_instance->Create(CTimeGate::eTimeSyncMode::realtime);
@@ -215,6 +248,10 @@ namespace eCAL
     case Init::Subscriber:
       return(subgate_instance != nullptr);
 #endif
+#if ECAL_CORE_SERVICE
+    case Init::Service:
+      return(servicegate_instance != nullptr);
+#endif
     case Init::Logging:
       return(log_instance != nullptr);
 #if ECAL_CORE_TIMEPLUGIN
@@ -233,6 +270,16 @@ namespace eCAL
     // start destruction
 #if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance)               timegate_instance->Destroy();
+#endif
+#if ECAL_CORE_SERVICE
+    // The order here is EXTREMELY important! First, the actual service
+    // implementation must be stopped (->Service Manager), then the
+    // clientgate/servicegate. The callbacks in the service implementation carry
+    // raw pointers to the gate's functions, so we must make sure that everything
+    // has been executed, before we delete the gates.
+    eCAL::service::ServiceManager::instance()->stop();
+    if (clientgate_instance)             clientgate_instance->Destroy();
+    if (servicegate_instance)            servicegate_instance->Destroy();
 #endif
 #if ECAL_CORE_PUBLISHER
     if (pubgate_instance)                pubgate_instance->Destroy();
@@ -253,6 +300,10 @@ namespace eCAL
 
 #if ECAL_CORE_TIMEPLUGIN
     timegate_instance               = nullptr;
+#endif
+#if ECAL_CORE_SERVICE
+    servicegate_instance            = nullptr;
+    clientgate_instance             = nullptr;
 #endif
 #if ECAL_CORE_PUBLISHER
     pubgate_instance                = nullptr;

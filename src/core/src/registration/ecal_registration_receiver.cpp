@@ -30,6 +30,7 @@
 
 #include "pubsub/ecal_subgate.h"
 #include "pubsub/ecal_pubgate.h"
+#include "service/ecal_clientgate.h"
 
 #include "io/udp/ecal_udp_configurations.h"
 #include "ecal_sample_to_topicinfo.h"
@@ -46,6 +47,8 @@ namespace eCAL
                          m_loopback(false),
                          m_callback_pub(nullptr),
                          m_callback_sub(nullptr),
+                         m_callback_service(nullptr),
+                         m_callback_client(nullptr),
                          m_callback_process(nullptr),
                          m_host_group_name(Process::GetHostGroupName())
   {
@@ -87,6 +90,8 @@ namespace eCAL
     // reset callbacks
     m_callback_pub     = nullptr;
     m_callback_sub     = nullptr;
+    m_callback_service = nullptr;
+    m_callback_client  = nullptr;
     m_callback_process = nullptr;
 
     // finished
@@ -113,6 +118,8 @@ namespace eCAL
     std::string reg_sample;
     if ( m_callback_pub
       || m_callback_sub
+      || m_callback_service
+      || m_callback_client
       || m_callback_process
       )
     {
@@ -133,6 +140,24 @@ namespace eCAL
     case bct_unreg_process:
       // unregistration event not implemented currently
       if (m_callback_process) m_callback_process(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
+      break;
+#if ECAL_CORE_SERVICE
+    case bct_reg_service:
+      if (g_clientgate() != nullptr) g_clientgate()->ApplyServiceRegistration(modified_ttype_sample);
+      if (m_callback_service) m_callback_service(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
+      break;
+    case bct_unreg_service:
+      // current client implementation doesn't need that information
+      if (m_callback_service) m_callback_service(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
+      break;
+#endif
+    case bct_reg_client:
+      // current service implementation doesn't need that information
+      if (m_callback_client) m_callback_client(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
+      break;
+    case bct_unreg_client:
+      // current service implementation doesn't need that information
+      if (m_callback_client) m_callback_client(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
       break;
     case bct_reg_subscriber:
     case bct_unreg_subscriber:
@@ -163,6 +188,12 @@ namespace eCAL
     case reg_event_subscriber:
       m_callback_sub = callback_;
       return true;
+    case reg_event_service:
+      m_callback_service = callback_;
+      return true;
+    case reg_event_client:
+      m_callback_client = callback_;
+      return true;
     case reg_event_process:
       m_callback_process = callback_;
       return true;
@@ -181,6 +212,12 @@ namespace eCAL
       return true;
     case reg_event_subscriber:
       m_callback_sub = nullptr;
+      return true;
+    case reg_event_service:
+      m_callback_service = nullptr;
+      return true;
+    case reg_event_client:
+      m_callback_client = nullptr;
       return true;
     case reg_event_process:
       m_callback_process = nullptr;

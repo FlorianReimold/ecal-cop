@@ -26,7 +26,7 @@
 
 #include "ecal_writer_udp_mc.h"
 #include "io/udp/ecal_udp_configurations.h"
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_payload.h"
 
 #include <iterator>
 

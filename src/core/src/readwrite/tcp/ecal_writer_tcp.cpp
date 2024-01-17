@@ -22,7 +22,7 @@
 **/
 
 #include "config/ecal_config_reader_hlp.h"
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_payload.h"
 
 #include <ecal/ecal_config.h>
 

@@ -313,17 +313,43 @@ set(ecal_serialization_src
     src/serialization/nanopb/layer.pb.h
     src/serialization/nanopb/process.pb.c
     src/serialization/nanopb/process.pb.h
+    src/serialization/nanopb/service.pb.c
+    src/serialization/nanopb/service.pb.h
     src/serialization/nanopb/topic.pb.c
     src/serialization/nanopb/topic.pb.h
-    src/serialization/ecal_sample.h
-    src/serialization/ecal_sample_nanopb_common.cpp
-    src/serialization/ecal_sample_nanopb_common.h
-    src/serialization/ecal_sample_nanopb_payload.cpp
-    src/serialization/ecal_sample_nanopb_registration.cpp
-    src/serialization/ecal_sample_struct_common.h
-    src/serialization/ecal_sample_struct_payload.h
-    src/serialization/ecal_sample_struct_registration.h
+    src/serialization/ecal_nanopb_common.cpp
+    src/serialization/ecal_nanopb_common.h
+    src/serialization/ecal_nanopb_sample_payload.cpp
+    src/serialization/ecal_nanopb_sample_registration.cpp
+    src/serialization/ecal_nanopb_service.cpp
+	src/serialization/ecal_serialize_sample_payload.h
+	src/serialization/ecal_serialize_sample_registration.h
+	src/serialization/ecal_serialize_service.h
+    src/serialization/ecal_struct_sample_common.h
+    src/serialization/ecal_struct_sample_payload.h
+    src/serialization/ecal_struct_sample_registration.h
+	src/serialization/ecal_struct_service.h
 )
+
+######################################
+# service
+######################################
+if(ECAL_CORE_SERVICE)
+  set(ecal_service_src
+      src/service/ecal_clientgate.cpp
+      src/service/ecal_clientgate.h
+      src/service/ecal_servicegate.cpp
+      src/service/ecal_servicegate.h
+      src/service/ecal_service_client.cpp
+      src/service/ecal_service_client_impl.cpp
+      src/service/ecal_service_client_impl.h
+      src/service/ecal_service_server.cpp
+      src/service/ecal_service_server_impl.cpp
+      src/service/ecal_service_server_impl.h
+      src/service/ecal_service_singleton_manager.cpp
+      src/service/ecal_service_singleton_manager.h
+  )
+endif()
 
 ######################################
 # time
@@ -404,6 +430,7 @@ set(ecal_header_cmn
     include/ecal/ecal_c.h
     include/ecal/ecal_c_types.h
     include/ecal/ecal_callback.h
+    include/ecal/ecal_client.h
     include/ecal/ecal_config.h
     include/ecal/ecal_core.h
     include/ecal/ecal_deprecate.h
@@ -415,6 +442,9 @@ set(ecal_header_cmn
     include/ecal/ecal_process.h
     include/ecal/ecal_process_severity.h
     include/ecal/ecal_publisher.h
+    include/ecal/ecal_server.h
+    include/ecal/ecal_service.h
+    include/ecal/ecal_service_info.h
     include/ecal/ecal_subscriber.h
     include/ecal/ecal_time.h
     include/ecal/ecal_util.h
@@ -424,22 +454,31 @@ set(ecal_header_cmn
 
 set(ecal_header_cimpl
     include/ecal/cimpl/ecal_callback_cimpl.h
+    include/ecal/cimpl/ecal_client_cimpl.h
     include/ecal/cimpl/ecal_core_cimpl.h
     include/ecal/cimpl/ecal_init_cimpl.h
     include/ecal/cimpl/ecal_log_cimpl.h
     include/ecal/cimpl/ecal_process_cimpl.h
     include/ecal/cimpl/ecal_publisher_cimpl.h
+    include/ecal/cimpl/ecal_server_cimpl.h
+    include/ecal/cimpl/ecal_service_cimpl.h
+    include/ecal/cimpl/ecal_service_info_cimpl.h
     include/ecal/cimpl/ecal_subscriber_cimpl.h
     include/ecal/cimpl/ecal_time_cimpl.h
     include/ecal/cimpl/ecal_util_cimpl.h
 )
 
 set(ecal_header_msg
+    include/ecal/msg/protobuf/client.h
+    include/ecal/msg/protobuf/ecal_proto_dyn.h
+    include/ecal/msg/protobuf/ecal_proto_hlp.h
     include/ecal/msg/protobuf/publisher.h
-    include/ecal/msg/string/publisher.h
-    include/ecal/msg/publisher.h
+    include/ecal/msg/protobuf/server.h
     include/ecal/msg/protobuf/subscriber.h
+    include/ecal/msg/string/publisher.h
     include/ecal/msg/string/subscriber.h
+    include/ecal/msg/dynamic.h
+    include/ecal/msg/publisher.h
     include/ecal/msg/subscriber.h
 )
 
@@ -468,7 +507,8 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_writer_src} 
     ${ecal_reader_src} 
     ${ecal_registration_src}
-    ${ecal_serialization_src}	
+    ${ecal_serialization_src}
+	${ecal_service_src}
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}
@@ -515,6 +555,7 @@ set(ECAL_CORE_FEATURES
   ECAL_CORE_REGISTRATION
   ECAL_CORE_PUBLISHER
   ECAL_CORE_SUBSCRIBER
+  ECAL_CORE_SERVICE
   ECAL_CORE_TIMEPLUGIN
   ECAL_CORE_TRANSPORT_UDP
   ECAL_CORE_TRANSPORT_TCP
@@ -542,6 +583,13 @@ if(ECAL_CORE_COMMAND_LINE)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       tclap::tclap
+  )
+endif()
+
+if(ECAL_CORE_SERVICE)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      ecal_service
   )
 endif()
 
@@ -625,6 +673,7 @@ if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0")
     ${ecal_reader_udp_src}
     ${ecal_registration_src}   
     ${ecal_serialization_src}	
+	${ecal_service_src}
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}

@@ -28,11 +28,14 @@
 #include <ecal/ecal_os.h>
 #include <ecal/ecal_defs.h>
 #include <ecal/ecal_callback.h>
+#include <ecal/ecal_client.h>
 #include <ecal/ecal_config.h>
 #include <ecal/ecal_core.h>
 #include <ecal/ecal_log.h>
 #include <ecal/ecal_process.h>
 #include <ecal/ecal_publisher.h>
+#include <ecal/ecal_server.h>
+#include <ecal/ecal_service_info.h>
 #include <ecal/ecal_subscriber.h>
 #include <ecal/ecal_time.h>
 #include <ecal/ecal_util.h>

@@ -6,6 +6,7 @@
 #include <pb.h>
 #include "host.pb.h"
 #include "process.pb.h"
+#include "service.pb.h"
 #include "topic.pb.h"
 
 #if PB_PROTO_HEADER_VERSION != 40
@@ -19,9 +20,13 @@ typedef enum _eCAL_pb_eCmdType {
     eCAL_pb_eCmdType_bct_reg_publisher = 2, /* register publisher */
     eCAL_pb_eCmdType_bct_reg_subscriber = 3, /* register subscriber */
     eCAL_pb_eCmdType_bct_reg_process = 4, /* register process */
+    eCAL_pb_eCmdType_bct_reg_service = 5, /* register service */
+    eCAL_pb_eCmdType_bct_reg_client = 6, /* register client */
     eCAL_pb_eCmdType_bct_unreg_publisher = 12, /* unregister publisher */
     eCAL_pb_eCmdType_bct_unreg_subscriber = 13, /* unregister subscriber */
-    eCAL_pb_eCmdType_bct_unreg_process = 14 /* unregister process */
+    eCAL_pb_eCmdType_bct_unreg_process = 14, /* unregister process */
+    eCAL_pb_eCmdType_bct_unreg_service = 15, /* unregister service */
+    eCAL_pb_eCmdType_bct_unreg_client = 16 /* unregister client */
 } eCAL_pb_eCmdType;
 
 /* Struct definitions */
@@ -40,10 +45,14 @@ typedef struct _eCAL_pb_Sample {
     eCAL_pb_Host host; /* host information */
     bool has_process;
     eCAL_pb_Process process; /* process information */
+    bool has_service;
+    eCAL_pb_Service service; /* service information */
     bool has_topic;
     eCAL_pb_Topic topic; /* topic information */
     bool has_content;
     eCAL_pb_Content content; /* topic content */
+    bool has_client;
+    eCAL_pb_Client client; /* client information */
     pb_callback_t padding; /* padding to artificially increase the size of the message. This is a workaround for TCP topics, to get the actual user-payload 8-byte-aligned. REMOVE ME IN ECAL6 */
 } eCAL_pb_Sample;
 
@@ -54,8 +63,8 @@ extern "C" {
 
 /* Helper constants for enums */
 #define _eCAL_pb_eCmdType_MIN eCAL_pb_eCmdType_bct_none
-#define _eCAL_pb_eCmdType_MAX eCAL_pb_eCmdType_bct_unreg_process
-#define _eCAL_pb_eCmdType_ARRAYSIZE ((eCAL_pb_eCmdType)(eCAL_pb_eCmdType_bct_unreg_process+1))
+#define _eCAL_pb_eCmdType_MAX eCAL_pb_eCmdType_bct_unreg_client
+#define _eCAL_pb_eCmdType_ARRAYSIZE ((eCAL_pb_eCmdType)(eCAL_pb_eCmdType_bct_unreg_client+1))
 
 
 #define eCAL_pb_Sample_cmd_type_ENUMTYPE eCAL_pb_eCmdType
@@ -63,9 +72,9 @@ extern "C" {
 
 /* Initializer values for message structs */
 #define eCAL_pb_Content_init_default             {0, 0, 0, {{NULL}, NULL}, 0, 0}
-#define eCAL_pb_Sample_init_default              {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_default, false, eCAL_pb_Process_init_default, false, eCAL_pb_Topic_init_default, false, eCAL_pb_Content_init_default, {{NULL}, NULL}}
+#define eCAL_pb_Sample_init_default              {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_default, false, eCAL_pb_Process_init_default, false, eCAL_pb_Service_init_default, false, eCAL_pb_Topic_init_default, false, eCAL_pb_Content_init_default, false, eCAL_pb_Client_init_default, {{NULL}, NULL}}
 #define eCAL_pb_Content_init_zero                {0, 0, 0, {{NULL}, NULL}, 0, 0}
-#define eCAL_pb_Sample_init_zero                 {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_zero, false, eCAL_pb_Process_init_zero, false, eCAL_pb_Topic_init_zero, false, eCAL_pb_Content_init_zero, {{NULL}, NULL}}
+#define eCAL_pb_Sample_init_zero                 {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_zero, false, eCAL_pb_Process_init_zero, false, eCAL_pb_Service_init_zero, false, eCAL_pb_Topic_init_zero, false, eCAL_pb_Content_init_zero, false, eCAL_pb_Client_init_zero, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define eCAL_pb_Content_id_tag                   1
@@ -77,8 +86,10 @@ extern "C" {
 #define eCAL_pb_Sample_cmd_type_tag              1
 #define eCAL_pb_Sample_host_tag                  2
 #define eCAL_pb_Sample_process_tag               3
+#define eCAL_pb_Sample_service_tag               4
 #define eCAL_pb_Sample_topic_tag                 5
 #define eCAL_pb_Sample_content_tag               6
+#define eCAL_pb_Sample_client_tag                7
 #define eCAL_pb_Sample_padding_tag               8
 
 /* Struct field encoding specification for nanopb */
@@ -96,15 +107,19 @@ X(a, STATIC,   SINGULAR, INT64,    hash,              7)
 X(a, STATIC,   SINGULAR, UENUM,    cmd_type,          1) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  host,              2) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  process,           3) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  service,           4) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  topic,             5) \
 X(a, STATIC,   OPTIONAL, MESSAGE,  content,           6) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  client,            7) \
 X(a, CALLBACK, SINGULAR, BYTES,    padding,           8)
 #define eCAL_pb_Sample_CALLBACK pb_default_field_callback
 #define eCAL_pb_Sample_DEFAULT NULL
 #define eCAL_pb_Sample_host_MSGTYPE eCAL_pb_Host
 #define eCAL_pb_Sample_process_MSGTYPE eCAL_pb_Process
+#define eCAL_pb_Sample_service_MSGTYPE eCAL_pb_Service
 #define eCAL_pb_Sample_topic_MSGTYPE eCAL_pb_Topic
 #define eCAL_pb_Sample_content_MSGTYPE eCAL_pb_Content
+#define eCAL_pb_Sample_client_MSGTYPE eCAL_pb_Client
 
 extern const pb_msgdesc_t eCAL_pb_Content_msg;
 extern const pb_msgdesc_t eCAL_pb_Sample_msg;

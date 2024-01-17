@@ -21,6 +21,7 @@ syntax = "proto3";
 
 import "host.proto";
 import "process.proto";
+import "service.proto";
 import "topic.proto";
 
 package eCAL.pb;
@@ -42,10 +43,14 @@ enum eCmdType                                  // command type
   bct_reg_publisher    =  2;                   // register publisher
   bct_reg_subscriber   =  3;                   // register subscriber
   bct_reg_process      =  4;                   // register process
+  bct_reg_service      =  5;                   // register service
+  bct_reg_client       =  6;                   // register client
 
   bct_unreg_publisher  = 12;                   // unregister publisher
   bct_unreg_subscriber = 13;                   // unregister subscriber
   bct_unreg_process    = 14;                   // unregister process
+  bct_unreg_service    = 15;                   // unregister service
+  bct_unreg_client     = 16;                   // unregister client
 }
 
 message Sample                                 // a sample is a topic, it's descriptions and it's content
@@ -53,6 +58,8 @@ message Sample                                 // a sample is a topic, it's desc
   eCmdType     cmd_type              =  1;     // sample command type
   Host         host                  =  2;     // host information
   Process      process               =  3;     // process information
+  Service      service               =  4;     // service information
+  Client       client                =  7;     // client information
   Topic        topic                 =  5;     // topic information
   Content      content               =  6;     // topic content
   bytes        padding               =  8;     // padding to artificially increase the size of the message. This is a workaround for TCP topics, to get the actual user-payload 8-byte-aligned. REMOVE ME IN ECAL6

@@ -30,18 +30,21 @@ namespace eCAL
   {
     static const unsigned int Publisher  =    0x001;
     static const unsigned int Subscriber =    0x002;
+    static const unsigned int Service    =    0x004;
     static const unsigned int Logging    =    0x010;
     static const unsigned int TimeSync   =    0x020;
     static const unsigned int ProcessReg =    0x080;
 
     static const unsigned int All =           Publisher
                                             | Subscriber
+                                            | Service
                                             | Logging
                                             | TimeSync
                                             | ProcessReg;
 
     static const unsigned int Default    =    Publisher
                                             | Subscriber
+                                            | Service
                                             | Logging
                                             | TimeSync
                                             | ProcessReg;

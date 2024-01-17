@@ -26,7 +26,7 @@
 #include <ecal/ecal_types.h>
 #include <ecal/ecal_util.h>
 
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_registration.h"
 
 namespace eCAL
 {

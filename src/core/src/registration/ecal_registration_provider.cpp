@@ -44,6 +44,7 @@ namespace eCAL
   CRegistrationProvider::CRegistrationProvider() :
                     m_reg_refresh(CMN_REGISTRATION_REFRESH),
                     m_reg_topics(false),
+                    m_reg_services(false),
                     m_reg_process(false)
   {
   }
@@ -53,13 +54,14 @@ namespace eCAL
     Destroy();
   }
 
-  void CRegistrationProvider::Create(bool topics_, bool process_)
+  void CRegistrationProvider::Create(bool topics_, bool services_, bool process_)
   {
     if(m_created) return;
 
     m_reg_refresh     = Config::GetRegistrationRefreshMs();
 
     m_reg_topics      = topics_;
+    m_reg_services    = services_;
     m_reg_process     = process_;
 
     // set network attributes
@@ -100,8 +102,8 @@ namespace eCAL
 
   bool CRegistrationProvider::RegisterTopic(const std::string& topic_name_, const std::string& topic_id_, const Registration::Sample& ecal_sample_, const bool force_)
   {
-    if(!m_created)    return(false);
-    if(!m_reg_topics) return(false);
+    if (!m_created)    return(false);
+    if (!m_reg_topics) return(false);
 
     const std::lock_guard<std::mutex> lock(m_topics_map_sync);
     m_topics_map[topic_name_ + topic_id_] = ecal_sample_;
@@ -137,10 +139,88 @@ namespace eCAL
     return(false);
   }
 
+  bool CRegistrationProvider::RegisterServer(const std::string& service_name_, const std::string& service_id_, const Registration::Sample& ecal_sample_, bool force_)
+  {
+    if (!m_created)      return(false);
+    if (!m_reg_services) return(false);
+
+    const std::lock_guard<std::mutex> lock(m_server_map_sync);
+    m_server_map[service_name_ + service_id_] = ecal_sample_;
+    if (force_)
+    {
+      RegisterProcess();
+      // apply registration sample
+      ApplySample(service_name_, ecal_sample_);
+    }
+
+    return(true);
+  }
+
+  bool CRegistrationProvider::UnregisterServer(const std::string& service_name_, const std::string& service_id_, const Registration::Sample& ecal_sample_, bool force_)
+  {
+    if (!m_created) return(false);
+
+    if (force_)
+    {
+      // apply unregistration sample
+      ApplySample(service_name_, ecal_sample_);
+    }
+
+    SampleMapT::iterator iter;
+    const std::lock_guard<std::mutex> lock(m_server_map_sync);
+    iter = m_server_map.find(service_name_ + service_id_);
+    if (iter != m_server_map.end())
+    {
+      m_server_map.erase(iter);
+      return(true);
+    }
+
+    return(false);
+  }
+
+  bool CRegistrationProvider::RegisterClient(const std::string& client_name_, const std::string& client_id_, const Registration::Sample& ecal_sample_, bool force_)
+  {
+    if (!m_created)      return(false);
+    if (!m_reg_services) return(false);
+
+    const std::lock_guard<std::mutex> lock(m_client_map_sync);
+    m_client_map[client_name_ + client_id_] = ecal_sample_;
+    if (force_)
+    {
+      RegisterProcess();
+      // apply registration sample
+      ApplySample(client_name_, ecal_sample_);
+    }
+
+    return(true);
+  }
+
+  bool CRegistrationProvider::UnregisterClient(const std::string& client_name_, const std::string& client_id_, const Registration::Sample& ecal_sample_, bool force_)
+  {
+    if (!m_created) return(false);
+
+    if (force_)
+    {
+      // apply unregistration sample
+      ApplySample(client_name_, ecal_sample_);
+    }
+
+    SampleMapT::iterator iter;
+    const std::lock_guard<std::mutex> lock(m_client_map_sync);
+    iter = m_client_map.find(client_name_ + client_id_);
+    if (iter != m_client_map.end())
+    {
+      m_client_map.erase(iter);
+      return(true);
+    }
+
+    return(false);
+  }
+
   bool CRegistrationProvider::RegisterProcess()
   {
-    if(!m_created)     return(false);
-    if(!m_reg_process) return(false);
+    if (!m_created)     return(false);
+    if (!m_reg_process) return(false);
 
     Registration::Sample process_sample;
     process_sample.cmd_type = bct_reg_process;
@@ -226,8 +306,8 @@ namespace eCAL
 
   bool CRegistrationProvider::RegisterTopics()
   {
-    if(!m_created)    return(false);
-    if(!m_reg_topics) return(false);
+    if (!m_created)    return(false);
+    if (!m_reg_topics) return(false);
 
     bool return_value {true};
     const std::lock_guard<std::mutex> lock(m_topics_map_sync);
@@ -237,6 +317,40 @@ namespace eCAL
       // send sample to registration layer
       //////////////////////////////////////////////
       return_value &= ApplySample(iter->second.topic.tname, iter->second);
+    }
+
+    return return_value;
+  }
+
+  bool CRegistrationProvider::RegisterServer()
+  {
+    if (!m_created)      return(false);
+    if (!m_reg_services) return(false);
+
+    bool return_value {true};
+    const std::lock_guard<std::mutex> lock(m_server_map_sync);
+    for (SampleMapT::const_iterator iter = m_server_map.begin(); iter != m_server_map.end(); ++iter)
+    {
+      //////////////////////////////////////////////
+      // send sample to registration layer
+      //////////////////////////////////////////////
+      return_value &= ApplySample(iter->second.service.sname, iter->second);
+    }
+
+    return return_value;
+  }
+
+  bool CRegistrationProvider::RegisterClient()
+  {
+    if (!m_created)      return(false);
+    if (!m_reg_services) return(false);
+
+    bool return_value {true};
+    const std::lock_guard<std::mutex> lock(m_client_map_sync);
+    for (SampleMapT::const_iterator iter = m_client_map.begin(); iter != m_client_map.end(); ++iter)
+    {
+      // apply registration sample
+      return_value &= ApplySample(iter->second.client.sname, iter->second);
     }
 
     return return_value;
@@ -280,8 +394,24 @@ namespace eCAL
     if (g_pubgate() != nullptr) g_pubgate()->RefreshRegistrations();
 #endif
 
+#if ECAL_CORE_SERVICE
+    // refresh server registration
+    if (g_servicegate() != nullptr) g_servicegate()->RefreshRegistrations();
+
+    // refresh client registration
+    if (g_clientgate() != nullptr) g_clientgate()->RefreshRegistrations();
+#endif
+
     // register process
     RegisterProcess();
+
+#if ECAL_CORE_SERVICE
+    // register server
+    RegisterServer();
+
+    // register clients
+    RegisterClient();
+#endif
 
     // register topics
     RegisterTopics();

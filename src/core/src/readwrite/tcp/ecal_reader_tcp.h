@@ -28,7 +28,7 @@
 #include <tcp_pubsub/executor.h>
 #include <tcp_pubsub/subscriber.h>
 
-#include "serialization/ecal_sample_struct_payload.h"
+#include "serialization/ecal_struct_sample_payload.h"
 
 namespace eCAL
 {

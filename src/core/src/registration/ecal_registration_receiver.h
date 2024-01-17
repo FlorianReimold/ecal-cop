@@ -31,7 +31,7 @@
 
 #include "ecal_def.h"
 #include "io/udp/ecal_udp_sample_receiver.h"
-#include "serialization/ecal_sample.h"
+#include "serialization/ecal_serialize_sample_registration.h"
 
 #include <atomic>
 #include <memory>
@@ -69,6 +69,8 @@ namespace eCAL
                                      
     RegistrationCallbackT                 m_callback_pub;
     RegistrationCallbackT                 m_callback_sub;
+    RegistrationCallbackT                 m_callback_service;
+    RegistrationCallbackT                 m_callback_client;
     RegistrationCallbackT                 m_callback_process;
                                      
     std::shared_ptr<UDP::CSampleReceiver> m_registration_receiver;

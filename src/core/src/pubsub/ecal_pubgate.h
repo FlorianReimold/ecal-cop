@@ -24,7 +24,7 @@
 #pragma once
 
 #include "readwrite/ecal_writer.h"
-#include "serialization/ecal_sample_struct_registration.h"
+#include "serialization/ecal_struct_sample_registration.h"
 
 #include <atomic>
 #include <shared_mutex>
