@@ -28,8 +28,6 @@
 #include "io/shm/ecal_memfile_pool.h"
 #include "ecal_reader_shm.h"
 
-#include <iostream>
-
 namespace eCAL
 {
   ////////////////

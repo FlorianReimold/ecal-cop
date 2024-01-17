@@ -52,7 +52,7 @@ namespace eCAL
     virtual void AddExtConnection(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*topic_id_*/, const std::string& /*conn_par_*/) {};
     virtual void RemExtConnection(const std::string& /*host_name_*/, const std::string& /*process_id_*/, const std::string& /*topic_id_*/) {};
 
-    virtual Registration::ConnectionPar GetConnectionParameter() { return Registration::ConnectionPar(); };
+    virtual Registration::ConnectionPar GetConnectionParameter() { return {}; };
 
     virtual bool PrepareWrite(const SWriterAttr& /*attr_*/) { return false; };
     virtual bool Write(CPayloadWriter& /*payload_*/, const SWriterAttr& /*attr_*/) { return false; };

@@ -152,9 +152,6 @@ namespace eCAL
       break;
 #endif
     case bct_reg_client:
-      // current service implementation doesn't need that information
-      if (m_callback_client) m_callback_client(reg_sample.c_str(), static_cast<int>(reg_sample.size()));
-      break;
     case bct_unreg_client:
       // current service implementation doesn't need that information
       if (m_callback_client) m_callback_client(reg_sample.c_str(), static_cast<int>(reg_sample.size()));

@@ -46,7 +46,7 @@ namespace eCAL
       if (!pb_encode_tag_for_field(stream, field))
         return false;
 
-      std::string* str = (std::string*)(*arg);
+      auto* str = (std::string*)(*arg);
       return pb_encode_string(stream, (pb_byte_t*)(str->c_str()), str->size());
     }
 
@@ -132,7 +132,7 @@ namespace eCAL
       if (*arg == nullptr) return false;
 
       auto* attr_map = (std::map<std::string, std::string>*)(*arg);
-      for (auto iter : *attr_map)
+      for (const auto& iter : *attr_map)
       {
         if (!pb_encode_tag_for_field(stream, field))
         {
@@ -196,7 +196,7 @@ namespace eCAL
 
       auto* str_list = (std::list<std::string>*)(*arg);
 
-      for (auto str : *str_list)
+      for (const auto& str : *str_list)
       {
         if (!pb_encode_tag_for_field(stream, field))
         {
@@ -330,7 +330,7 @@ namespace eCAL
 
       auto* method_vec = (std::vector<eCAL::Service::Method>*)(*arg);
 
-      for (auto method : *method_vec)
+      for (const auto& method : *method_vec)
       {
         if (!pb_encode_tag_for_field(stream, field))
         {

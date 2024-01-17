@@ -49,8 +49,7 @@ namespace eCAL
     return instance;
   }
 
-  CServiceServerImpl::CServiceServerImpl()
-  {}
+  CServiceServerImpl::CServiceServerImpl() = default;
 
   CServiceServerImpl::~CServiceServerImpl()
   {

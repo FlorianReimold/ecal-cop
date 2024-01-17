@@ -80,10 +80,7 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
 
 target_compile_options(${PROJECT_NAME} PRIVATE
                            $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-                                -Wall -Wextra>
-                           $<$<CXX_COMPILER_ID:MSVC>:
-                                /W4>)
-
+                                -Wall -Wextra>)
 
 # Add own public include directory
 target_include_directories(${PROJECT_NAME}

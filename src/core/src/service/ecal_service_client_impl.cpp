@@ -612,7 +612,7 @@ namespace eCAL
     default:
       break;
     }
-    response_.response = std::string(response_struct_.response.data(), response_struct_.response.size());;
+    response_.response = std::string(response_struct_.response.data(), response_struct_.response.size());
   }
 
   void CServiceClientImpl::Register(const bool force_)

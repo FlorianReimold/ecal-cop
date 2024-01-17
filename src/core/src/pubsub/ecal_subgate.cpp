@@ -22,7 +22,6 @@
 **/
 
 #include <algorithm>
-#include <chrono>
 #include <iterator>
 
 #include <ecal/ecal.h>

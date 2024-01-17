@@ -28,8 +28,6 @@
 #include "io/udp/ecal_udp_configurations.h"
 #include "serialization/ecal_serialize_sample_payload.h"
 
-#include <iterator>
-
 namespace eCAL
 {
   CDataWriterUdpMC::~CDataWriterUdpMC()

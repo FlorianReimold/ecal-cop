@@ -112,8 +112,8 @@ namespace eCAL
     struct TLayer
     {
       eTLayerType                         type = tl_none;               // transport layer type
-      int32_t                             version;                      // transport layer version
-      bool                                confirmed;                    // transport layer used?
+      int32_t                             version = 0;                  // transport layer version
+      bool                                confirmed = false;            // transport layer used?
       ConnectionPar                       par_layer;                    // transport layer parameter
     };
 

@@ -26,8 +26,6 @@
 #include <ecal/ecal_log.h>
 
 #include "ecal_def.h"
-#include "readwrite/ecal_writer.h"
-#include "serialization/ecal_serialize_sample_payload.h"
 #include "ecal_writer_shm.h"
 
 namespace eCAL
@@ -69,7 +67,7 @@ namespace eCAL
     m_memory_file_attr.timeout_ack_ms  = Config::GetMemfileAckTimeoutMs();
 
     // initialize memory file buffer
-    m_created = SetBufferCount(m_buffer_count);;
+    m_created = SetBufferCount(m_buffer_count);
     return m_created;
   }
 
