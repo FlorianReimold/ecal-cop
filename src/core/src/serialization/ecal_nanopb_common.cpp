@@ -384,6 +384,10 @@ namespace eCAL
       // apply method values
       method.call_count = pb_method.call_count;
 
+      // add method to vector
+      auto* method_vec = (std::vector<eCAL::Service::Method>*)(*arg);
+      method_vec->emplace_back(method);
+
       return true;
     }
 

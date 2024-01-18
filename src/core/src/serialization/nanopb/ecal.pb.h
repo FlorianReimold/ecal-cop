@@ -56,6 +56,10 @@ typedef struct _eCAL_pb_Sample {
     pb_callback_t padding; /* padding to artificially increase the size of the message. This is a workaround for TCP topics, to get the actual user-payload 8-byte-aligned. REMOVE ME IN ECAL6 */
 } eCAL_pb_Sample;
 
+typedef struct _eCAL_pb_SampleList {
+    pb_callback_t samples;
+} eCAL_pb_SampleList;
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,11 +74,14 @@ extern "C" {
 #define eCAL_pb_Sample_cmd_type_ENUMTYPE eCAL_pb_eCmdType
 
 
+
 /* Initializer values for message structs */
 #define eCAL_pb_Content_init_default             {0, 0, 0, {{NULL}, NULL}, 0, 0}
 #define eCAL_pb_Sample_init_default              {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_default, false, eCAL_pb_Process_init_default, false, eCAL_pb_Service_init_default, false, eCAL_pb_Topic_init_default, false, eCAL_pb_Content_init_default, false, eCAL_pb_Client_init_default, {{NULL}, NULL}}
+#define eCAL_pb_SampleList_init_default          {{{NULL}, NULL}}
 #define eCAL_pb_Content_init_zero                {0, 0, 0, {{NULL}, NULL}, 0, 0}
 #define eCAL_pb_Sample_init_zero                 {_eCAL_pb_eCmdType_MIN, false, eCAL_pb_Host_init_zero, false, eCAL_pb_Process_init_zero, false, eCAL_pb_Service_init_zero, false, eCAL_pb_Topic_init_zero, false, eCAL_pb_Content_init_zero, false, eCAL_pb_Client_init_zero, {{NULL}, NULL}}
+#define eCAL_pb_SampleList_init_zero             {{{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
 #define eCAL_pb_Content_id_tag                   1
@@ -91,6 +98,7 @@ extern "C" {
 #define eCAL_pb_Sample_content_tag               6
 #define eCAL_pb_Sample_client_tag                7
 #define eCAL_pb_Sample_padding_tag               8
+#define eCAL_pb_SampleList_samples_tag           1
 
 /* Struct field encoding specification for nanopb */
 #define eCAL_pb_Content_FIELDLIST(X, a) \
@@ -121,16 +129,25 @@ X(a, CALLBACK, SINGULAR, BYTES,    padding,           8)
 #define eCAL_pb_Sample_content_MSGTYPE eCAL_pb_Content
 #define eCAL_pb_Sample_client_MSGTYPE eCAL_pb_Client
 
+#define eCAL_pb_SampleList_FIELDLIST(X, a) \
+X(a, CALLBACK, REPEATED, MESSAGE,  samples,           1)
+#define eCAL_pb_SampleList_CALLBACK pb_default_field_callback
+#define eCAL_pb_SampleList_DEFAULT NULL
+#define eCAL_pb_SampleList_samples_MSGTYPE eCAL_pb_Sample
+
 extern const pb_msgdesc_t eCAL_pb_Content_msg;
 extern const pb_msgdesc_t eCAL_pb_Sample_msg;
+extern const pb_msgdesc_t eCAL_pb_SampleList_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define eCAL_pb_Content_fields &eCAL_pb_Content_msg
 #define eCAL_pb_Sample_fields &eCAL_pb_Sample_msg
+#define eCAL_pb_SampleList_fields &eCAL_pb_SampleList_msg
 
 /* Maximum encoded size of messages (where known) */
 /* eCAL_pb_Content_size depends on runtime parameters */
 /* eCAL_pb_Sample_size depends on runtime parameters */
+/* eCAL_pb_SampleList_size depends on runtime parameters */
 
 #ifdef __cplusplus
 } /* extern "C" */

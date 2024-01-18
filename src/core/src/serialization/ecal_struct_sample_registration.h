@@ -186,5 +186,11 @@ namespace eCAL
       Service::Client                     client ;                      // client information
       Topic                               topic;                        // topic information
     };
+
+    // Registration sample list
+    struct SampleList
+    {
+      std::list<Sample>                   samples;                      // list of Samples used currently by SHM registration
+    };
   }
 }

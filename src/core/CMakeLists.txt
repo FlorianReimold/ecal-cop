@@ -103,7 +103,7 @@ endif()
 ######################################
 # io/shm
 ######################################
-if(ECAL_CORE_TRANSPORT_SHM)
+if(ECAL_CORE_REGISTRATION_SHM OR ECAL_CORE_TRANSPORT_SHM)
   set(ecal_io_shm_src
       src/io/shm/ecal_memfile.cpp
       src/io/shm/ecal_memfile_db.cpp
@@ -292,6 +292,19 @@ if (ECAL_CORE_REGISTRATION)
       src/registration/ecal_registration_receiver.cpp
       src/registration/ecal_registration_receiver.h
   )
+  if(ECAL_CORE_REGISTRATION_SHM)
+    list(APPEND ecal_registration_src
+        src/registration/ecal_registration_receiver_shm.cpp
+        src/registration/ecal_registration_receiver_shm.h
+        src/registration/shm/ecal_memfile_broadcast.cpp
+        src/registration/shm/ecal_memfile_broadcast.h
+        src/registration/shm/ecal_memfile_broadcast_reader.cpp
+        src/registration/shm/ecal_memfile_broadcast_reader.h
+        src/registration/shm/ecal_memfile_broadcast_writer.cpp
+        src/registration/shm/ecal_memfile_broadcast_writer.h
+        src/registration/shm/relocatable_circular_queue.h
+    )
+  endif()
 endif()
 
 ######################################
@@ -562,6 +575,7 @@ set(ECAL_CORE_FEATURES
   ECAL_CORE_SUBSCRIBER
   ECAL_CORE_SERVICE
   ECAL_CORE_TIMEPLUGIN
+  ECAL_CORE_REGISTRATION_SHM
   ECAL_CORE_TRANSPORT_UDP
   ECAL_CORE_TRANSPORT_TCP
   ECAL_CORE_TRANSPORT_SHM

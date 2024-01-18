@@ -88,6 +88,11 @@ option(ECAL_CORE_SERVICE                                 "Enables the eCAL serve
 option(ECAL_CORE_TIMEPLUGIN                              "Enables the eCAL time plugin functionality"                                                            ON)
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# core registration layer options (change with care)
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+option(ECAL_CORE_REGISTRATION_SHM                        "Enables the eCAL registration layer over shared memory"                                                ON)
+
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # core transport layer options (change with care)
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 option(ECAL_CORE_TRANSPORT_UDP                           "Enables the eCAL to transport payload via UDP multicast"                                               ON)
@@ -379,6 +384,9 @@ message(STATUS "ECAL_CORE_PUBLISHER                            : ${ECAL_CORE_PUB
 message(STATUS "ECAL_CORE_SUBSCRIBER                           : ${ECAL_CORE_SUBSCRIBER}")
 message(STATUS "ECAL_CORE_SERVICE                              : ${ECAL_CORE_SERVICE}")
 message(STATUS "ECAL_CORE_TIMEPLUGIN                           : ${ECAL_CORE_TIMEPLUGIN}")
+message(STATUS "--------------------------------------------------------------------------------")
+message(STATUS "ECAL_CORE_REGISTRATION_SHM                     : ${ECAL_CORE_REGISTRATION_SHM}")
+message(STATUS "--------------------------------------------------------------------------------")
 message(STATUS "ECAL_CORE_TRANSPORT_UDP                        : ${ECAL_CORE_TRANSPORT_UDP}")
 message(STATUS "ECAL_CORE_TRANSPORT_TCP                        : ${ECAL_CORE_TRANSPORT_TCP}")
 message(STATUS "ECAL_CORE_TRANSPORT_SHM                        : ${ECAL_CORE_TRANSPORT_SHM}")

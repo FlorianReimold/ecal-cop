@@ -12,5 +12,8 @@ PB_BIND(eCAL_pb_Content, eCAL_pb_Content, AUTO)
 PB_BIND(eCAL_pb_Sample, eCAL_pb_Sample, 2)
 
 
+PB_BIND(eCAL_pb_SampleList, eCAL_pb_SampleList, AUTO)
+
+
 
 

@@ -84,6 +84,9 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 - Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
 
+##### `ECAL_CORE_REGISTRATION_SHM` (Default: ON)
+- Enabling this option activates the eCAL registration layer based on shared memory for high performance local communication scenarios only.
+
 ##### `ECAL_CORE_TRANSPORT_UDP` (Default: ON)
 - Enabling this option includes the eCAL UDP Multicast message transport layer.
 

@@ -50,6 +50,9 @@ namespace eCAL
                          m_callback_service(nullptr),
                          m_callback_client(nullptr),
                          m_callback_process(nullptr),
+                         m_use_registration_udp(false),
+                         m_use_registration_shm(false),
+                         m_callback_custom_apply_sample([](const auto&) {}),
                          m_host_group_name(Process::GetHostGroupName())
   {
   }
@@ -66,16 +69,34 @@ namespace eCAL
     // network mode
     m_network = Config::IsNetworkEnabled();
 
-    // set network attributes
-    IO::UDP::SReceiverAttr attr;
-    attr.address   = UDP::GetRegistrationAddress();
-    attr.port      = UDP::GetRegistrationPort();
-    attr.broadcast = UDP::IsBroadcast();
-    attr.loopback  = true;
-    attr.rcvbuf    = Config::GetUdpMulticastRcvBufSizeBytes();
+    // receive registration from shared memory and or udp
+    m_use_registration_udp = !Config::Experimental::IsNetworkMonitoringDisabled();
+    m_use_registration_shm     = Config::Experimental::IsShmMonitoringEnabled();
 
-    // start registration sample receiver
-    m_registration_receiver = std::make_shared<UDP::CSampleReceiver>(attr, std::bind(&CRegistrationReceiver::HasSample, this, std::placeholders::_1), std::bind(&CRegistrationReceiver::ApplySample, this, std::placeholders::_1, std::placeholders::_2));
+    if (m_use_registration_udp)
+    {
+      // set network attributes
+      IO::UDP::SReceiverAttr attr;
+      attr.address   = UDP::GetRegistrationAddress();
+      attr.port      = UDP::GetRegistrationPort();
+      attr.broadcast = UDP::IsBroadcast();
+      attr.loopback  = true;
+      attr.rcvbuf    = Config::GetUdpMulticastRcvBufSizeBytes();
+
+      // start registration sample receiver
+      m_registration_receiver = std::make_shared<UDP::CSampleReceiver>(attr, std::bind(&CRegistrationReceiver::HasSample, this, std::placeholders::_1), std::bind(&CRegistrationReceiver::ApplySerializedSample, this, std::placeholders::_1, std::placeholders::_2));
+    }
+
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      m_memfile_broadcast.Create(Config::Experimental::GetShmMonitoringDomain(), Config::Experimental::GetShmMonitoringQueueSize());
+      m_memfile_broadcast.FlushLocalEventQueue();
+      m_memfile_broadcast_reader.Bind(&m_memfile_broadcast);
+
+      m_memfile_reg_rcv.Create(&m_memfile_broadcast_reader);
+    }
+#endif
 
     m_created = true;
   }
@@ -86,6 +107,21 @@ namespace eCAL
 
     // stop network registration receive thread
     m_registration_receiver = nullptr;
+
+    // stop network registration receive thread
+    if (m_use_registration_udp)
+    {
+      m_registration_receiver = nullptr;
+    }
+
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      // stop memfile registration receive thread and unbind reader
+      m_memfile_broadcast_reader.Unbind();
+      m_memfile_broadcast.Destroy();
+    }
+#endif
 
     // reset callbacks
     m_callback_pub     = nullptr;
@@ -103,20 +139,33 @@ namespace eCAL
     m_loopback = state_;
   }
 
-  bool CRegistrationReceiver::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
+  bool CRegistrationReceiver::ApplySerializedSample(const char* serialized_sample_data_, size_t serialized_sample_size_)
   {
     if(!m_created) return false;
 
     Registration::Sample ecal_sample;
     if (!DeserializeFromBuffer(serialized_sample_data_, serialized_sample_size_, ecal_sample)) return false;
-      
+
+    return ApplySample(ecal_sample);
+  }
+
+  bool CRegistrationReceiver::ApplySample(const Registration::Sample& ecal_sample_)
+  {
+    if (!m_created) return false;
+
     //Remove in eCAL6
     // for the time being we need to copy the incoming sample and set the incompatible fields
     Registration::Sample modified_ttype_sample;
-    ModifyIncomingSampleForBackwardsCompatibility(ecal_sample, modified_ttype_sample);
+    ModifyIncomingSampleForBackwardsCompatibility(ecal_sample_, modified_ttype_sample);
+
+    // forward all registration samples to outside "customer" (e.g. Monitoring)
+    {
+      const std::lock_guard<std::mutex> lock(m_callback_custom_apply_sample_mtx);
+      m_callback_custom_apply_sample(modified_ttype_sample);
+    }
 
     std::string reg_sample;
-    if ( m_callback_pub
+    if (m_callback_pub
       || m_callback_sub
       || m_callback_service
       || m_callback_client
@@ -131,7 +180,7 @@ namespace eCAL
       }
     }
 
-    switch(modified_ttype_sample.cmd_type)
+    switch (modified_ttype_sample.cmd_type)
     {
     case bct_none:
     case bct_set_sample:
@@ -332,5 +381,17 @@ namespace eCAL
       return false;
 
     return true;
+  }
+
+  void CRegistrationReceiver::SetCustomApplySampleCallback(const ApplySampleCallbackT& callback_)
+  {
+    const std::lock_guard<std::mutex> lock(m_callback_custom_apply_sample_mtx);
+    m_callback_custom_apply_sample = callback_;
+  }
+
+  void CRegistrationReceiver::RemCustomApplySampleCallback()
+  {
+    const std::lock_guard<std::mutex> lock(m_callback_custom_apply_sample_mtx);
+    m_callback_custom_apply_sample = [](const auto&) {};
   }
 }

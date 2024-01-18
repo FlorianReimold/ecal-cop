@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,21 +18,30 @@
 */
 
 /**
- * @file   ecal_serialize_sample_registration.h
- * @brief  eCAL sample registration serialization / deserialization
+ * @brief  eCAL memory file broadcast interface
 **/
 
 #pragma once
 
-#include "ecal_struct_sample_registration.h"
+#include "ecal_memfile_broadcast.h"
+
+#include <cstdint>
+#include <memory>
 
 namespace eCAL
 {
-  // registration sample - serialize/deserialize
-  bool SerializeToBuffer     (const Registration::Sample& registration_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer (const char* data_, size_t size_, Registration::Sample& target_sample_);
+  class CMemoryFileBroadcastWriter
+  {
+  public:
+    bool Bind(CMemoryFileBroadcast *memfile_broadcast);
+    void Unbind();
 
-  // registration sample list - serialize/deserialize
-  bool SerializeToBuffer(const Registration::SampleList& registration_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::SampleList& target_sample_);
+    bool Write(const void *data, std::size_t size);
+  private:
+    CMemoryFileBroadcast *m_memfile_broadcast = nullptr;
+    std::unique_ptr<CMemoryFile> m_payload_memfile;
+    std::uint64_t m_event_id = 0;
+    bool m_bound = false;
+    bool m_reset = false;
+  };
 }

@@ -33,10 +33,11 @@
 
 namespace
 {
-  bool RegistrationStruct2Buffer(const eCAL::Registration::Sample& registration_, std::vector<char>& target_buffer_)
+  /////////////////////////////////////////////////////////////////////////////////
+  // eCAL::Registration::Sample
+  /////////////////////////////////////////////////////////////////////////////////
+  void PrepareEncoding(const eCAL::Registration::Sample& registration_, eCAL_pb_Sample& pb_sample)
   {
-    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
-
     // command type
     pb_sample.cmd_type = static_cast<eCAL_pb_eCmdType>(registration_.cmd_type);
 
@@ -189,6 +190,15 @@ namespace
     eCAL::nanopb::encode_registration_layer(pb_sample.topic.tlayer, registration_.topic.tlayer);
     // attr
     eCAL::nanopb::encode_map(pb_sample.topic.attr, registration_.topic.attr);
+  }
+
+  bool RegistrationStruct2Buffer(const eCAL::Registration::Sample& registration_, std::vector<char>& target_buffer_)
+  {
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+    PrepareEncoding(registration_, pb_sample);
 
     ///////////////////////////////////////////////
     // evaluate byte size
@@ -214,13 +224,10 @@ namespace
     return false;
   }
 
-  bool Buffer2RegistrationStruct(const char* data_, size_t size_, eCAL::Registration::Sample& registration_)
+  void PrepareDecoding(eCAL_pb_Sample& pb_sample, eCAL::Registration::Sample& registration_)
   {
-    if (data_ == nullptr) return false;
-    if (size_ == 0)       return false;
-
     // initialize
-    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+    pb_sample = eCAL_pb_Sample_init_default;
 
     ///////////////////////////////////////////////
     // assign decoder
@@ -238,7 +245,7 @@ namespace
     // hname
     eCAL::nanopb::decode_string(pb_sample.process.hname, registration_.process.hname);
     // hgname
-    eCAL::nanopb::decode_string(pb_sample.process.hgname, registration_.process.hgname);    
+    eCAL::nanopb::decode_string(pb_sample.process.hgname, registration_.process.hgname);
     // pname
     eCAL::nanopb::decode_string(pb_sample.process.pname, registration_.process.pname);
     // uname
@@ -315,17 +322,10 @@ namespace
     eCAL::nanopb::decode_registration_layer(pb_sample.topic.tlayer, registration_.topic.tlayer);
     // attr
     eCAL::nanopb::decode_map(pb_sample.topic.attr, registration_.topic.attr);
+  }
 
-    ///////////////////////////////////////////////
-    // decode it
-    ///////////////////////////////////////////////
-    pb_istream_t pb_istream;
-    pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
-    if (!pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample))
-    {
-      std::cerr << "NanoPb eCAL::Registration::Sample decode failed: " << pb_istream.errmsg << std::endl;
-    }
-
+  void AssignValues(const eCAL_pb_Sample& pb_sample, eCAL::Registration::Sample& registration_)
+  {
     ///////////////////////////////////////////////
     // assign values
     ///////////////////////////////////////////////
@@ -397,6 +397,152 @@ namespace
     registration_.topic.dclock = pb_sample.topic.dclock;
     // dfreq
     registration_.topic.dfreq = pb_sample.topic.dfreq;
+  }
+
+  bool Buffer2RegistrationStruct(const char* data_, size_t size_, eCAL::Registration::Sample& registration_)
+  {
+    if (data_ == nullptr) return false;
+    if (size_ == 0)       return false;
+
+    // initialize
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+
+    ///////////////////////////////////////////////
+    // prepare sample for decoding
+    ///////////////////////////////////////////////
+    PrepareDecoding(pb_sample, registration_);
+
+    ///////////////////////////////////////////////
+    // decode it
+    ///////////////////////////////////////////////
+    pb_istream_t pb_istream;
+    pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
+    if (!pb_decode(&pb_istream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb eCAL::Registration::Sample decode failed: " << pb_istream.errmsg << std::endl;
+    }
+
+    ///////////////////////////////////////////////
+    // assign sample values
+    ///////////////////////////////////////////////
+    AssignValues(pb_sample, registration_);
+
+    return true;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////
+  // eCAL::Registration::SampleList
+  /////////////////////////////////////////////////////////////////////////////////
+  bool encode_sample_list_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
+  {
+    if (arg == nullptr)  return false;
+    if (*arg == nullptr) return false;
+
+    auto* sample_list = (std::list<eCAL::Registration::Sample>*)(*arg);
+
+    for (const auto& sample : *sample_list)
+    {
+      // encode sample tag
+      if (!pb_encode_tag_for_field(stream, field))
+      {
+        return false;
+      }
+
+      // encode single sample
+      eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+      PrepareEncoding(sample, pb_sample);
+
+      // encode submessage
+      if (!pb_encode_submessage(stream, eCAL_pb_Sample_fields, &pb_sample))
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::vector<char>& target_buffer_)
+  {
+    eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
+
+    pb_sample_list.samples.funcs.encode = &encode_sample_list_field;
+    pb_sample_list.samples.arg = (void*)(&registration_list_.samples);
+
+    ///////////////////////////////////////////////
+    // evaluate byte size
+    ///////////////////////////////////////////////
+    pb_ostream_t pb_sizestream = { nullptr };
+    pb_encode(&pb_sizestream, eCAL_pb_SampleList_fields, &pb_sample_list);
+
+    ///////////////////////////////////////////////
+    // encode it
+    ///////////////////////////////////////////////
+    target_buffer_.resize(pb_sizestream.bytes_written);
+    pb_ostream_t pb_ostream;
+    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
+    if (!pb_encode(&pb_ostream, eCAL_pb_SampleList_fields, &pb_sample_list))
+    {
+      std::cerr << "NanoPb eCAL::Registration::SampleList encode failed: " << pb_ostream.errmsg << std::endl;
+    }
+    else
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool decode_sample_list_field(pb_istream_t* stream, const pb_field_iter_t* /*field*/, void** arg)
+  {
+    if (arg == nullptr)  return false;
+    if (*arg == nullptr) return false;
+
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+    eCAL::Registration::Sample sample{};
+
+    // prepare sample for decoding
+    PrepareDecoding(pb_sample, sample);
+
+    // decode it
+    if (!pb_decode(stream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      return false;
+    }
+
+    // apply sample values
+    AssignValues(pb_sample, sample);
+
+    // add sample to list
+    auto* sample_list = (std::list<eCAL::Registration::Sample>*)(*arg);
+    sample_list->push_back(sample);
+
+    return true;
+  }
+
+  bool Buffer2RegistrationStruct(const char* data_, size_t size_, eCAL::Registration::SampleList& registration_list_)
+  {
+    if (data_ == nullptr) return false;
+    if (size_ == 0)       return false;
+
+    // initialize
+    eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
+
+    ///////////////////////////////////////////////
+    // prepare sample for decoding
+    ///////////////////////////////////////////////
+    pb_sample_list.samples.funcs.decode = &decode_sample_list_field;
+    pb_sample_list.samples.arg = &registration_list_.samples;
+
+    ///////////////////////////////////////////////
+    // decode it
+    ///////////////////////////////////////////////
+    pb_istream_t pb_istream;
+    pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
+    if (!pb_decode(&pb_istream, eCAL_pb_SampleList_fields, &pb_sample_list))
+    {
+      std::cerr << "NanoPb eCAL::Registration::Sample decode failed: " << pb_istream.errmsg << std::endl;
+    }
 
     return true;
   }
@@ -413,5 +559,16 @@ namespace eCAL
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& target_sample_)
   {
     return Buffer2RegistrationStruct(data_, size_, target_sample_);
+  }
+
+  bool SerializeToBuffer(const Registration::SampleList& source_sample_list_, std::vector<char>& target_buffer_)
+  {
+    target_buffer_.clear();
+    return RegistrationStruct2Buffer(source_sample_list_, target_buffer_);
+  }
+
+  bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::SampleList& target_sample_list_)
+  {
+    return Buffer2RegistrationStruct(data_, size_, target_sample_list_);
   }
 }

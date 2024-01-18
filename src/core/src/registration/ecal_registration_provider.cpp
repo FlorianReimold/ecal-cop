@@ -45,7 +45,9 @@ namespace eCAL
                     m_reg_refresh(CMN_REGISTRATION_REFRESH),
                     m_reg_topics(false),
                     m_reg_services(false),
-                    m_reg_process(false)
+                    m_reg_process(false),
+                    m_use_registration_udp(false),
+                    m_use_registration_shm(false)
   {
   }
 
@@ -64,20 +66,36 @@ namespace eCAL
     m_reg_services    = services_;
     m_reg_process     = process_;
 
-    // set network attributes
-    IO::UDP::SSenderAttr attr;
-    attr.address   = UDP::GetRegistrationAddress();
-    attr.port      = UDP::GetRegistrationPort();
-    attr.ttl       = UDP::GetMulticastTtl();
-    attr.broadcast = UDP::IsBroadcast();
-    attr.loopback  = true;
-    attr.sndbuf    = Config::GetUdpMulticastSndBufSizeBytes();
+    // send registration to shared memory and to udp
+    m_use_registration_udp = !Config::Experimental::IsNetworkMonitoringDisabled();
+    m_use_registration_shm     = Config::Experimental::IsShmMonitoringEnabled();
 
-    // create udp registration sender
-    m_reg_sample_snd = std::make_shared<UDP::CSampleSender>(attr);
+    if (m_use_registration_udp)
+    {
+      // set network attributes
+      IO::UDP::SSenderAttr attr;
+      attr.address   = UDP::GetRegistrationAddress();
+      attr.port      = UDP::GetRegistrationPort();
+      attr.ttl       = UDP::GetMulticastTtl();
+      attr.broadcast = UDP::IsBroadcast();
+      attr.loopback  = true;
+      attr.sndbuf    = Config::GetUdpMulticastSndBufSizeBytes();
+
+      // create udp registration sender
+      m_reg_sample_snd = std::make_shared<UDP::CSampleSender>(attr);
+    }
+
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      std::cout << "Shared memory monitoring is enabled (domain: " << Config::Experimental::GetShmMonitoringDomain() << " - queue size: " << Config::Experimental::GetShmMonitoringQueueSize() << ")" << std::endl;
+      m_memfile_broadcast.Create(Config::Experimental::GetShmMonitoringDomain(), Config::Experimental::GetShmMonitoringQueueSize());
+      m_memfile_broadcast_writer.Bind(&m_memfile_broadcast);
+    }
+#endif
 
     // start cyclic registration thread
-    m_reg_sample_snd_thread = std::make_shared<CCallbackThread>([this] { RegisterSendThread(); });
+    m_reg_sample_snd_thread = std::make_shared<CCallbackThread>(std::bind(&CRegistrationProvider::RegisterSendThread, this));
     m_reg_sample_snd_thread->start(std::chrono::milliseconds(Config::GetRegistrationRefreshMs()));
 
     m_created = true;
@@ -97,6 +115,14 @@ namespace eCAL
     // destroy registration sample sender
     m_reg_sample_snd.reset();
 
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      m_memfile_broadcast_writer.Unbind();
+      m_memfile_broadcast.Destroy();
+    }
+#endif
+
     m_created = false;
   }
 
@@ -112,6 +138,8 @@ namespace eCAL
       RegisterProcess();
       // apply registration sample
       ApplySample(topic_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     return(true);
@@ -125,6 +153,8 @@ namespace eCAL
     {
       // apply unregistration sample
       ApplySample(topic_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     SampleMapT::iterator iter;
@@ -151,6 +181,8 @@ namespace eCAL
       RegisterProcess();
       // apply registration sample
       ApplySample(service_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     return(true);
@@ -164,6 +196,8 @@ namespace eCAL
     {
       // apply unregistration sample
       ApplySample(service_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     SampleMapT::iterator iter;
@@ -190,6 +224,8 @@ namespace eCAL
       RegisterProcess();
       // apply registration sample
       ApplySample(client_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     return(true);
@@ -203,6 +239,8 @@ namespace eCAL
     {
       // apply unregistration sample
       ApplySample(client_name_, ecal_sample_);
+      // apply registration sample to shm registration
+      SendSampleList(false);
     }
 
     SampleMapT::iterator iter;
@@ -362,7 +400,7 @@ namespace eCAL
 
     bool return_value {true};
 
-    if (m_reg_sample_snd)
+    if (m_use_registration_udp && m_reg_sample_snd)
     {
       const std::lock_guard<std::mutex> lock(m_sample_buffer_sync);
       if (SerializeToBuffer(sample_, m_sample_buffer))
@@ -370,6 +408,43 @@ namespace eCAL
         return_value &= (m_reg_sample_snd->Send(sample_name_, m_sample_buffer) != 0);
       }
     }
+
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      const std::lock_guard<std::mutex> lock(m_sample_list_sync);
+      m_sample_list.samples.push_back(sample_);
+    }
+#endif
+
+    return return_value;
+  }
+
+  bool CRegistrationProvider::SendSampleList(bool reset_sample_list_)
+  {
+    if (!m_created) return(false);
+    bool return_value{ true };
+
+#if ECAL_CORE_REGISTRATION_SHM
+    if (m_use_registration_shm)
+    {
+      {
+        const std::lock_guard<std::mutex> lock(m_sample_list_sync);
+        if (SerializeToBuffer(m_sample_list, m_sample_list_buffer))
+        {
+          if (reset_sample_list_)
+          {
+            m_sample_list.samples.clear();
+          }
+        }
+      }
+
+      if (!m_sample_list_buffer.empty())
+      {
+        return_value &= m_memfile_broadcast_writer.Write(m_sample_list_buffer.data(), m_sample_list_buffer.size());
+      }
+    }
+#endif
 
     return return_value;
   }
@@ -415,5 +490,8 @@ namespace eCAL
 
     // register topics
     RegisterTopics();
+
+    // write sample list to shared memory
+    SendSampleList();
   }
 }
