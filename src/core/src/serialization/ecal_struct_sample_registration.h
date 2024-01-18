@@ -78,9 +78,9 @@ namespace eCAL
     // Process severity information
     struct ProcessState
     {
-      eProcessSeverity                    severity = proc_sev_unknown;  // severity
+      eProcessSeverity                    severity       = proc_sev_unknown;        // severity
       eProcessSeverityLevel               severity_level = proc_sev_level_unknown;  // severity level
-      std::string                         info;                         // info string
+      std::string                         info;                                     // info string
     };
 
     // Transport layer parameters for ecal udp multicast

@@ -213,6 +213,25 @@ namespace eCAL
     ECAL_API bool RemReceiveCallback();
 
     /**
+     * @brief Add callback function for subscriber events.
+     *
+     * @param type_      The event type to react on.
+     * @param callback_  The callback function to add.
+     *
+     * @return  True if succeeded, false if not.
+    **/
+    ECAL_API bool AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_);
+
+    /**
+     * @brief Remove callback function for subscriber events.
+     *
+     * @param type_  The event type to remove.
+     *
+     * @return  True if succeeded, false if not.
+    **/
+    ECAL_API bool RemEventCallback(eCAL_Subscriber_Event type_);
+
+    /**
      * @brief Query if this object is created. 
      *
      * @return  true if created, false if not. 

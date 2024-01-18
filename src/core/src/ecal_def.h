@@ -72,8 +72,8 @@
 #define NET_UDP_MULTICAST_PORT                     14000
 #define NET_UDP_MULTICAST_TTL                      3
 #define NET_UDP_MULTICAST_PORT_REG_OFF             0
-#define NET_UDP_MULTICAST_PORT_LOG_OFF             1
 #define NET_UDP_MULTICAST_PORT_SAMPLE_OFF          2
+#define NET_UDP_MULTICAST_PORT_LOG_OFF             4
 #define NET_UDP_MULTICAST_SNDBUF                   (5*1024*1024)  /* 5 MByte */
 #define NET_UDP_MULTICAST_RCVBUF                   (5*1024*1024)  /* 5 MByte */
 #define NET_UDP_MULTICAST_JOIN_ALL_IF_ENABLED      false

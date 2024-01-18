@@ -225,6 +225,19 @@ namespace eCAL
      return written_bytes;
   }
 
+  bool CPublisher::AddEventCallback(eCAL_Publisher_Event type_, PubEventCallbackT callback_)
+  {
+    if (m_datawriter == nullptr) return(false);
+    RemEventCallback(type_);
+    return(m_datawriter->AddEventCallback(type_, std::move(callback_)));
+  }
+
+  bool CPublisher::RemEventCallback(eCAL_Publisher_Event type_)
+  {
+    if (m_datawriter == nullptr) return(false);
+    return(m_datawriter->RemEventCallback(type_));
+  }
+
   bool CPublisher::IsSubscribed() const
   {
 #if ECAL_CORE_REGISTRATION

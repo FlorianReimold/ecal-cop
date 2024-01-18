@@ -59,5 +59,15 @@ namespace eCAL
     {
       if(g_log() != nullptr) g_log()->Log(msg_);
     }
+
+    /**
+     * @brief Get complete logging as log message list.
+     *
+     * @param [out] msg_list_  List to store the logging messages.
+    **/
+    void GetLogging(std::list<SLogMessage>& msg_list_)
+    {
+      if (g_log() != nullptr) g_log()->GetLogging(msg_list_);
+    }
   }
 }

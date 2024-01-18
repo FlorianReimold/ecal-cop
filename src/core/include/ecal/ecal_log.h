@@ -26,6 +26,8 @@
 
 #include <ecal/ecal_os.h>
 #include <ecal/ecal_log_level.h>
+
+#include <list>
 #include <string>
 
 namespace eCAL
@@ -64,5 +66,26 @@ namespace eCAL
       SetLogLevel(level_);
       Log(msg_);
     }
+
+    /**
+     * @struct LogMessage
+    **/
+    struct SLogMessage
+    {
+      int64_t                time   = 0;               ///< Receive time of the log message.
+      std::string            hname;                    ///< Sender host name.
+      int32_t                pid    = 0;               ///< Sender process id.
+      std::string            pname;                    ///< Sender process name.
+      std::string            uname;                    ///< Sender unit name.
+      eCAL_Logging_eLogLevel level  = log_level_none;  ///< Log message level.
+      std::string            content;                  ///< Log message content.
+    };
+
+    /**
+     * @brief Get complete logging as log message list. 
+     *
+     * @param [out] msg_list_  List to store the logging messages. 
+    **/
+    ECAL_API void GetLogging(std::list<SLogMessage>& msg_list_);
   }
 }

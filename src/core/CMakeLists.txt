@@ -311,6 +311,8 @@ set(ecal_serialization_src
     src/serialization/nanopb/host.pb.h
     src/serialization/nanopb/layer.pb.c
     src/serialization/nanopb/layer.pb.h
+    src/serialization/nanopb/monitoring.pb.c
+    src/serialization/nanopb/monitoring.pb.h
     src/serialization/nanopb/process.pb.c
     src/serialization/nanopb/process.pb.h
     src/serialization/nanopb/service.pb.c
@@ -321,10 +323,13 @@ set(ecal_serialization_src
     src/serialization/ecal_nanopb_common.h
     src/serialization/ecal_nanopb_sample_payload.cpp
     src/serialization/ecal_nanopb_sample_registration.cpp
+    src/serialization/ecal_nanopb_monitoring.cpp
     src/serialization/ecal_nanopb_service.cpp
 	src/serialization/ecal_serialize_sample_payload.h
 	src/serialization/ecal_serialize_sample_registration.h
+	src/serialization/ecal_serialize_monitoring.h
 	src/serialization/ecal_serialize_service.h
+	src/serialization/ecal_struct_monitoring.h
     src/serialization/ecal_struct_sample_common.h
     src/serialization/ecal_struct_sample_payload.h
     src/serialization/ecal_struct_sample_registration.h

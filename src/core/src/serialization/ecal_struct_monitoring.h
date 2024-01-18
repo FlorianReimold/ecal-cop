@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,21 +18,10 @@
 */
 
 /**
- * @file   ecal_serialize_service.h
- * @brief  eCAL service serialization / deserialization
+ * @file   ecal_struct_monitoring.h
+ * @brief  eCAL monitoring as struct
 **/
 
 #pragma once
 
-#include "ecal_struct_service.h"
-
-namespace eCAL
-{
-  // service request - serialize/deserialize
-  bool SerializeToBuffer(const Service::Request& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Request& target_sample_);
-
-  // service response - serialize/deserialize
-  bool SerializeToBuffer(const Service::Response& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Response& target_sample_);
-}
+#include <ecal/ecal_log.h>

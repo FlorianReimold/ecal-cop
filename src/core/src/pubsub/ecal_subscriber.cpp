@@ -189,6 +189,19 @@ namespace eCAL
     return(m_datareader->RemReceiveCallback());
   }
 
+  bool CSubscriber::AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_)
+  {
+    if (m_datareader == nullptr) return(false);
+    RemEventCallback(type_);
+    return(m_datareader->AddEventCallback(type_, callback_));
+  }
+
+  bool CSubscriber::RemEventCallback(eCAL_Subscriber_Event type_)
+  {
+    if (m_datareader == nullptr) return(false);
+    return(m_datareader->RemEventCallback(type_));
+  }
+
   std::string CSubscriber::GetTopicName() const
   {
     if(m_datareader == nullptr) return("");

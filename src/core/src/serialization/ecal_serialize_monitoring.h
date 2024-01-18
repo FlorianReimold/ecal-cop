@@ -18,21 +18,17 @@
 */
 
 /**
- * @file   ecal_serialize_service.h
- * @brief  eCAL service serialization / deserialization
+ * @file   ecal_serialize_monitoring.h
+ * @brief  eCAL monitoring serialization / deserialization
 **/
 
 #pragma once
 
-#include "ecal_struct_service.h"
+#include "ecal_struct_monitoring.h"
 
 namespace eCAL
 {
-  // service request - serialize/deserialize
-  bool SerializeToBuffer(const Service::Request& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Request& target_sample_);
-
-  // service response - serialize/deserialize
-  bool SerializeToBuffer(const Service::Response& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Response& target_sample_);
+  // logmessage - serialize/deserialize
+  bool SerializeToBuffer(const Logging::SLogMessage& source_sample_, std::vector<char>& target_buffer_);
+  bool DeserializeFromBuffer(const char* data_, size_t size_, Logging::SLogMessage& target_sample_);
 }

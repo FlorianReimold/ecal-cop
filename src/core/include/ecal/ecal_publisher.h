@@ -236,6 +236,25 @@ namespace eCAL
     }
 
     /**
+     * @brief Add callback function for publisher events.
+     *
+     * @param type_      The event type to react on.
+     * @param callback_  The callback function to add.
+     *
+     * @return  True if succeeded, false if not.
+    **/
+    ECAL_API bool AddEventCallback(eCAL_Publisher_Event type_, PubEventCallbackT callback_);
+
+    /**
+     * @brief Remove callback function for publisher events.
+     *
+     * @param type_  The event type to remove.
+     *
+     * @return  True if succeeded, false if not.
+    **/
+    ECAL_API bool RemEventCallback(eCAL_Publisher_Event type_);
+
+    /**
      * @brief Query if the publisher is created. 
      *
      * @return  True if created, false if not. 

@@ -103,6 +103,15 @@ namespace eCAL
       return GetRegistrationAddress();
     }
 
+    int GetLoggingPort()
+    {
+      // retrieve the configured UDP multicast port from the configuration
+      const int configured_port = Config::GetUdpMulticastPort();
+
+      // add the specific offset, NET_UDP_MULTICAST_PORT_LOG_OFF, to obtain the logging port
+      return configured_port + NET_UDP_MULTICAST_PORT_LOG_OFF;
+    }
+
     std::string GetPayloadAddress()
     {
       // registration, logging and payload use the same addresses but different ports

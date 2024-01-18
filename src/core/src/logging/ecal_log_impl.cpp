@@ -26,15 +26,19 @@
 #include <ecal/ecal_config.h>
 
 #include "ecal_log_impl.h"
+#include "io/udp/ecal_udp_configurations.h"
+#include "serialization/ecal_serialize_monitoring.h"
 
 #include <mutex>
 #include <cstdio>
 
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include <string>
 #include <iomanip>
 #include <ctime>
+#include <chrono>
 
 #ifdef ECAL_OS_WINDOWS
 #include "ecal_win_main.h"
@@ -97,7 +101,8 @@ namespace eCAL
           m_logfile(nullptr),
           m_level(log_level_none),
           m_filter_mask_con(log_level_info | log_level_warning | log_level_error | log_level_fatal),
-          m_filter_mask_file(log_level_info | log_level_warning | log_level_error | log_level_fatal | log_level_debug1 | log_level_debug2)
+          m_filter_mask_file(log_level_info | log_level_warning | log_level_error | log_level_fatal | log_level_debug1 | log_level_debug2),
+          m_filter_mask_udp(log_level_info | log_level_warning | log_level_error | log_level_fatal | log_level_debug1 | log_level_debug2)
   {
   }
 
@@ -116,6 +121,7 @@ namespace eCAL
     // parse logging filter strings
     m_filter_mask_con  = Config::GetConsoleLogFilter();
     m_filter_mask_file = Config::GetFileLogFilter();
+    m_filter_mask_udp  = Config::GetUdpLogFilter();
 
     // create log file
     if(m_filter_mask_file != 0)
@@ -130,6 +136,32 @@ namespace eCAL
       m_logfile = fopen(m_logfile_name.c_str(), "w");
     }
 
+    if(m_filter_mask_udp != 0)
+    {
+      // set logging send network attributes
+      IO::UDP::SSenderAttr attr;
+      attr.address   = UDP::GetLoggingAddress();
+      attr.port      = UDP::GetLoggingPort();
+      attr.ttl       = UDP::GetMulticastTtl();
+      attr.broadcast = UDP::IsBroadcast();
+      attr.loopback  = true;
+      attr.sndbuf    = Config::GetUdpMulticastSndBufSizeBytes();
+
+      // create udp logging sender
+      m_udp_logging_sender = std::make_unique<UDP::CSampleSender>(attr);
+    }
+
+    // set logging receive network attributes
+    IO::UDP::SReceiverAttr attr;
+    attr.address   = UDP::GetLoggingAddress();
+    attr.port      = UDP::GetLoggingPort();
+    attr.broadcast = UDP::IsBroadcast();
+    attr.loopback  = true;
+    attr.rcvbuf    = Config::GetUdpMulticastRcvBufSizeBytes();
+
+    // start logging receiver
+    m_log_receiver = std::make_shared<UDP::CSampleReceiver>(attr, std::bind(&CLog::HasSample, this, std::placeholders::_1), std::bind(&CLog::ApplySample, this, std::placeholders::_1, std::placeholders::_2));
+
     m_created = true;
   }
 
@@ -138,6 +170,8 @@ namespace eCAL
     if(!m_created) return;
 
     const std::lock_guard<std::mutex> lock(m_log_sync);
+
+    m_udp_logging_sender.reset();
 
     if(m_logfile != nullptr) fclose(m_logfile);
     m_logfile = nullptr;
@@ -166,8 +200,10 @@ namespace eCAL
 
     const eCAL_Logging_Filter log_con  = level_ & m_filter_mask_con;
     const eCAL_Logging_Filter log_file = level_ & m_filter_mask_file;
-    if((log_con | log_file) == 0) return;
-    auto                      log_time = eCAL::Time::ecal_clock::now();
+    const eCAL_Logging_Filter log_udp  = level_ & m_filter_mask_udp;
+    if((log_con | log_file | log_udp) == 0) return;
+
+    auto log_time = eCAL::Time::ecal_clock::now();
 
     if(log_con != 0)
     {
@@ -222,10 +258,62 @@ namespace eCAL
       fprintf(m_logfile, "%s\n", msg_stream.str().c_str());
       fflush(m_logfile);
     }
+
+    if((log_udp != 0) && m_udp_logging_sender)
+    {
+      // set up log message
+      Logging::SLogMessage log_message;
+      log_message.time    = std::chrono::duration_cast<std::chrono::microseconds>(log_time.time_since_epoch()).count();
+      log_message.hname   = m_hname;
+      log_message.pid     = m_pid;
+      log_message.pname   = m_pname;
+      log_message.uname   = eCAL::Process::GetUnitName();
+      log_message.level   = level_;
+      log_message.content = msg_;
+
+      // sent it
+      std::vector<char> log_message_vec;
+      SerializeToBuffer(log_message, log_message_vec);
+      m_udp_logging_sender->Send("_log_message_", log_message_vec);
+    }
   }
 
   void CLog::Log(const std::string& msg_)
   {
     Log(m_level, msg_);
+  }
+
+  void CLog::GetLogging(std::list<Logging::SLogMessage>& log_message_list_)
+  {
+    // clear target list
+    log_message_list_.clear();
+
+    // acquire access
+    const std::lock_guard<std::mutex> lock(m_log_msglist_sync);
+    // and swap contents of internal list and target list
+    std::swap(log_message_list_, m_log_msglist);
+  }
+
+  bool CLog::HasSample(const std::string& sample_name_)
+  {
+    return (sample_name_ == "_log_message_");
+  }
+
+  bool CLog::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
+  {
+    // TODO: Limit maximum size of collected log messages !
+    Logging::SLogMessage log_message;
+    if (DeserializeFromBuffer(serialized_sample_data_, serialized_sample_size_, log_message))
+    {
+      // in "network mode" we accept all log messages
+      // in "local mode" we accept log messages from this host only
+      if ((m_hname == log_message.hname) || Config::IsNetworkEnabled())
+      {
+        const std::lock_guard<std::mutex> lock(m_log_msglist_sync);
+        m_log_msglist.emplace_back(log_message);
+      }
+      return true;
+    }
+    return false;
   }
 }

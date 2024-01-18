@@ -17,22 +17,26 @@
  * ========================= eCAL LICENSE =================================
 */
 
-/**
- * @file   ecal_serialize_service.h
- * @brief  eCAL service serialization / deserialization
-**/
+syntax = "proto3";
 
-#pragma once
+import "animal.proto";
+import "house.proto";
 
-#include "ecal_struct_service.h"
+package pb.People;
 
-namespace eCAL
+message Person
 {
-  // service request - serialize/deserialize
-  bool SerializeToBuffer(const Service::Request& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Request& target_sample_);
+  enum SType
+  {
+    MALE   = 0;
+    FEMALE = 1;
+  }
 
-  // service response - serialize/deserialize
-  bool SerializeToBuffer(const Service::Response& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Service::Response& target_sample_);
+  int32  id               = 1;
+  string name             = 2;
+  SType  stype            = 3;
+  string email            = 4;
+
+  Animal.Dog        dog   = 5;
+  Environment.House house = 6;
 }

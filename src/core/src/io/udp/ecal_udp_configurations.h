@@ -82,6 +82,17 @@ namespace eCAL
      */
     std::string GetLoggingAddress();
 
+
+    /**
+     * @brief GetLoggingPort retrieves the logging port based on the configured UDP multicast port.
+     *
+     * This function adds an offset, NET_UDP_MULTICAST_PORT_SAMPLE_OFF, to the UDP multicast port
+     * obtained from the configuration. The resulting port is used for logging communication.
+     *
+     * @return The logging port calculated by adding an offset to the configured UDP multicast port.
+     */
+    int GetLoggingPort();
+
     /**
      * @brief GetPayloadAddress retrieves the UDP payload address used as base address for udp receivers.
      *

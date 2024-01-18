@@ -23,6 +23,10 @@
 
 #pragma once
 
+#include "io/udp/ecal_udp_sample_receiver.h"
+#include "io/udp/ecal_udp_sample_sender.h"
+#include "serialization/ecal_struct_monitoring.h"
+
 #include <ecal/ecal.h>
 #include <ecal/ecal_os.h>
 
@@ -31,7 +35,9 @@
 #include "ecal_global_accessors.h"
 
 #include <atomic>
+#include <list>
 #include <mutex>
+#include <memory>
 
 namespace eCAL
 {
@@ -87,13 +93,27 @@ namespace eCAL
     **/
     void Log(const std::string& msg_);
 
+    void GetLogging(std::list<Logging::SLogMessage>& log_message_list_);
+
   private:
+    bool HasSample(const std::string& sample_name_);
+    bool ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_);
+
     CLog(const CLog&);                 // prevent copy-construction
     CLog& operator=(const CLog&);      // prevent assignment
 
     std::mutex                             m_log_sync;
 
     std::atomic<bool>                      m_created;
+    std::unique_ptr<UDP::CSampleSender>    m_udp_logging_sender;
+
+    // log messages
+    using LogMessageListT = std::list<Logging::SLogMessage>;
+    std::mutex                             m_log_msglist_sync;
+    LogMessageListT                        m_log_msglist;
+
+    // udp logging receiver
+    std::shared_ptr<UDP::CSampleReceiver>  m_log_receiver;
 
     std::string                            m_hname;
     int                                    m_pid;
@@ -105,5 +125,6 @@ namespace eCAL
     eCAL_Logging_eLogLevel                 m_level;
     eCAL_Logging_Filter                    m_filter_mask_con;
     eCAL_Logging_Filter                    m_filter_mask_file;
+    eCAL_Logging_Filter                    m_filter_mask_udp;
   };
 }
