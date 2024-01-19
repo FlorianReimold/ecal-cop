@@ -38,6 +38,7 @@
 #include <list>
 #include <mutex>
 #include <memory>
+#include <vector>
 
 namespace eCAL
 {
@@ -103,6 +104,7 @@ namespace eCAL
     CLog& operator=(const CLog&);      // prevent assignment
 
     std::mutex                             m_log_sync;
+    std::vector<char>                      m_log_message_vec;
 
     std::atomic<bool>                      m_created;
     std::unique_ptr<UDP::CSampleSender>    m_udp_logging_sender;

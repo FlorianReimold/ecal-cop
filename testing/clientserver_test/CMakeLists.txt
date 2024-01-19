@@ -20,7 +20,6 @@ project(test_clientserver)
 
 find_package(Threads REQUIRED)
 find_package(GTest REQUIRED)
-find_package(Protobuf REQUIRED)
 
 create_targets_protobuf()
 

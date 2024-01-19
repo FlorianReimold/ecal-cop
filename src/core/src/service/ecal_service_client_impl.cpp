@@ -319,10 +319,8 @@ namespace eCAL
     request.request      = std::string(request_.data(), request_.size());
 
     // serialize request
-    std::vector<char> serialized_request;
-    SerializeToBuffer(request, serialized_request);
-    // and convert this to a std::string (needs to be removed, see above TODO)
-    auto request_shared_ptr = std::make_shared<std::string>(serialized_request.data(), serialized_request.size());
+    auto request_shared_ptr = std::make_shared<std::string>();
+    SerializeToBuffer(request, *request_shared_ptr);
 
     bool at_least_one_service_was_called (false);
 
@@ -441,10 +439,8 @@ namespace eCAL
     request.header.mname = method_name_;
     request.request      = std::string(request_.data(), request_.size());
     // serialize request
-    std::vector<char> serialized_request;
-    SerializeToBuffer(request, serialized_request);
-    // and convert this to a std::string .. we need to remove the whole extra serialization here!
-    auto request_shared_ptr = std::make_shared<std::string>(serialized_request.data(), serialized_request.size());
+    auto request_shared_ptr = std::make_shared<std::string>();
+    SerializeToBuffer(request, *request_shared_ptr);
 
     std::vector<SServiceAttr> const service_vec = g_clientgate()->GetServiceAttr(m_service_name);
 
