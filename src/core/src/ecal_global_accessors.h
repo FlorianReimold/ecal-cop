@@ -51,7 +51,7 @@ namespace eCAL
   class  CServiceGate;
   class  CClientGate;
 #endif
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
   class  CMemFileThreadPool;
   class  CMemFileMap;
 #endif
@@ -77,7 +77,7 @@ namespace eCAL
   CServiceGate*           g_servicegate();
   CClientGate*            g_clientgate();
 #endif
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
   CMemFileThreadPool*     g_memfile_pool();
   CMemFileMap*            g_memfile_map();
 #endif

@@ -30,5 +30,6 @@ namespace eCAL
 {
   // payload sample - serialize/deserialize
   bool SerializeToBuffer     (const Payload::Sample& source_sample_, std::vector<char>& target_buffer_);
+  bool SerializeToBuffer     (const Payload::Sample& source_sample_, std::string& target_buffer_);
   bool DeserializeFromBuffer (const char* data_, size_t size_, Payload::Sample& target_sample_);
 }

@@ -401,10 +401,7 @@ namespace eCAL
 
       // TODO: The next version of the service protocol should omit the double-serialization (i.e. copying the binary data in a protocol buffer and then serializing that again)
       // serialize response and return "request message could not be parsed"
-      std::vector<char> serialized_response;
-      SerializeToBuffer(response, serialized_response);
-      // and convert this to a std::string (needs to be removed, see above TODO)
-      response_pb_ = std::string(serialized_response.data(), serialized_response.size());
+      SerializeToBuffer(response, response_pb_);
 
       // Return Failed (error_code = -1), as parsing the request failed. The
       // return value is not propagated to the remote caller.
@@ -429,10 +426,7 @@ namespace eCAL
 
         // TODO: The next version of the service protocol should omit the double-serialization (i.e. copying the binary data in a protocol buffer and then serializing that again)
         // serialize response and return "method not found"
-        std::vector<char> serialized_response;
-        SerializeToBuffer(response, serialized_response);
-        // and convert this to a std::string (needs to be removed, see above TODO)
-        response_pb_ = std::string(serialized_response.data(), serialized_response.size());
+        SerializeToBuffer(response, response_pb_);
 
         // Return Success (error_code = 0), as parsing the request worked. The
         // return value is not propagated to the remote caller.
@@ -462,10 +456,7 @@ namespace eCAL
 
     // TODO: The next version of the service protocol should omit the double-serialization (i.e. copying the binary data in a protocol buffer and then serializing that again)
     // serialize response and return "method not found"
-    std::vector<char> serialized_response;
-    SerializeToBuffer(response, serialized_response);
-    // and convert this to a std::string (needs to be removed, see above TODO)
-    response_pb_ = std::string(serialized_response.data(), serialized_response.size());
+    SerializeToBuffer(response, response_pb_);
 
     // return success (error code 0)
     return 0;

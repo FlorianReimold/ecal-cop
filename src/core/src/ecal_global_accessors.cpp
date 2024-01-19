@@ -122,7 +122,7 @@ namespace eCAL
   }
 #endif
 
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
   CMemFileThreadPool* g_memfile_pool()
   {
     if (g_globals() == nullptr) return(nullptr);

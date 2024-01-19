@@ -18,7 +18,7 @@
 */
 
 /**
- * @file   ecal_nanopb_common.h
+ * @file   ecal_serialize_common.h
  * @brief  eCAL common (de)serialization - nanopb variant
 **/
 

@@ -74,7 +74,7 @@ set(ecal_config_src
 ######################################
 # io/mtx
 ######################################
-if(ECAL_CORE_TRANSPORT_SHM)
+if(ECAL_CORE_REGISTRATION_SHM OR ECAL_CORE_TRANSPORT_SHM)
   set(ecal_io_mtx_src
       src/io/mtx/ecal_named_mutex.cpp
       src/io/mtx/ecal_named_mutex.h
@@ -332,15 +332,15 @@ set(ecal_serialization_src
     src/serialization/nanopb/service.pb.h
     src/serialization/nanopb/topic.pb.c
     src/serialization/nanopb/topic.pb.h
-    src/serialization/ecal_nanopb_common.cpp
-    src/serialization/ecal_nanopb_common.h
-    src/serialization/ecal_nanopb_sample_payload.cpp
-    src/serialization/ecal_nanopb_sample_registration.cpp
-    src/serialization/ecal_nanopb_monitoring.cpp
-    src/serialization/ecal_nanopb_service.cpp
-	src/serialization/ecal_serialize_sample_payload.h
-	src/serialization/ecal_serialize_sample_registration.h
+    src/serialization/ecal_serialize_common.cpp
+    src/serialization/ecal_serialize_common.h
+    src/serialization/ecal_serialize_monitoring.cpp
 	src/serialization/ecal_serialize_monitoring.h
+    src/serialization/ecal_serialize_sample_payload.cpp
+	src/serialization/ecal_serialize_sample_payload.h
+    src/serialization/ecal_serialize_sample_registration.cpp
+	src/serialization/ecal_serialize_sample_registration.h
+    src/serialization/ecal_serialize_service.cpp
 	src/serialization/ecal_serialize_service.h
 	src/serialization/ecal_struct_monitoring.h
     src/serialization/ecal_struct_sample_common.h

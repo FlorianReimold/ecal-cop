@@ -16,31 +16,21 @@
 #
 # ========================= eCAL LICENSE =================================
 
-project(test_clientserver)
+project(test_core)
 
 find_package(Threads REQUIRED)
 find_package(GTest REQUIRED)
 
-create_targets_protobuf()
-
-set(${PROJECT_NAME}_src
-  src/atomic_signalable.h
-  src/clientserver_test.cpp
+set(core_test_src
+  src/core_test.cpp
 )
 
-ecal_add_gtest(${PROJECT_NAME} ${${PROJECT_NAME}_src})
+ecal_add_gtest(${PROJECT_NAME} ${core_test_src})
+target_include_directories(${PROJECT_NAME} PRIVATE $<TARGET_PROPERTY:eCAL::core,INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
-  PRIVATE
-    eCAL::core
-    Threads::Threads)
-
+  PRIVATE eCAL::core Threads::Threads)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_14)
 
 ecal_install_gtest(${PROJECT_NAME})
-
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER testing/ecal)
-
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES 
-    ${${PROJECT_NAME}_src}
-)

@@ -30,13 +30,12 @@
 #include <cstdint>
 
 #include "relocatable_circular_queue.h"
+#include "io/shm/ecal_memfile.h"
 
 #include <ecal/ecal.h>
 
 namespace eCAL 
 {
-  class CMemoryFile;
-
   static inline std::int64_t CreateTimestamp()
   {
     const auto time_point = std::chrono::steady_clock::now();

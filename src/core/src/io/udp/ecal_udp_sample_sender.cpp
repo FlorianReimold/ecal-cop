@@ -24,7 +24,7 @@
 #include "ecal_udp_sample_sender.h"
 #include "io/udp/fragmentation/snd_fragments.h"
 
-#include <ecal/ecal_log.h>
+#include <iostream>
 
 namespace
 {
@@ -56,10 +56,8 @@ namespace eCAL
         // and send it
         sent_sum = SendFragmentedMessage(m_payload.data(), data_size, std::bind(TransmitToUDP, std::placeholders::_1, std::placeholders::_2, m_udp_sender, m_attr.address));
 
-#ifndef NDEBUG
         // log it
-        eCAL::Logging::Log(log_level_debug4, "UDP Sample Buffer Sent (" + std::to_string(sent_sum) + " Bytes)");
-#endif
+        //std::cout << "UDP Sample Buffer Sent (" << std::to_string(sent_sum) << " Bytes)" << std::endl;;
       }
 
       // return bytes sent

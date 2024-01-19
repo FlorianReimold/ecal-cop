@@ -299,7 +299,12 @@ if(BUILD_ECAL_TESTS)
   add_subdirectory(testing/topic2mcast_test)
   add_subdirectory(testing/util_test)
 
+  if(ECAL_CORE_REGISTRATION_SHM OR ECAL_CORE_TRANSPORT_SHM)
+    add_subdirectory(testing/io_memfile_test)
+  endif()
+
   if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
+    add_subdirectory(testing/core_test)
     add_subdirectory(testing/pubsub_test)
     if(BUILD_ECAL_TESTS_PROTOBUF)
       add_subdirectory(testing/pubsub_proto_test)

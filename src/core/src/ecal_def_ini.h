@@ -58,7 +58,7 @@
 #define  NET_TCP_PUBSUB_NUM_EXECUTOR_WRITER_S      "tcp_pubsub_num_executor_writer"
 #define  NET_TCP_PUBSUB_MAX_RECONNECTIONS_S        "tcp_pubsub_max_reconnections"
 
-#define  NET_HOST_GROUP_NAME_S            "host_group_name"
+#define  NET_HOST_GROUP_NAME_S                     "host_group_name"
 
 /////////////////////////////////////
 // time
@@ -66,12 +66,6 @@
 #define  TIME_SECTION_S                            "time"
 #define  TIME_SYNC_MOD_RT_S                        "timesync_module_rt"
 #define  TIME_SYNC_MOD_REPLAY_S                    "timesync_module_replay"
-
-/////////////////////////////////////
-// process
-/////////////////////////////////////
-#define  PROCESS_SECTION_S                         "process"
-#define  PROCESS_TERMINAL_EMULATOR_S               "terminal_emulator"
 
 /////////////////////////////////////
 // monitoring

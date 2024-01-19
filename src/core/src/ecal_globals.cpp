@@ -97,7 +97,7 @@ namespace eCAL
     }
 #endif // ECAL_CORE_REGISTRATION
 
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     /////////////////////
     // MEMFILE MAP
     /////////////////////
@@ -115,7 +115,7 @@ namespace eCAL
       memfile_pool_instance = std::make_unique<CMemFileThreadPool>();
       new_initialization = true;
     }
-#endif // ECAL_CORE_TRANSPORT_SHM
+#endif // defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
 
 #if ECAL_CORE_SUBSCRIBER
     /////////////////////
@@ -206,7 +206,7 @@ namespace eCAL
     if (registration_provider_instance)                                   registration_provider_instance->Create(true, true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
 #endif
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     if (memfile_pool_instance)                                            memfile_pool_instance->Create();
 #endif
 #if ECAL_CORE_SUBSCRIBER
@@ -291,7 +291,7 @@ namespace eCAL
     if (registration_receiver_instance)  registration_receiver_instance->Destroy();
     if (registration_provider_instance)  registration_provider_instance->Destroy();
 #endif
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     if (memfile_pool_instance)           memfile_pool_instance->Destroy();
     if (memfile_map_instance)            memfile_map_instance->Destroy();
 #endif
@@ -315,7 +315,7 @@ namespace eCAL
     registration_receiver_instance  = nullptr;
     registration_provider_instance  = nullptr;
 #endif
-#if ECAL_CORE_TRANSPORT_SHM
+#if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     memfile_pool_instance           = nullptr;
     memfile_map_instance            = nullptr;
 #endif

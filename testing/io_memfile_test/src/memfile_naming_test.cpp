@@ -5,9 +5,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,41 +17,24 @@
  * ========================= eCAL LICENSE =================================
 */
 
-/**
- * @brief  eCAL server gateway class
-**/
-
-#pragma once
-
-#include "ecal_def.h"
+#include "io/shm/ecal_memfile_naming.h"
 
 #include <atomic>
-#include <shared_mutex>
-#include <set>
+#include <chrono>
+#include <memory>
+#include <iostream>
+#include <thread>
 
-namespace eCAL
+#include <gtest/gtest.h>
+
+
+TEST(MemFile, MemfileNaming)
 {
-  class CServiceServerImpl;
+  std::chrono::steady_clock::time_point timepoint{};
 
-  class CServiceGate
-  {
-  public:
-    CServiceGate();
-    ~CServiceGate();
+  std::string memfile_name_1{ eCAL::memfile::BuildRandomMemFileName("test_")};
+  std::string memfile_name_2{ eCAL::memfile::BuildRandomMemFileName("test_")};
 
-    void Create();
-    void Destroy();
-
-    bool Register  (CServiceServerImpl* service_);
-    bool Unregister(CServiceServerImpl* service_);
-
-    void RefreshRegistrations();
-
-  protected:
-    static std::atomic<bool> m_created;
-
-    using ServiceNameServiceImplSetT = std::set<CServiceServerImpl *>;
-    std::shared_timed_mutex     m_service_set_sync;
-    ServiceNameServiceImplSetT  m_service_set;
-  };
+  EXPECT_LE(memfile_name_1.size(), 13);
+  EXPECT_NE(memfile_name_1, memfile_name_2);
 }

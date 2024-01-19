@@ -272,9 +272,9 @@ namespace eCAL
       log_message.content = msg_;
 
       // sent it
-      std::vector<char> log_message_vec;
-      SerializeToBuffer(log_message, log_message_vec);
-      m_udp_logging_sender->Send("_log_message_", log_message_vec);
+      m_log_message_vec.clear();
+      SerializeToBuffer(log_message, m_log_message_vec);
+      m_udp_logging_sender->Send("_log_message_", m_log_message_vec);
     }
   }
 
