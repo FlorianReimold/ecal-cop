@@ -138,27 +138,21 @@ namespace eCAL
     ECAL_API std::string       GetTimesyncModuleName                () { return eCALPAR(TIME, SYNC_MOD_RT); }
 
     /////////////////////////////////////
-    // process
-    /////////////////////////////////////
-    
-    ECAL_API std::string       GetTerminalEmulatorCommand           () { return eCALPAR(PROCESS, TERMINAL_EMULATOR); }
-
-    /////////////////////////////////////
     // monitoring
     /////////////////////////////////////
     
-    ECAL_API int                 GetMonitoringTimeoutMs               () { return eCALPAR(MON, TIMEOUT); }
-    ECAL_API std::string         GetMonitoringFilterExcludeList       () { return eCALPAR(MON, FILTER_EXCL); }
-    ECAL_API std::string         GetMonitoringFilterIncludeList       () { return eCALPAR(MON, FILTER_INCL); }
-    ECAL_API eCAL_Logging_Filter GetConsoleLogFilter                  () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_CON)); }
-    ECAL_API eCAL_Logging_Filter GetFileLogFilter                     () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_FILE)); }
-    ECAL_API eCAL_Logging_Filter GetUdpLogFilter                      () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_UDP)); }
+    ECAL_API int                 GetMonitoringTimeoutMs             () { return eCALPAR(MON, TIMEOUT); }
+    ECAL_API std::string         GetMonitoringFilterExcludeList     () { return eCALPAR(MON, FILTER_EXCL); }
+    ECAL_API std::string         GetMonitoringFilterIncludeList     () { return eCALPAR(MON, FILTER_INCL); }
+    ECAL_API eCAL_Logging_Filter GetConsoleLogFilter                () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_CON)); }
+    ECAL_API eCAL_Logging_Filter GetFileLogFilter                   () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_FILE)); }
+    ECAL_API eCAL_Logging_Filter GetUdpLogFilter                    () { return ParseLogLevel(eCALPAR(MON, LOG_FILTER_UDP)); }
 
     /////////////////////////////////////
     // sys
     /////////////////////////////////////
     
-    ECAL_API std::string       GetEcalSysFilterExcludeList            () { return eCALPAR(SYS, FILTER_EXCL); }
+    ECAL_API std::string       GetEcalSysFilterExcludeList          () { return eCALPAR(SYS, FILTER_EXCL); }
 
     /////////////////////////////////////
     // publisher
