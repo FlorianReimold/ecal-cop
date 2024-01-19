@@ -25,6 +25,7 @@
 
 #include "ecal_def.h"
 
+#include <atomic>
 #include <shared_mutex>
 #include <set>
 
