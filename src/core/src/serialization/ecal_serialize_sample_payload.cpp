@@ -18,12 +18,12 @@
 */
 
 /**
- * @file   ecal_nanopb_sample_payload.cpp
+ * @file   ecal_serialize_sample_payload.cpp
  * @brief  eCAL payload sample (de)serialization - nanopb variant
 **/
 
 #include "ecal_struct_sample_payload.h"
-#include "ecal_nanopb_common.h"
+#include "ecal_serialize_common.h"
 
 #include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"

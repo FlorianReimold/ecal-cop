@@ -18,12 +18,12 @@
 */
 
 /**
- * @file   ecal_nanopb_service.cpp
+ * @file   ecal_serialize_service.cpp
  * @brief  eCAL service (de)serialization - nanopb variant
 **/
 
 #include "ecal_struct_service.h"
-#include "ecal_nanopb_common.h"
+#include "ecal_serialize_common.h"
 
 #include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"

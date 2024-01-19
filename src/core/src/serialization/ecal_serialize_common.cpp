@@ -18,7 +18,7 @@
 */
 
 /**
- * @file   ecal_nanopb_common.cpp
+ * @file   ecal_serialize_common.cpp
  * @brief  eCAL common (de)serialization - nanopb variant
 **/
 
@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include "ecal_nanopb_common.h"
+#include "ecal_serialize_common.h"
 
 namespace eCAL
 {

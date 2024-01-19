@@ -18,12 +18,12 @@
 */
 
 /**
- * @file   ecal_nanopb_monitoring.cpp
+ * @file   ecal_serialize_monitoring.cpp
  * @brief  eCAL monitoring (de)serialization - nanopb variant
 **/
 
 #include "ecal_struct_monitoring.h"
-#include "ecal_nanopb_common.h"
+#include "ecal_serialize_common.h"
 
 #include "nanopb/monitoring.pb.h"
 #include "nanopb/pb_encode.h"

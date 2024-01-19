@@ -18,12 +18,12 @@
 */
 
 /**
- * @file   ecal_nanopb_sample_registration.cpp
+ * @file   ecal_serialize_sample_registration.cpp
  * @brief  eCAL registration sample (de)serialization - nanopb variant
 **/
 
 #include "ecal_struct_sample_registration.h"
-#include "ecal_nanopb_common.h"
+#include "ecal_serialize_common.h"
 
 #include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"
@@ -192,24 +192,61 @@ namespace
     eCAL::nanopb::encode_map(pb_sample.topic.attr, registration_.topic.attr);
   }
 
+  size_t RegistrationStruct2PbSample(const eCAL::Registration::Sample& registration_, eCAL_pb_Sample& pb_sample_)
+  {
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    PrepareEncoding(registration_, pb_sample_);
+
+    ///////////////////////////////////////////////
+    // evaluate byte size
+    ///////////////////////////////////////////////
+    pb_ostream_t pb_sizestream = { nullptr };
+    pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_sample_);
+
+    // return encoding byte size
+    return pb_sizestream.bytes_written;
+  }
+
   bool RegistrationStruct2Buffer(const eCAL::Registration::Sample& registration_, std::vector<char>& target_buffer_)
   {
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
     eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
-    PrepareEncoding(registration_, pb_sample);
-
-    ///////////////////////////////////////////////
-    // evaluate byte size
-    ///////////////////////////////////////////////
-    pb_ostream_t pb_sizestream = { nullptr };
-    pb_encode(&pb_sizestream, eCAL_pb_Sample_fields, &pb_sample);
+    size_t target_size = RegistrationStruct2PbSample(registration_, pb_sample);
 
     ///////////////////////////////////////////////
     // encode it
     ///////////////////////////////////////////////
-    target_buffer_.resize(pb_sizestream.bytes_written);
+    target_buffer_.resize(target_size);
+    pb_ostream_t pb_ostream;
+    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
+    if (!pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
+    {
+      std::cerr << "NanoPb eCAL::Registration::Sample encode failed: " << pb_ostream.errmsg << std::endl;
+    }
+    else
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool RegistrationStruct2Buffer(const eCAL::Registration::Sample& registration_, std::string& target_buffer_)
+  {
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
+    size_t target_size = RegistrationStruct2PbSample(registration_, pb_sample);
+
+    ///////////////////////////////////////////////
+    // encode it
+    ///////////////////////////////////////////////
+    target_buffer_.resize(target_size);
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
     if (!pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
@@ -462,23 +499,62 @@ namespace
     return true;
   }
 
-  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::vector<char>& target_buffer_)
+  size_t RegistrationStruct2PbSample(const eCAL::Registration::SampleList& registration_list_, eCAL_pb_SampleList& pb_sample_list_)
   {
-    eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
-
-    pb_sample_list.samples.funcs.encode = &encode_sample_list_field;
-    pb_sample_list.samples.arg = (void*)(&registration_list_.samples);
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    pb_sample_list_.samples.funcs.encode = &encode_sample_list_field;
+    pb_sample_list_.samples.arg = (void*)(&registration_list_.samples);
 
     ///////////////////////////////////////////////
     // evaluate byte size
     ///////////////////////////////////////////////
     pb_ostream_t pb_sizestream = { nullptr };
-    pb_encode(&pb_sizestream, eCAL_pb_SampleList_fields, &pb_sample_list);
+    pb_encode(&pb_sizestream, eCAL_pb_SampleList_fields, &pb_sample_list_);
+
+    // return encoding byte size
+    return pb_sizestream.bytes_written;
+  }
+
+  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::vector<char>& target_buffer_)
+  {
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
+    size_t target_size = RegistrationStruct2PbSample(registration_list_, pb_sample_list);
 
     ///////////////////////////////////////////////
     // encode it
     ///////////////////////////////////////////////
-    target_buffer_.resize(pb_sizestream.bytes_written);
+    target_buffer_.resize(target_size);
+    pb_ostream_t pb_ostream;
+    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
+    if (!pb_encode(&pb_ostream, eCAL_pb_SampleList_fields, &pb_sample_list))
+    {
+      std::cerr << "NanoPb eCAL::Registration::SampleList encode failed: " << pb_ostream.errmsg << std::endl;
+    }
+    else
+    {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::string& target_buffer_)
+  {
+    ///////////////////////////////////////////////
+    // prepare sample for encoding
+    ///////////////////////////////////////////////
+    eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
+    size_t target_size = RegistrationStruct2PbSample(registration_list_, pb_sample_list);
+
+    ///////////////////////////////////////////////
+    // encode it
+    ///////////////////////////////////////////////
+    target_buffer_.resize(target_size);
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
     if (!pb_encode(&pb_ostream, eCAL_pb_SampleList_fields, &pb_sample_list))
@@ -556,12 +632,24 @@ namespace eCAL
     return RegistrationStruct2Buffer(source_sample_, target_buffer_);
   }
 
+  bool SerializeToBuffer(const Registration::Sample& source_sample_, std::string& target_buffer_)
+  {
+    target_buffer_.clear();
+    return RegistrationStruct2Buffer(source_sample_, target_buffer_);
+  }
+
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::Sample& target_sample_)
   {
     return Buffer2RegistrationStruct(data_, size_, target_sample_);
   }
 
   bool SerializeToBuffer(const Registration::SampleList& source_sample_list_, std::vector<char>& target_buffer_)
+  {
+    target_buffer_.clear();
+    return RegistrationStruct2Buffer(source_sample_list_, target_buffer_);
+  }
+
+  bool SerializeToBuffer(const Registration::SampleList& source_sample_list_, std::string& target_buffer_)
   {
     target_buffer_.clear();
     return RegistrationStruct2Buffer(source_sample_list_, target_buffer_);
