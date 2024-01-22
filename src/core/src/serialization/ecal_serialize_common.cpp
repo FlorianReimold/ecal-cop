@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_common.cpp
- * @brief  eCAL common (de)serialization - nanopb variant
+ * @brief  eCAL common (de)serialization
 **/
 
 #include "nanopb/ecal.pb.h"
@@ -124,7 +124,7 @@ namespace eCAL
     }
 
     ///////////////////////////////////////////////
-    // map<string, string>
+    // map<string,string>
     ///////////////////////////////////////////////
     bool encode_map_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
     {
@@ -187,7 +187,7 @@ namespace eCAL
     }
 
     ///////////////////////////////////////////////
-    // list<std::string>
+    // list<string>
     ///////////////////////////////////////////////
     bool encode_string_list_field(pb_ostream_t* stream, const pb_field_iter_t* field, void* const* arg)
     {

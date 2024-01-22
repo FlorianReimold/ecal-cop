@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_logging.cpp
- * @brief  eCAL monitoring (de)serialization - nanopb variant
+ * @brief  eCAL logging (de)serialization
 **/
 
 #include "ecal_struct_logging.h"

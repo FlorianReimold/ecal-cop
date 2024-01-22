@@ -36,9 +36,9 @@ namespace eCAL
   {
     struct LogMessage
     {
-      int64_t                time = 0;                // time
+      int64_t                time  = 0;               // time
       std::string            hname;                   // host name
-      int32_t                pid = 0;                 // process id
+      int32_t                pid   = 0;               // process id
       std::string            pname;                   // process name
       std::string            uname;                   // unit name
       eCAL_Logging_eLogLevel level = log_level_none;  // message level

@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_sample_registration.cpp
- * @brief  eCAL registration sample (de)serialization - nanopb variant
+ * @brief  eCAL registration sample (de)serialization
 **/
 
 #include "ecal_struct_sample_registration.h"
@@ -501,7 +501,7 @@ namespace
     return true;
   }
 
-  size_t RegistrationStruct2PbSample(const eCAL::Registration::SampleList& registration_list_, eCAL_pb_SampleList& pb_sample_list_)
+  size_t RegistrationListStruct2PbSample(const eCAL::Registration::SampleList& registration_list_, eCAL_pb_SampleList& pb_sample_list_)
   {
     ///////////////////////////////////////////////
     // prepare sample for encoding
@@ -519,13 +519,13 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::vector<char>& target_buffer_)
+  bool RegistrationListStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::vector<char>& target_buffer_)
   {
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
     eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
-    size_t target_size = RegistrationStruct2PbSample(registration_list_, pb_sample_list);
+    size_t target_size = RegistrationListStruct2PbSample(registration_list_, pb_sample_list);
 
     ///////////////////////////////////////////////
     // encode it
@@ -545,13 +545,13 @@ namespace
     return false;
   }
 
-  bool RegistrationStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::string& target_buffer_)
+  bool RegistrationListStruct2Buffer(const eCAL::Registration::SampleList& registration_list_, std::string& target_buffer_)
   {
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
     eCAL_pb_SampleList pb_sample_list = eCAL_pb_SampleList_init_default;
-    size_t target_size = RegistrationStruct2PbSample(registration_list_, pb_sample_list);
+    size_t target_size = RegistrationListStruct2PbSample(registration_list_, pb_sample_list);
 
     ///////////////////////////////////////////////
     // encode it
@@ -598,7 +598,7 @@ namespace
     return true;
   }
 
-  bool Buffer2RegistrationStruct(const char* data_, size_t size_, eCAL::Registration::SampleList& registration_list_)
+  bool Buffer2RegistrationListStruct(const char* data_, size_t size_, eCAL::Registration::SampleList& registration_list_)
   {
     if (data_ == nullptr) return false;
     if (size_ == 0)       return false;
@@ -648,17 +648,17 @@ namespace eCAL
   bool SerializeToBuffer(const Registration::SampleList& source_sample_list_, std::vector<char>& target_buffer_)
   {
     target_buffer_.clear();
-    return RegistrationStruct2Buffer(source_sample_list_, target_buffer_);
+    return RegistrationListStruct2Buffer(source_sample_list_, target_buffer_);
   }
 
   bool SerializeToBuffer(const Registration::SampleList& source_sample_list_, std::string& target_buffer_)
   {
     target_buffer_.clear();
-    return RegistrationStruct2Buffer(source_sample_list_, target_buffer_);
+    return RegistrationListStruct2Buffer(source_sample_list_, target_buffer_);
   }
 
   bool DeserializeFromBuffer(const char* data_, size_t size_, Registration::SampleList& target_sample_list_)
   {
-    return Buffer2RegistrationStruct(data_, size_, target_sample_list_);
+    return Buffer2RegistrationListStruct(data_, size_, target_sample_list_);
   }
 }

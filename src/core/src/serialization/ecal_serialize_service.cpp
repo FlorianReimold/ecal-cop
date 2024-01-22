@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_service.cpp
- * @brief  eCAL service (de)serialization - nanopb variant
+ * @brief  eCAL service (de)serialization
 **/
 
 #include "ecal_struct_service.h"

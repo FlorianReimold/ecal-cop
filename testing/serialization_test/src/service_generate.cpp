@@ -33,10 +33,10 @@ namespace eCAL
       ServiceHeader header;
       header.hname = GenerateString(8);
       header.sname = GenerateString(8);
-      header.sid = GenerateString(5);
+      header.sid   = GenerateString(5);
       header.mname = GenerateString(8);
       header.error = GenerateString(15);
-      header.id = rand() % 100;
+      header.id    = rand() % 100;
       header.state = static_cast<eMethodCallState>(rand() % 3);
 
       return header;
@@ -46,7 +46,7 @@ namespace eCAL
     Request GenerateRequest()
     {
       Request request;
-      request.header = GenerateServiceHeader();
+      request.header  = GenerateServiceHeader();
       request.request = GenerateString(20);
 
       return request;
@@ -56,8 +56,8 @@ namespace eCAL
     Response GenerateResponse()
     {
       Response response;
-      response.header = GenerateServiceHeader();
-      response.response = GenerateString(20);
+      response.header    = GenerateServiceHeader();
+      response.response  = GenerateString(20);
       response.ret_state = rand() % 100;
 
       return response;

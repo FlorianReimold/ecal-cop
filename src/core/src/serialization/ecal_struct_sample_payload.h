@@ -65,7 +65,7 @@ namespace eCAL
       int64_t                             clock = 0;                    // internal used clock
       int64_t                             time  = 0;                    // time the content was updated
       int64_t                             hash  = 0;                    // unique hash for that payload
-      int32_t                             size = 0;                     // size (additional for none payload "header only samples")
+      int32_t                             size  = 0;                    // size (additional for none payload "header only samples")
       Payload                             payload;                      // payload represented as raw pointer or a std::vector<char>
     };
 

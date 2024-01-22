@@ -29,12 +29,12 @@ namespace eCAL
     bool CompareServiceHeaders(const ServiceHeader& header1, const ServiceHeader& header2)
     {
       return (header1.hname == header2.hname &&
-        header1.sname == header2.sname &&
-        header1.sid == header2.sid &&
-        header1.mname == header2.mname &&
-        header1.error == header2.error &&
-        header1.id == header2.id &&
-        header1.state == header2.state);
+              header1.sname == header2.sname &&
+              header1.sid   == header2.sid &&
+              header1.mname == header2.mname &&
+              header1.error == header2.error &&
+              header1.id    == header2.id &&
+              header1.state == header2.state);
     }
 
     // compare two Requests for equality
@@ -48,7 +48,7 @@ namespace eCAL
     bool CompareResponses(const Response& response1, const Response& response2)
     {
       return (CompareServiceHeaders(response1.header, response2.header) &&
-        response1.response == response2.response &&
+        response1.response  == response2.response &&
         response1.ret_state == response2.ret_state);
     }
   }

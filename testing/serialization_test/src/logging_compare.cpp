@@ -28,13 +28,13 @@ namespace eCAL
     // compare two LogMessages for equality
     bool CompareLogMessages(const LogMessage& message1, const LogMessage& message2)
     {
-      return (message1.time == message2.time &&
-        message1.hname == message2.hname &&
-        message1.pid == message2.pid &&
-        message1.pname == message2.pname &&
-        message1.uname == message2.uname &&
-        message1.level == message2.level &&
-        message1.content == message2.content);
+      return (message1.time    == message2.time &&
+              message1.hname   == message2.hname &&
+              message1.pid     == message2.pid &&
+              message1.pname   == message2.pname &&
+              message1.uname   == message2.uname &&
+              message1.level   == message2.level &&
+              message1.content == message2.content);
     }
   }
 }

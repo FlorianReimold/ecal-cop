@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_struct_service.h
- * @brief  eCAL service registration as struct
+ * @brief  eCAL service as struct
 **/
 
 #pragma once

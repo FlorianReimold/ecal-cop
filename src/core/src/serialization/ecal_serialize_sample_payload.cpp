@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_sample_payload.cpp
- * @brief  eCAL payload sample (de)serialization - nanopb variant
+ * @brief  eCAL payload sample (de)serialization
 **/
 
 #include "ecal_struct_sample_payload.h"

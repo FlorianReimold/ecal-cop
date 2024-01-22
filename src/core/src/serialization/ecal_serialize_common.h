@@ -19,7 +19,7 @@
 
 /**
  * @file   ecal_serialize_common.h
- * @brief  eCAL common (de)serialization - nanopb variant
+ * @brief  eCAL common (de)serialization
 **/
 
 #pragma once
