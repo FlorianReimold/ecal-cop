@@ -59,6 +59,8 @@ namespace eCAL
         std::vector<char> payload1_vec;
         switch (sample1.content.payload.type)
         {
+        case pl_none:
+          break;
         case pl_raw:
           payload1_vec = std::vector<char>(sample1.content.payload.raw_addr, sample1.content.payload.raw_addr + sample1.content.payload.raw_size);
           break;

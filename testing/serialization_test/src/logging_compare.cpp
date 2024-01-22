@@ -19,8 +19,6 @@
 
 #include "../../serialization/ecal_struct_logging.h"
 
-#include <algorithm>
-
 namespace eCAL
 {
   namespace Logging

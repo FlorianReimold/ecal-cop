@@ -36,7 +36,7 @@ namespace
 {
   size_t RequestStruct2PbRequest(const eCAL::Service::Request& request_, eCAL_pb_Request& pb_request_)
   {
-    eCAL_pb_Request pb_request = eCAL_pb_Request_init_default;
+    pb_request_ = eCAL_pb_Request_init_default;
 
     ///////////////////////////////////////////////
     // header information
@@ -184,7 +184,7 @@ namespace
 
   size_t ResponseStruct2PbResponse(const eCAL::Service::Response& response_, eCAL_pb_Response& pb_response_)
   {
-    eCAL_pb_Response pb_response = eCAL_pb_Response_init_default;
+    pb_response_ = eCAL_pb_Response_init_default;
 
     ///////////////////////////////////////////////
     // header information

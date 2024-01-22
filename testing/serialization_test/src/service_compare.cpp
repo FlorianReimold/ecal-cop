@@ -19,8 +19,6 @@
 
 #include "../../serialization/ecal_struct_service.h"
 
-#include <algorithm>
-
 namespace eCAL
 {
   namespace Service
