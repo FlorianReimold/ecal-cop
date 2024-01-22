@@ -68,24 +68,12 @@ namespace eCAL
     }
 
     /**
-     * @struct LogMessage
-    **/
-    struct SLogMessage
-    {
-      int64_t                time   = 0;               ///< Receive time of the log message.
-      std::string            hname;                    ///< Sender host name.
-      int32_t                pid    = 0;               ///< Sender process id.
-      std::string            pname;                    ///< Sender process name.
-      std::string            uname;                    ///< Sender unit name.
-      eCAL_Logging_eLogLevel level  = log_level_none;  ///< Log message level.
-      std::string            content;                  ///< Log message content.
-    };
-
-    /**
-     * @brief Get complete logging as log message list. 
+     * @brief Get logging as serialized protobuf string.
      *
-     * @param [out] msg_list_  List to store the logging messages. 
+     * @param [out] log_  String to store the logging information.
+     *
+     * @return  Monitoring buffer length or zero if failed.
     **/
-    ECAL_API void GetLogging(std::list<SLogMessage>& msg_list_);
+    ECAL_API int GetLogging(std::string& log_);
   }
 }

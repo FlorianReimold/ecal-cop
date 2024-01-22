@@ -61,13 +61,16 @@ namespace eCAL
     }
 
     /**
-     * @brief Get complete logging as log message list.
+     * @brief Get logging as serialized protobuf string.
      *
-     * @param [out] msg_list_  List to store the logging messages.
+     * @param [out] log_  String to store the logging information.
+     *
+     * @return  Monitoring buffer length or zero if failed.
     **/
-    void GetLogging(std::list<SLogMessage>& msg_list_)
+    int GetLogging(std::string& log_)
     {
-      if (g_log() != nullptr) g_log()->GetLogging(msg_list_);
+      if (g_log() != nullptr) g_log()->GetLogging(log_);
+      return static_cast<int>(log_.size());
     }
   }
 }

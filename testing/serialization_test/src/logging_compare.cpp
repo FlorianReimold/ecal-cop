@@ -17,18 +17,24 @@
  * ========================= eCAL LICENSE =================================
 */
 
-/**
- * @file   ecal_serialize_monitoring.h
- * @brief  eCAL monitoring serialization / deserialization
-**/
+#include "../../serialization/ecal_struct_logging.h"
 
-#pragma once
-
-#include "ecal_struct_monitoring.h"
+#include <algorithm>
 
 namespace eCAL
 {
-  // logmessage - serialize/deserialize
-  bool SerializeToBuffer(const Logging::SLogMessage& source_sample_, std::vector<char>& target_buffer_);
-  bool DeserializeFromBuffer(const char* data_, size_t size_, Logging::SLogMessage& target_sample_);
+  namespace Logging
+  {
+    // compare two LogMessages for equality
+    bool CompareLogMessages(const LogMessage& message1, const LogMessage& message2)
+    {
+      return (message1.time == message2.time &&
+        message1.hname == message2.hname &&
+        message1.pid == message2.pid &&
+        message1.pname == message2.pname &&
+        message1.uname == message2.uname &&
+        message1.level == message2.level &&
+        message1.content == message2.content);
+    }
+  }
 }

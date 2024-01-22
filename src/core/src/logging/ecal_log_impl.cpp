@@ -27,7 +27,7 @@
 
 #include "ecal_log_impl.h"
 #include "io/udp/ecal_udp_configurations.h"
-#include "serialization/ecal_serialize_monitoring.h"
+#include "serialization/ecal_serialize_logging.h"
 
 #include <mutex>
 #include <cstdio>
@@ -262,7 +262,7 @@ namespace eCAL
     if((log_udp != 0) && m_udp_logging_sender)
     {
       // set up log message
-      Logging::SLogMessage log_message;
+      Logging::LogMessage log_message;
       log_message.time    = std::chrono::duration_cast<std::chrono::microseconds>(log_time.time_since_epoch()).count();
       log_message.hname   = m_hname;
       log_message.pid     = m_pid;
@@ -283,15 +283,16 @@ namespace eCAL
     Log(m_level, msg_);
   }
 
-  void CLog::GetLogging(std::list<Logging::SLogMessage>& log_message_list_)
+  void CLog::GetLogging(std::string& log_msg_list_string_)
   {
-    // clear target list
-    log_message_list_.clear();
+    // clear target list string
+    log_msg_list_string_.clear();
 
-    // acquire access
-    const std::lock_guard<std::mutex> lock(m_log_msglist_sync);
-    // and swap contents of internal list and target list
-    std::swap(log_message_list_, m_log_msglist);
+    // serialize message list to target list string
+    SerializeToBuffer(m_log_msglist, log_msg_list_string_);
+ 
+    // empty message list
+    m_log_msglist.log_messages.clear();
   }
 
   bool CLog::HasSample(const std::string& sample_name_)
@@ -302,7 +303,7 @@ namespace eCAL
   bool CLog::ApplySample(const char* serialized_sample_data_, size_t serialized_sample_size_)
   {
     // TODO: Limit maximum size of collected log messages !
-    Logging::SLogMessage log_message;
+    Logging::LogMessage log_message;
     if (DeserializeFromBuffer(serialized_sample_data_, serialized_sample_size_, log_message))
     {
       // in "network mode" we accept all log messages
@@ -310,7 +311,7 @@ namespace eCAL
       if ((m_hname == log_message.hname) || Config::IsNetworkEnabled())
       {
         const std::lock_guard<std::mutex> lock(m_log_msglist_sync);
-        m_log_msglist.emplace_back(log_message);
+        m_log_msglist.log_messages.emplace_back(log_message);
       }
       return true;
     }

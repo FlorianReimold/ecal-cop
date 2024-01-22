@@ -334,19 +334,19 @@ set(ecal_serialization_src
     src/serialization/nanopb/topic.pb.h
     src/serialization/ecal_serialize_common.cpp
     src/serialization/ecal_serialize_common.h
-    src/serialization/ecal_serialize_monitoring.cpp
-	src/serialization/ecal_serialize_monitoring.h
+    src/serialization/ecal_serialize_logging.cpp
+    src/serialization/ecal_serialize_logging.h
     src/serialization/ecal_serialize_sample_payload.cpp
-	src/serialization/ecal_serialize_sample_payload.h
+    src/serialization/ecal_serialize_sample_payload.h
     src/serialization/ecal_serialize_sample_registration.cpp
-	src/serialization/ecal_serialize_sample_registration.h
+    src/serialization/ecal_serialize_sample_registration.h
     src/serialization/ecal_serialize_service.cpp
-	src/serialization/ecal_serialize_service.h
-	src/serialization/ecal_struct_monitoring.h
+    src/serialization/ecal_serialize_service.h
+    src/serialization/ecal_struct_logging.h
     src/serialization/ecal_struct_sample_common.h
     src/serialization/ecal_struct_sample_payload.h
     src/serialization/ecal_struct_sample_registration.h
-	src/serialization/ecal_struct_service.h
+    src/serialization/ecal_struct_service.h
 )
 
 ######################################
@@ -508,12 +508,12 @@ set(ecal_header_public
 
 ecal_add_ecal_shared_library(${PROJECT_NAME} 
     ${ecal_config_src}
-	${ecal_io_mtx_src}
-	${ecal_io_mtx_linux_src}
-	${ecal_io_mtx_win_src}
-	${ecal_io_shm_src}
-	${ecal_io_shm_linux_src}
-	${ecal_io_shm_win_src}
+    ${ecal_io_mtx_src}
+    ${ecal_io_mtx_linux_src}
+    ${ecal_io_mtx_win_src}
+    ${ecal_io_shm_src}
+    ${ecal_io_shm_linux_src}
+    ${ecal_io_shm_win_src}
     ${ecal_io_udp_fragmentation_src}
     ${ecal_io_udp_sendreceive_src}
     ${ecal_io_udp_src}
@@ -526,7 +526,7 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_reader_src} 
     ${ecal_registration_src}
     ${ecal_serialization_src}
-	${ecal_service_src}
+    ${ecal_service_src}
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}
@@ -672,12 +672,12 @@ install(DIRECTORY
 if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0") 
   source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES 
     ${ecal_config_src}
-	${ecal_io_mtx_src}
-	${ecal_io_mtx_linux_src}
-	${ecal_io_mtx_win_src}
-	${ecal_io_shm_src}
-	${ecal_io_shm_linux_src}
-	${ecal_io_shm_win_src}
+    ${ecal_io_mtx_src}
+    ${ecal_io_mtx_linux_src}
+    ${ecal_io_mtx_win_src}
+    ${ecal_io_shm_src}
+    ${ecal_io_shm_linux_src}
+    ${ecal_io_shm_win_src}
     ${ecal_io_udp_fragmentation_src}
     ${ecal_io_udp_sendreceive_src}
     ${ecal_io_udp_src}
@@ -691,8 +691,8 @@ if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0")
     ${ecal_reader_src} 
     ${ecal_reader_udp_src}
     ${ecal_registration_src}   
-    ${ecal_serialization_src}	
-	${ecal_service_src}
+    ${ecal_serialization_src}    
+    ${ecal_service_src}
     ${ecal_time_src}
     ${ecal_util_src}
     ${ecal_cmn_src}

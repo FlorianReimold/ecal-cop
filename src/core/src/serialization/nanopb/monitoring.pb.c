@@ -9,10 +9,10 @@
 PB_BIND(eCAL_pb_LogMessage, eCAL_pb_LogMessage, AUTO)
 
 
+PB_BIND(eCAL_pb_LogMessageList, eCAL_pb_LogMessageList, AUTO)
+
+
 PB_BIND(eCAL_pb_Monitoring, eCAL_pb_Monitoring, AUTO)
-
-
-PB_BIND(eCAL_pb_Logging, eCAL_pb_Logging, AUTO)
 
 
 

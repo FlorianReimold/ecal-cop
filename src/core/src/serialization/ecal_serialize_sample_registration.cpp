@@ -152,8 +152,8 @@ namespace
     eCAL::nanopb::encode_string(pb_sample.topic.hgname, registration_.topic.hgname);
     // pid
     pb_sample.topic.pid = registration_.topic.pid;
-    // pname (not needed for topic registration)
-    //eCAL::nanopb::encode_string(pb_sample.topic.pname, source_sample_.topic.pname);
+    // pname
+    eCAL::nanopb::encode_string(pb_sample.topic.pname, registration_.topic.pname);
     // uname
     eCAL::nanopb::encode_string(pb_sample.topic.uname, registration_.topic.uname);
     // tid
@@ -166,6 +166,8 @@ namespace
     eCAL::nanopb::encode_string(pb_sample.topic.ttype, registration_.topic.ttype);
     // tdesc
     eCAL::nanopb::encode_string(pb_sample.topic.tdesc, registration_.topic.tdesc);
+    // tdatatype
+    pb_sample.topic.has_tdatatype = true;
     // tdatatype.name
     eCAL::nanopb::encode_string(pb_sample.topic.tdatatype.name, registration_.topic.tdatatype.name);
     // tdatatype.encoding
@@ -335,8 +337,8 @@ namespace
     eCAL::nanopb::decode_string(pb_sample.topic.hname, registration_.topic.hname);
     // hgname
     eCAL::nanopb::decode_string(pb_sample.topic.hgname, registration_.topic.hgname);
-    // pname (not needed for topic registration)
-    //eCAL::nanopb::decode_string(pb_sample.topic.pname, registration_.topic.pname);
+    // pname
+    eCAL::nanopb::decode_string(pb_sample.topic.pname, registration_.topic.pname);
     // uname
     eCAL::nanopb::decode_string(pb_sample.topic.uname, registration_.topic.uname);
     // tid

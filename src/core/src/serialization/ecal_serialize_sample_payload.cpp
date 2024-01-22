@@ -33,8 +33,36 @@
 
 namespace
 {
+  void CreatePayloadStruct(const eCAL::Payload::Sample& payload_, eCAL::nanopb::SNanoBytes& nano_bytes_)
+  {
+    // extract payload
+    // payload may be stored as std::vector<char> or raw pointer + size
+    const char* payload_addr = nullptr;
+    size_t      payload_size = 0;
+    switch (payload_.content.payload.type)
+    {
+    case eCAL::Payload::pl_raw:
+      payload_addr = payload_.content.payload.raw_addr;
+      payload_size = payload_.content.payload.raw_size;
+      break;
+    case eCAL::Payload::pl_vec:
+      payload_addr = payload_.content.payload.vec.data();
+      payload_size = payload_.content.payload.vec.size();
+      break;
+    default:
+      break;
+    }
+
+    // topic content payload
+    if ((payload_addr != nullptr) && (payload_size > 0))
+    {
+      nano_bytes_.content = (pb_byte_t*)(payload_addr);
+      nano_bytes_.length  = payload_size;
+    }
+  }
+    
   // TODO: The size must be a multiple of 8.
-  size_t PayloadStruct2PbSample(const eCAL::Payload::Sample& payload_, eCAL_pb_Sample& pb_sample_)
+  size_t PayloadStruct2PbSample(const eCAL::Payload::Sample& payload_, const eCAL::nanopb::SNanoBytes& nano_bytes_, eCAL_pb_Sample& pb_sample_)
   {
     // command type
     pb_sample_.cmd_type = static_cast<eCAL_pb_eCmdType>(payload_.cmd_type);
@@ -56,32 +84,8 @@ namespace
     pb_sample_.content.hash = payload_.content.hash;
     pb_sample_.content.size = payload_.content.size;
 
-    // extract payload
-    // payload may be stored as std::vector<char> or raw pointer + size
-    const char* payload_addr = nullptr;
-    size_t      payload_size = 0;
-    switch (payload_.content.payload.type)
-    {
-    case eCAL::Payload::pl_raw:
-      payload_addr = payload_.content.payload.raw_addr;
-      payload_size = payload_.content.payload.raw_size;
-      break;
-    case eCAL::Payload::pl_vec:
-      payload_addr = payload_.content.payload.vec.data();
-      payload_size = payload_.content.payload.vec.size();
-      break;
-    default:
-      break;
-    }
-
     // topic content payload
-    eCAL::nanopb::SNanoBytes payload;
-    if ((payload_addr != nullptr) && (payload_size > 0))
-    {
-      payload.content = (pb_byte_t*)(payload_addr);
-      payload.length = payload_size;
-      eCAL::nanopb::encode_bytes(pb_sample_.content.payload, payload);
-    }
+    eCAL::nanopb::encode_bytes(pb_sample_.content.payload, nano_bytes_);
 
     ///////////////////////////////////////////////
     // evaluate byte size
@@ -95,11 +99,15 @@ namespace
 
   bool PayloadStruct2Buffer(const eCAL::Payload::Sample& payload_, std::vector<char>& target_buffer_)
   {
+    // create payload helper struct
+    eCAL::nanopb::SNanoBytes nano_bytes;
+    CreatePayloadStruct(payload_, nano_bytes);
+
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
     eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
-    size_t target_size = PayloadStruct2PbSample(payload_, pb_sample);
+    size_t target_size = PayloadStruct2PbSample(payload_, nano_bytes, pb_sample);
 
     ///////////////////////////////////////////////
     // encode it
@@ -121,11 +129,15 @@ namespace
 
   bool PayloadStruct2Buffer(const eCAL::Payload::Sample& payload_, std::string& target_buffer_)
   {
+    // create payload helper struct
+    eCAL::nanopb::SNanoBytes nano_bytes;
+    CreatePayloadStruct(payload_, nano_bytes);
+
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
     eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
-    size_t target_size = PayloadStruct2PbSample(payload_, pb_sample);
+    size_t target_size = PayloadStruct2PbSample(payload_, nano_bytes, pb_sample);
 
     ///////////////////////////////////////////////
     // encode it
