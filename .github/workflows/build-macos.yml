@@ -235,7 +235,7 @@ jobs:
         -DECAL_CORE_TRANSPORT_SHM=${{ matrix.build_configuration.ECAL_CORE_TRANSPORT_SHM }} \
         -DECAL_CORE_NPCAP_SUPPORT=${{ matrix.build_configuration.ECAL_CORE_NPCAP_SUPPORT }} \
         -DBUILD_SHARED_LIBS=${{ matrix.build_configuration.BUILD_SHARED_LIBS }} \
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_configuration.CMAKE_BUILD_TYPE }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_configuration.CMAKE_BUILD_TYPE }} \
         -DCMAKE_CXX_STANDARD=17 \
         -DCMAKE_FIND_PACKAGE_PREFER_CONFIG=ON
         sudo mkdir /etc/ecal
