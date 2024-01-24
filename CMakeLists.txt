@@ -260,71 +260,43 @@ if(WIN32)
 endif()
 
 # --------------------------------------------------------
-# ecal core
+# core
 # --------------------------------------------------------
 add_subdirectory(src/core)
 
 # --------------------------------------------------------
-# ecal services
+# core config
+# --------------------------------------------------------
+add_subdirectory(src/core/cfg)
+
+# --------------------------------------------------------
+# services
 # --------------------------------------------------------
 if(ECAL_CORE_SERVICE)
   add_subdirectory(src/service)
 endif()
 
 # --------------------------------------------------------
-# ecal time plugins
+# time plugins
 # --------------------------------------------------------
 if(ECAL_CORE_TIMEPLUGIN)
   add_subdirectory(src/time)
 endif()
 
 # --------------------------------------------------------
-# ecal utils
+# utils
 # --------------------------------------------------------
 add_subdirectory(src/utils)
 
 # --------------------------------------------------------
 # samples
 # --------------------------------------------------------
-if(BUILD_SAMPLES)
-  add_subdirectory(samples)
-endif()
+add_subdirectory(samples)
 
 # --------------------------------------------------------
-# unit tests
+# tests
 # --------------------------------------------------------
-if(BUILD_ECAL_TESTS)
-  enable_testing()
-  add_subdirectory(testing/expmap_test)
-  add_subdirectory(testing/topic2mcast_test)
-  add_subdirectory(testing/util_test)
-
-  if(ECAL_CORE_REGISTRATION_SHM OR ECAL_CORE_TRANSPORT_SHM)
-    add_subdirectory(testing/io_memfile_test)
-  endif()
-
-  if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
-    add_subdirectory(testing/core_test)
-    add_subdirectory(testing/pubsub_test)
-    add_subdirectory(testing/serialization_test)
-    if(BUILD_ECAL_TESTS_PROTOBUF)
-      add_subdirectory(testing/pubsub_proto_test)
-    endif()
-  endif()
-
-  if(ECAL_CORE_SERVICE)
-    add_subdirectory(testing/clientserver_test)
-    if(BUILD_ECAL_TESTS_PROTOBUF)
-      add_subdirectory(testing/clientserver_proto_test)
-    endif()
-  endif()
-
-endif()
-
-# --------------------------------------------------------
-# config
-# --------------------------------------------------------
-add_subdirectory(src/core/cfg)
+add_subdirectory(tests)
 
 # --------------------------------------------------------
 # debscripts
