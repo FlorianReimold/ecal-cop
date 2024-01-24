@@ -5,9 +5,71 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   build-windows:
     runs-on: windows-2019
+
+    strategy:
+      matrix:
+        build_configuration:
+          # default
+          - BUILD_SAMPLES: "ON"
+            BUILD_SAMPLES_PROTOBUF: "OFF"
+            BUILD_ECAL_TESTS: "ON"
+            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_CONFIG_INIFILE: "ON"
+            ECAL_CORE_COMMAND_LINE: "ON"
+            ECAL_CORE_REGISTRATION: "ON"
+            ECAL_CORE_REGISTRATION_SHM: "ON"
+            ECAL_CORE_PUBLISHER: "ON"
+            ECAL_CORE_SUBSCRIBER: "ON"
+            ECAL_CORE_SERVICE: "ON"
+            ECAL_CORE_TIMEPLUGIN: "ON"
+            ECAL_CORE_TRANSPORT_UDP: "ON"
+            ECAL_CORE_TRANSPORT_TCP: "ON"
+            ECAL_CORE_TRANSPORT_SHM: "ON"
+            ECAL_CORE_NPCAP_SUPPORT: "OFF"
+            BUILD_SHARED_LIBS: "OFF"
+            CMAKE_BUILD_TYPE: "Release"
+          # full
+          - BUILD_SAMPLES: "ON"
+            BUILD_SAMPLES_PROTOBUF: "ON"
+            BUILD_ECAL_TESTS: "ON"
+            BUILD_ECAL_TESTS_PROTOBUF: "ON"
+            ECAL_CORE_CONFIG_INIFILE: "ON"
+            ECAL_CORE_COMMAND_LINE: "ON"
+            ECAL_CORE_REGISTRATION: "ON"
+            ECAL_CORE_REGISTRATION_SHM: "ON"
+            ECAL_CORE_PUBLISHER: "ON"
+            ECAL_CORE_SUBSCRIBER: "ON"
+            ECAL_CORE_SERVICE: "ON"
+            ECAL_CORE_TIMEPLUGIN: "ON"
+            ECAL_CORE_TRANSPORT_UDP: "ON"
+            ECAL_CORE_TRANSPORT_TCP: "ON"
+            ECAL_CORE_TRANSPORT_SHM: "ON"
+            ECAL_CORE_NPCAP_SUPPORT: "ON"
+            BUILD_SHARED_LIBS: "OFF"
+            CMAKE_BUILD_TYPE: "Release"
+          # pubsub
+          - BUILD_SAMPLES: "ON"
+            BUILD_SAMPLES_PROTOBUF: "OFF"
+            BUILD_ECAL_TESTS: "ON"
+            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_CONFIG_INIFILE: "OFF"
+            ECAL_CORE_COMMAND_LINE: "OFF"
+            ECAL_CORE_REGISTRATION: "ON"
+            ECAL_CORE_REGISTRATION_SHM: "ON"
+            ECAL_CORE_PUBLISHER: "ON"
+            ECAL_CORE_SUBSCRIBER: "ON"
+            ECAL_CORE_SERVICE: "OFF"
+            ECAL_CORE_TIMEPLUGIN: "OFF"
+            ECAL_CORE_TRANSPORT_UDP: "ON"
+            ECAL_CORE_TRANSPORT_TCP: "ON"
+            ECAL_CORE_TRANSPORT_SHM: "ON"
+            ECAL_CORE_NPCAP_SUPPORT: "OFF"
+            BUILD_SHARED_LIBS: "OFF"
+            CMAKE_BUILD_TYPE: "Release"
 
     steps:
     - name: Checkout
@@ -21,21 +83,24 @@ jobs:
         mkdir "${{ runner.workspace }}\_build\"
         cd "${{ runner.workspace }}/_build"
         cmake %GITHUB_WORKSPACE% -A x64 ^
-        -DBUILD_SAMPLES=ON ^
-        -DBUILD_SAMPLES_PROTOBUF=ON ^
-        -DBUILD_ECAL_TESTS=ON ^
-        -DBUILD_ECAL_TESTS_PROTOBUF=ON ^
-        -DECAL_CORE_REGISTRATION=ON ^
-        -DECAL_CORE_PUBLISHER=ON ^
-        -DECAL_CORE_SUBSCRIBER=ON ^
-        -DECAL_CORE_SERVICE=ON ^
-        -DECAL_CORE_TIMEPLUGIN=ON ^
-        -DECAL_CORE_TRANSPORT_UDP=ON ^
-        -DECAL_CORE_TRANSPORT_TCP=ON ^
-        -DECAL_CORE_TRANSPORT_SHM=ON ^
-        -DECAL_CORE_NPCAP_SUPPORT=ON ^
-        -DBUILD_SHARED_LIBS=OFF ^
-        -DCMAKE_BUILD_TYPE=Release
+        -DBUILD_SAMPLES=${{ matrix.build_configuration.BUILD_SAMPLES }} ^
+        -DBUILD_SAMPLES_PROTOBUF=${{ matrix.build_configuration.BUILD_SAMPLES_PROTOBUF }} ^
+        -DBUILD_ECAL_TESTS=${{ matrix.build_configuration.BUILD_ECAL_TESTS }} ^
+        -DBUILD_ECAL_TESTS_PROTOBUF=${{ matrix.build_configuration.BUILD_ECAL_TESTS_PROTOBUF }} ^
+        -DECAL_CORE_CONFIG_INIFILE=${{ matrix.build_configuration.ECAL_CORE_CONFIG_INIFILE }} ^
+        -DECAL_CORE_COMMAND_LINE=${{ matrix.build_configuration.ECAL_CORE_COMMAND_LINE }} ^
+        -DECAL_CORE_REGISTRATION=${{ matrix.build_configuration.ECAL_CORE_REGISTRATION }} ^
+        -DECAL_CORE_REGISTRATION_SHM=${{ matrix.build_configuration.ECAL_CORE_REGISTRATION_SHM }} ^
+        -DECAL_CORE_PUBLISHER=${{ matrix.build_configuration.ECAL_CORE_PUBLISHER }} ^
+        -DECAL_CORE_SUBSCRIBER=${{ matrix.build_configuration.ECAL_CORE_SUBSCRIBER }} ^
+        -DECAL_CORE_SERVICE=${{ matrix.build_configuration.ECAL_CORE_SERVICE }} ^
+        -DECAL_CORE_TIMEPLUGIN=${{ matrix.build_configuration.ECAL_CORE_TIMEPLUGIN }} ^
+        -DECAL_CORE_TRANSPORT_UDP=${{ matrix.build_configuration.ECAL_CORE_TRANSPORT_UDP }} ^
+        -DECAL_CORE_TRANSPORT_TCP=${{ matrix.build_configuration.ECAL_CORE_TRANSPORT_TCP }} ^
+        -DECAL_CORE_TRANSPORT_SHM=${{ matrix.build_configuration.ECAL_CORE_TRANSPORT_SHM }} ^
+        -DECAL_CORE_NPCAP_SUPPORT=${{ matrix.build_configuration.ECAL_CORE_NPCAP_SUPPORT }} ^
+        -DBUILD_SHARED_LIBS=${{ matrix.build_configuration.BUILD_SHARED_LIBS }} ^
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_configuration.CMAKE_BUILD_TYPE }}
         mkdir "%ALLUSERSPROFILE%\eCAL"
         copy "%GITHUB_WORKSPACE%\src\core\cfg\ecal.ini" "%ALLUSERSPROFILE%\eCAL"
       shell: cmd
