@@ -73,34 +73,11 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool RequestStruct2Buffer(const eCAL::Service::Request& request_, std::vector<char>& target_buffer_)
+  template <typename T>
+  bool RequestStruct2Buffer(const eCAL::Service::Request& request_, T& target_buffer_)
   {
-    ///////////////////////////////////////////////
-    // prepare request for encoding
-    ///////////////////////////////////////////////
-    eCAL_pb_Request pb_request = eCAL_pb_Request_init_default;
-    size_t target_size = RequestStruct2PbRequest(request_, pb_request);
+    target_buffer_.clear();
 
-    ///////////////////////////////////////////////
-    // encode it
-    ///////////////////////////////////////////////
-    target_buffer_.resize(target_size);
-    pb_ostream_t pb_ostream;
-    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (!pb_encode(&pb_ostream, eCAL_pb_Request_fields, &pb_request))
-    {
-      std::cerr << "NanoPb eCAL::Service::Request encode failed: " << pb_ostream.errmsg << std::endl;
-    }
-    else
-    {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool RequestStruct2Buffer(const eCAL::Service::Request& request_, std::string& target_buffer_)
-  {
     ///////////////////////////////////////////////
     // prepare request for encoding
     ///////////////////////////////////////////////
@@ -222,34 +199,11 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool ResponseStruct2Buffer(const eCAL::Service::Response& response_, std::vector<char>& target_buffer_)
+  template <typename T>
+  bool ResponseStruct2Buffer(const eCAL::Service::Response& response_, T& target_buffer_)
   {
-    ///////////////////////////////////////////////
-    // prepare response for encoding
-    ///////////////////////////////////////////////
-    eCAL_pb_Response pb_response = eCAL_pb_Response_init_default;
-    size_t target_size = ResponseStruct2PbResponse(response_, pb_response);
+    target_buffer_.clear();
 
-    ///////////////////////////////////////////////
-    // encode it
-    ///////////////////////////////////////////////
-    target_buffer_.resize(target_size);
-    pb_ostream_t pb_ostream;
-    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (!pb_encode(&pb_ostream, eCAL_pb_Response_fields, &pb_response))
-    {
-      std::cerr << "NanoPb eCAL::Service::Response encode failed: " << pb_ostream.errmsg << std::endl;
-    }
-    else
-    {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool ResponseStruct2Buffer(const eCAL::Service::Response& response_, std::string& target_buffer_)
-  {
     ///////////////////////////////////////////////
     // prepare response for encoding
     ///////////////////////////////////////////////
@@ -342,13 +296,11 @@ namespace eCAL
   // service request - serialize/deserialize
   bool SerializeToBuffer(const Service::Request& source_sample_, std::vector<char>& target_buffer_)
   {
-    target_buffer_.clear();
     return RequestStruct2Buffer(source_sample_, target_buffer_);
   }
 
   bool SerializeToBuffer(const Service::Request& source_sample_, std::string& target_buffer_)
   {
-    target_buffer_.clear();
     return RequestStruct2Buffer(source_sample_, target_buffer_);
   }
 
@@ -360,13 +312,11 @@ namespace eCAL
   // service response - serialize/deserialize
   bool SerializeToBuffer(const Service::Response& source_sample_, std::vector<char>& target_buffer_)
   {
-    target_buffer_.clear();
     return ResponseStruct2Buffer(source_sample_, target_buffer_);
   }
 
   bool SerializeToBuffer(const Service::Response& source_sample_, std::string& target_buffer_)
   {
-    target_buffer_.clear();
     return ResponseStruct2Buffer(source_sample_, target_buffer_);
   }
 

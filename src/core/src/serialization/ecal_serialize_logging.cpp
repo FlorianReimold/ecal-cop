@@ -72,34 +72,11 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool LogMessageStruct2Buffer(const eCAL::Logging::LogMessage& log_message_, std::vector<char>& target_buffer_)
+  template <typename T>
+  bool LogMessageStruct2Buffer(const eCAL::Logging::LogMessage& log_message_, T& target_buffer_)
   {
-    ///////////////////////////////////////////////
-    // prepare sample for encoding
-    ///////////////////////////////////////////////
-    eCAL_pb_LogMessage pb_log_message = eCAL_pb_LogMessage_init_default;
-    size_t target_size = LogMessageStruct2PbLogMessage(log_message_, pb_log_message);
+    target_buffer_.clear();
 
-    ///////////////////////////////////////////////
-    // encode it
-    ///////////////////////////////////////////////
-    target_buffer_.resize(target_size);
-    pb_ostream_t pb_ostream;
-    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (!pb_encode(&pb_ostream, eCAL_pb_LogMessage_fields, &pb_log_message))
-    {
-      std::cerr << "NanoPb eCAL::Logging::LogMessage encode failed: " << pb_ostream.errmsg << std::endl;
-    }
-    else
-    {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool LogMessageStruct2Buffer(const eCAL::Logging::LogMessage& log_message_, std::string& target_buffer_)
-  {
     ///////////////////////////////////////////////
     // prepare sample for encoding
     ///////////////////////////////////////////////
@@ -237,7 +214,8 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool LogMessageListStruct2Buffer(const eCAL::Logging::LogMessageList& log_message_list_, std::vector<char>& target_buffer_)
+  template <typename T>
+  bool LogMessageListStruct2Buffer(const eCAL::Logging::LogMessageList& log_message_list_, T& target_buffer_)
   {
     ///////////////////////////////////////////////
     // prepare sample for encoding
@@ -252,32 +230,6 @@ namespace
     pb_ostream_t pb_ostream;
     pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
     if (!pb_encode(&pb_ostream, eCAL_pb_LogMessageList_fields, &pb_log_message_list))
-    {
-      std::cerr << "NanoPb eCAL::Logging::LogMessageList encode failed: " << pb_ostream.errmsg << std::endl;
-    }
-    else
-    {
-      return true;
-    }
-
-    return false;
-  }
-
-  bool LogMessageListStruct2Buffer(const eCAL::Logging::LogMessageList& log_message_list_, std::string& target_buffer_)
-  {
-    ///////////////////////////////////////////////
-    // prepare sample for encoding
-    ///////////////////////////////////////////////
-    eCAL_pb_LogMessageList pb_sample_list = eCAL_pb_LogMessageList_init_default;
-    size_t target_size = LogMessageListStruct2PbLogMessageList(log_message_list_, pb_sample_list);
-
-    ///////////////////////////////////////////////
-    // encode it
-    ///////////////////////////////////////////////
-    target_buffer_.resize(target_size);
-    pb_ostream_t pb_ostream;
-    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (!pb_encode(&pb_ostream, eCAL_pb_LogMessageList_fields, &pb_sample_list))
     {
       std::cerr << "NanoPb eCAL::Logging::LogMessageList encode failed: " << pb_ostream.errmsg << std::endl;
     }
@@ -349,13 +301,11 @@ namespace eCAL
   // log message - serialize/deserialize
   bool SerializeToBuffer(const Logging::LogMessage& source_sample_, std::vector<char>& target_buffer_)
   {
-    target_buffer_.clear();
     return LogMessageStruct2Buffer(source_sample_, target_buffer_);
   }
 
   bool SerializeToBuffer(const Logging::LogMessage& source_sample_, std::string& target_buffer_)
   {
-    target_buffer_.clear();
     return LogMessageStruct2Buffer(source_sample_, target_buffer_);
   }
 

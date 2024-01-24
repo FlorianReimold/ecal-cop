@@ -97,8 +97,11 @@ namespace
     return pb_sizestream.bytes_written;
   }
 
-  bool PayloadStruct2Buffer(const eCAL::Payload::Sample& payload_, std::vector<char>& target_buffer_)
+  template <typename T>
+  bool PayloadStruct2Buffer(const eCAL::Payload::Sample& payload_, T& target_buffer_)
   {
+    target_buffer_.clear();
+
     // create payload helper struct
     eCAL::nanopb::SNanoBytes nano_bytes;
     CreatePayloadStruct(payload_, nano_bytes);
@@ -124,36 +127,6 @@ namespace
       return true;
     }
     
-    return false;
-  }
-
-  bool PayloadStruct2Buffer(const eCAL::Payload::Sample& payload_, std::string& target_buffer_)
-  {
-    // create payload helper struct
-    eCAL::nanopb::SNanoBytes nano_bytes;
-    CreatePayloadStruct(payload_, nano_bytes);
-
-    ///////////////////////////////////////////////
-    // prepare sample for encoding
-    ///////////////////////////////////////////////
-    eCAL_pb_Sample pb_sample = eCAL_pb_Sample_init_default;
-    size_t target_size = PayloadStruct2PbSample(payload_, nano_bytes, pb_sample);
-
-    ///////////////////////////////////////////////
-    // encode it
-    ///////////////////////////////////////////////
-    target_buffer_.resize(target_size);
-    pb_ostream_t pb_ostream;
-    pb_ostream = pb_ostream_from_buffer((pb_byte_t*)(target_buffer_.data()), target_buffer_.size());
-    if (!pb_encode(&pb_ostream, eCAL_pb_Sample_fields, &pb_sample))
-    {
-      std::cerr << "NanoPb eCAL::Payload::Sample encode failed: " << pb_ostream.errmsg << std::endl;
-    }
-    else
-    {
-      return true;
-    }
-
     return false;
   }
 
@@ -209,13 +182,11 @@ namespace eCAL
 {
   bool SerializeToBuffer(const Payload::Sample& source_sample_, std::vector<char>& target_buffer_)
   {
-    target_buffer_.clear();
     return PayloadStruct2Buffer(source_sample_, target_buffer_);
   }
 
   bool SerializeToBuffer(const Payload::Sample& source_sample_, std::string& target_buffer_)
   {
-    target_buffer_.clear();
     return PayloadStruct2Buffer(source_sample_, target_buffer_);
   }
 
