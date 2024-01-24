@@ -291,12 +291,17 @@ add_subdirectory(src/utils)
 # --------------------------------------------------------
 # samples
 # --------------------------------------------------------
-add_subdirectory(samples)
+if(BUILD_ECAL_SAMPLES)
+  add_subdirectory(samples)
+endif()
 
 # --------------------------------------------------------
 # tests
 # --------------------------------------------------------
-add_subdirectory(tests)
+if(BUILD_ECAL_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
 
 # --------------------------------------------------------
 # debscripts
