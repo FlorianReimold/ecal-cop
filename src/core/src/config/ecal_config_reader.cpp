@@ -366,14 +366,10 @@ namespace eCAL
   CConfig::CConfig() :
     m_impl(nullptr)
   {
-    m_impl = new CConfigImpl();
+    m_impl = std::make_unique<CConfigImpl>();
   }
 
-  CConfig::~CConfig()
-  {
-    delete m_impl;
-    m_impl = nullptr;
-  }
+  CConfig::~CConfig() = default;
 
   void CConfig::OverwriteKeys(const std::vector<std::string>& key_vec_)
   {
@@ -387,6 +383,23 @@ namespace eCAL
 
   bool CConfig::Validate()
   {
+    // ------------------------------------------------------------------
+    // UDP and TCP publlisher mode should not set to "auto (2)" both
+    // 
+    // [publisher]
+    // use_tcp    = 2
+    // use_udp_mc = 2
+    // ------------------------------------------------------------------
+    {
+      const int use_tcp    = get("publisher", "use_tcp",    0);
+      const int use_udp_mc = get("publisher", "use_udp_mc", 0);
+      if ((use_tcp == 2) && (use_udp_mc == 2))
+      {
+        std::cerr << "eCAL config error: to set [publisher/use_tcp] and [publisher/use_udp_mc] both on auto mode (2) is not allowed" << std::endl;
+        return false;
+      }
+    }
+
     return true;
   }
 
