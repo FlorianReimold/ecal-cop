@@ -88,7 +88,7 @@ if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
   endif()
 endif()
 
- services
+# services
 if(ECAL_CORE_SERVICE)
   add_subdirectory(cpp/services/latency_client)
   add_subdirectory(cpp/services/latency_server)

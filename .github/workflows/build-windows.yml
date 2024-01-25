@@ -16,10 +16,10 @@ jobs:
           ########################################
           - name: "default"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "OFF"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
             ECAL_CORE_CONFIG_INIFILE: "ON"
             ECAL_CORE_COMMAND_LINE: "ON"
             ECAL_CORE_REGISTRATION: "ON"
@@ -37,10 +37,10 @@ jobs:
           ########################################
           - name: "full"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "ON"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "ON"
             ECAL_CORE_CONFIG_INIFILE: "ON"
             ECAL_CORE_COMMAND_LINE: "ON"
             ECAL_CORE_REGISTRATION: "ON"
@@ -58,10 +58,10 @@ jobs:
           ########################################
           - name: "pubsub"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "OFF"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "ON"
@@ -79,10 +79,10 @@ jobs:
           ########################################
           - name: "pubsub_proto"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "ON"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "ON"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "ON"
@@ -100,10 +100,10 @@ jobs:
           ########################################
           - name: "pubsub_udp_only"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "OFF"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "OFF"
@@ -121,10 +121,10 @@ jobs:
 #          ########################################
 #          - name: "pubsub_tcp_only"
 #          ########################################
-#            BUILD_SAMPLES: "ON"
-#            BUILD_SAMPLES_PROTOBUF: "OFF"
-#            BUILD_ECAL_TESTS: "ON"
-#            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+#            ECAL_CORE_BUILD_SAMPLES: "ON"
+#            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+#            ECAL_CORE_BUILD_TESTS: "ON"
+#            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
 #            ECAL_CORE_CONFIG_INIFILE: "OFF"
 #            ECAL_CORE_COMMAND_LINE: "OFF"
 #            ECAL_CORE_REGISTRATION: "ON"
@@ -142,10 +142,10 @@ jobs:
           ########################################
           - name: "pubsub_shm_only"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "OFF"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "ON"
@@ -163,10 +163,10 @@ jobs:
           ########################################
           - name: "client_server"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "OFF"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "OFF"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "OFF"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "ON"
@@ -184,10 +184,10 @@ jobs:
           ########################################
           - name: "client_server_proto"
           ########################################
-            BUILD_SAMPLES: "ON"
-            BUILD_SAMPLES_PROTOBUF: "ON"
-            BUILD_ECAL_TESTS: "ON"
-            BUILD_ECAL_TESTS_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_SAMPLES: "ON"
+            ECAL_CORE_BUILD_SAMPLES_PROTOBUF: "ON"
+            ECAL_CORE_BUILD_TESTS: "ON"
+            ECAL_CORE_BUILD_TESTS_PROTOBUF: "ON"
             ECAL_CORE_CONFIG_INIFILE: "OFF"
             ECAL_CORE_COMMAND_LINE: "OFF"
             ECAL_CORE_REGISTRATION: "ON"
@@ -215,10 +215,10 @@ jobs:
         mkdir "${{ runner.workspace }}\_build\"
         cd "${{ runner.workspace }}/_build"
         cmake %GITHUB_WORKSPACE% -A x64 ^
-        -DBUILD_SAMPLES=${{ matrix.build_configuration.BUILD_SAMPLES }} ^
-        -DBUILD_SAMPLES_PROTOBUF=${{ matrix.build_configuration.BUILD_SAMPLES_PROTOBUF }} ^
-        -DBUILD_ECAL_TESTS=${{ matrix.build_configuration.BUILD_ECAL_TESTS }} ^
-        -DBUILD_ECAL_TESTS_PROTOBUF=${{ matrix.build_configuration.BUILD_ECAL_TESTS_PROTOBUF }} ^
+        -DECAL_CORE_BUILD_SAMPLES=${{ matrix.build_configuration.ECAL_CORE_BUILD_SAMPLES }} ^
+        -DECAL_CORE_BUILD_SAMPLES_PROTOBUF=${{ matrix.build_configuration.ECAL_CORE_BUILD_SAMPLES_PROTOBUF }} ^
+        -DECAL_CORE_BUILD_TESTS=${{ matrix.build_configuration.ECAL_CORE_BUILD_TESTS }} ^
+        -DECAL_CORE_BUILD_TESTS_PROTOBUF=${{ matrix.build_configuration.ECAL_CORE_BUILD_TESTS_PROTOBUF }} ^
         -DECAL_CORE_CONFIG_INIFILE=${{ matrix.build_configuration.ECAL_CORE_CONFIG_INIFILE }} ^
         -DECAL_CORE_COMMAND_LINE=${{ matrix.build_configuration.ECAL_CORE_COMMAND_LINE }} ^
         -DECAL_CORE_REGISTRATION=${{ matrix.build_configuration.ECAL_CORE_REGISTRATION }} ^
