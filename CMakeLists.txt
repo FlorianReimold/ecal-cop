@@ -291,7 +291,7 @@ add_subdirectory(src/utils)
 # --------------------------------------------------------
 # samples
 # --------------------------------------------------------
-if(BUILD_ECAL_SAMPLES)
+if(ECAL_CORE_BUILD_SAMPLES)
   add_subdirectory(samples)
 endif()
 
