@@ -1133,10 +1133,12 @@ namespace eCAL
         if (m_writer.udp_mc_mode.requested == TLayer::smode_on)
         {
           Logging::Log(log_level_warning, m_topic_name + "::CDataWriter: Switched to udp for local communication.");
+          SetUseUdpMC(TLayer::smode_on);
         }
         if (m_writer.tcp_mode.requested == TLayer::smode_on)
         {
           Logging::Log(log_level_warning, m_topic_name + "::CDataWriter: Switched to tcp for local communication.");
+          SetUseTcp(TLayer::smode_on);
         }
       }
     }
