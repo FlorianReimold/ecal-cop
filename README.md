@@ -44,18 +44,18 @@ This section provides documentation for the CMake options used in configuring th
 
 #### Additional Builds
 
-##### `BUILD_SAMPLES` (Default: ON)
+##### `ECAL_CORE_BUILD_SAMPLES` (Default: ON)
 - This option controls whether the eCAL samples should be built. If not needed, you can disable this option to reduce build time and output size.
 
-##### `BUILD_SAMPLES_PROTOBUF` (Default: OFF)
+##### `ECAL_CORE_BUILD_SAMPLES_PROTOBUF` (Default: OFF)
 - This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time and output size.
 - Requires google::protobuf serialization library.
 
-##### `BUILD_ECAL_TESTS` (Default: ON)
+##### `ECAL_CORE_BUILD_TESTS` (Default: ON)
 - This option determines whether the eCAL Google Tests should be built. If enabled, it includes the compilation of unit tests for eCAL. Disabling this option will skip the build of tests if they are not required in your development environment.
 - Requires gtest library.
 
-##### `BUILD_ECAL_TESTS_PROTOBUF` (Default: OFF)
+##### `ECAL_CORE_BUILD_TESTS_PROTOBUF` (Default: OFF)
 - This option determines whether the eCAL Google Tests using protobuf serialization should be built. .
 - Requires gtest library and google::protobuf serialization library.
 
@@ -84,6 +84,10 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_TIMEPLUGIN` (Default: ON)
 - Enabling this option includes the eCAL time plugin functionality. This allows for precise synchronization of time across different components using eCAL.
 
+##### `ECAL_CORE_NPCAP_SUPPORT` (Default: OFF)
+- Enabling this option replaces the standard ASIO UDP receiver by a NPCAP based UDP receiver to increase the performance on Windows platforms.
+- Requires udpcap library.
+
 ##### `ECAL_CORE_REGISTRATION_SHM` (Default: ON)
 - Enabling this option activates the eCAL registration layer based on shared memory for high performance local communication scenarios only.
 
@@ -96,9 +100,5 @@ This section provides documentation for the CMake options used in configuring th
 
 ##### `ECAL_CORE_TRANSPORT_SHM` (Default: ON)
 - Enabling this option includes the eCAL local shared memory message transport layer.
-
-##### `ECAL_CORE_NPCAP_SUPPORT` (Default: OFF)
-- Enabling this option replaces the standard ASIO UDP receiver by a NPCAP based UDP receiver to increase the performance on Windows platforms.
-- Requires udpcap library.
 
 Note: Please adjust these options based on your project's needs, ensuring that the selected features align with your desired functionality and dependencies.
