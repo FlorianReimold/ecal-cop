@@ -65,8 +65,6 @@ namespace eCAL
   **/
   CPublisher::CPublisher(CPublisher&& rhs) noexcept :
                 m_datawriter(std::move(rhs.m_datawriter)),
-                m_qos(rhs.m_qos),
-                m_tlayer(rhs.m_tlayer),
                 m_id(rhs.m_id),
                 m_created(rhs.m_created),
                 m_initialized(rhs.m_initialized)
@@ -84,8 +82,6 @@ namespace eCAL
     Destroy();
 
     m_datawriter      = std::move(rhs.m_datawriter);
-    m_qos             = rhs.m_qos;
-    m_tlayer          = rhs.m_tlayer,
     m_id              = rhs.m_id;
     m_created         = rhs.m_created;
     m_initialized     = rhs.m_initialized;
