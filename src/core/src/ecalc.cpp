@@ -355,18 +355,22 @@ extern "C"
 
   ECALC_API int eCAL_Pub_AddEventCallback(ECAL_HANDLE handle_, eCAL_Publisher_Event type_, PubEventCallbackCT callback_, void* par_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     auto callback = std::bind(g_pub_event_callback, std::placeholders::_1, std::placeholders::_2, callback_, par_);
     if (pub->AddEventCallback(type_, callback)) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Pub_RemEventCallback(ECAL_HANDLE handle_, eCAL_Publisher_Event type_)
   {
+#if ECAL_CORE_PUBLISHER
     if (handle_ == NULL) return(0);
     eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
     if (pub->RemEventCallback(type_)) return(1);
+#endif
     return(0);
   }
 
@@ -580,18 +584,22 @@ extern "C"
 
   ECALC_API int eCAL_Sub_AddEventCallback(ECAL_HANDLE handle_, eCAL_Subscriber_Event type_, SubEventCallbackCT callback_, void* par_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == NULL) return(0);
     eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
     auto callback = std::bind(g_sub_event_callback, std::placeholders::_1, std::placeholders::_2, callback_, par_);
     if (sub->AddEventCallback(type_, callback)) return(1);
+#endif
     return(0);
   }
 
   ECALC_API int eCAL_Sub_RemEventCallback(ECAL_HANDLE handle_, eCAL_Subscriber_Event type_)
   {
+#if ECAL_CORE_SUBSCRIBER
     if (handle_ == NULL) return(0);
     eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
     if (sub->RemEventCallback(type_)) return(1);
+#endif
     return(0);
   }
   
