@@ -403,19 +403,20 @@ endif()
 ######################################
 set(ecal_cmn_src
     src/ecal.cpp
-    src/ecal_c.cpp
+    src/ecal_def.h
+    src/ecal_def_ini.h
     src/ecal_event.cpp 
     src/ecal_event.h
     src/ecal_eventhandle.h
     src/ecal_global_accessors.cpp
-    src/ecal_globals.cpp
-    src/ecal_process.cpp
-    src/ecal_util.cpp
-    src/ecal_def.h
-    src/ecal_def_ini.h
     src/ecal_global_accessors.h
+    src/ecal_globals.cpp
     src/ecal_globals.h
+    src/ecal_process.cpp
     src/ecal_sample_to_topicinfo.h
+    src/ecal_util.cpp
+    src/ecal_win_main.h
+    src/ecalc.cpp
 )
 if (WIN32)
   list(APPEND ecal_cmn_src
@@ -427,7 +428,7 @@ endif()
 # c interface
 ######################################
 set(ecal_c_src
-    src/ecal_c.cpp
+    src/ecalc.cpp
 )
 
 ######################################
@@ -445,8 +446,6 @@ endif()
 ######################################
 set(ecal_header_cmn
     include/ecal/ecal.h
-    include/ecal/ecal_c.h
-    include/ecal/ecal_c_types.h
     include/ecal/ecal_callback.h
     include/ecal/ecal_client.h
     include/ecal/ecal_config.h
@@ -465,9 +464,11 @@ set(ecal_header_cmn
     include/ecal/ecal_service_info.h
     include/ecal/ecal_subscriber.h
     include/ecal/ecal_time.h
-    include/ecal/ecal_util.h
     include/ecal/ecal_tlayer.h
     include/ecal/ecal_types.h
+    include/ecal/ecal_util.h
+    include/ecal/ecalc.h
+    include/ecal/ecalc_types.h
 )
 
 set(ecal_header_cimpl

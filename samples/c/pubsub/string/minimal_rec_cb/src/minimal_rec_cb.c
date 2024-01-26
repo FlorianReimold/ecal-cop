@@ -17,7 +17,7 @@
  * ========================= eCAL LICENSE =================================
 */
 
-#include <ecal/ecal_c.h>
+#include <ecal/ecalc.h>
 #include <stdio.h>
 
 void OnReceive(const char* topic_name_, const struct SReceiveCallbackDataC* data_, void* par_)

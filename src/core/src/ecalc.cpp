@@ -24,7 +24,7 @@
 #include <mutex>
 
 #include <ecal/ecal.h>
-#include <ecal/ecal_c.h>
+#include <ecal/ecalc.h>
 
 static int CopyBuffer(void* target_, int target_len_, const std::string& source_s_)
 {

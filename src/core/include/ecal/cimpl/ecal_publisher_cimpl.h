@@ -26,7 +26,7 @@
 #define ecal_publisher_cimpl_h_included
 
 #include <ecal/ecal_os.h>
-#include <ecal/ecal_c_types.h>
+#include <ecal/ecalc_types.h>
 
 #include <ecal/cimpl/ecal_callback_cimpl.h>
 
