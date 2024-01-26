@@ -239,6 +239,13 @@ namespace eCAL
     ECAL_API bool IsCreated() const {return(m_created);}
 
     /**
+     * @brief Query the number of publishers.
+     *
+     * @return  Number of publishers.
+    **/
+    ECAL_API size_t GetPublisherCount() const;
+
+    /**
      * @brief Gets name of the connected topic. 
      *
      * @return  The topic name. 

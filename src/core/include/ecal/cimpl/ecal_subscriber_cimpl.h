@@ -179,6 +179,28 @@ extern "C"
   ECALC_API int eCAL_Sub_RemReceiveCallback(ECAL_HANDLE handle_);
 
   /**
+   * @brief Add callback function for subscriber events.
+   *
+   * @param handle_    Subscriber handle.
+   * @param type_      The event type to react on.
+   * @param callback_  The callback function to add.
+   * @param par_       User defined context that will be forwarded to the callback function.
+   *
+   * @return  None zero if succeeded.
+  **/
+  ECALC_API int eCAL_Sub_AddEventCallback(ECAL_HANDLE handle_, enum eCAL_Subscriber_Event type_, SubEventCallbackCT callback_, void* par_);
+
+  /**
+   * @brief Remove callback function for subscriber events.
+   *
+   * @param handle_  Subscriber handle.
+   * @param type_    The event type to remove.
+   *
+   * @return  None zero if succeeded.
+  **/
+  ECALC_API int eCAL_Sub_RemEventCallback(ECAL_HANDLE handle_, enum eCAL_Subscriber_Event type_);
+
+  /**
    * @brief Dump the whole class state into a string buffer. 
    *
    * @param handle_         Publisher handle. 

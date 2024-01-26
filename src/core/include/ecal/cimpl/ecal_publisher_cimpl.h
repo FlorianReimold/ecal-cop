@@ -141,6 +141,28 @@ extern "C"
   ECALC_API int eCAL_Pub_Send(ECAL_HANDLE handle_, const void* const buf_, int buf_len_, long long time_);
 
   /**
+   * @brief Add callback function for publisher events.
+   *
+   * @param handle_    Publisher handle.
+   * @param type_      The event type to react on.
+   * @param callback_  The callback function to add.
+   * @param par_       User defined context that will be forwarded to the callback function.
+   *
+   * @return  None zero if succeeded.
+  **/
+  ECALC_API int eCAL_Pub_AddEventCallback(ECAL_HANDLE handle_, enum eCAL_Publisher_Event type_, PubEventCallbackCT callback_, void* par_);
+
+  /**
+   * @brief Remove callback function for publisher events.
+   *
+   * @param handle_  Publisher handle.
+   * @param type_    The event type to remove.
+   *
+   * @return  None zero if succeeded.
+  **/
+  ECALC_API int eCAL_Pub_RemEventCallback(ECAL_HANDLE handle_, enum eCAL_Publisher_Event type_);
+
+  /**
    * @brief Dump the whole class state into a string buffer. 
    *
    * @param handle_         Publisher handle. 

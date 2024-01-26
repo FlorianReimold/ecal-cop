@@ -204,6 +204,12 @@ namespace eCAL
     return(m_datareader->RemEventCallback(type_));
   }
 
+  size_t CSubscriber::GetPublisherCount() const
+  {
+    if (m_datareader == nullptr) return(0);
+    return(m_datareader->GetPublisherCount());
+  }
+
   std::string CSubscriber::GetTopicName() const
   {
     if(m_datareader == nullptr) return("");
@@ -314,6 +320,21 @@ namespace eCAL
   bool CSubscriber::RemReceiveCallback()
   {
     return false;
+  }
+
+  bool CSubscriber::AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_)
+  {
+    return false;
+  }
+
+  bool CSubscriber::RemEventCallback(eCAL_Subscriber_Event type_)
+  {
+    return false;
+  }
+
+  size_t CSubscriber::GetPublisherCount() const
+  {
+    return 0;
   }
 
   std::string CSubscriber::GetTopicName() const

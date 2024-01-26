@@ -250,6 +250,12 @@ namespace eCAL
 #endif // ECAL_CORE_REGISTRATION
   }
 
+  size_t CPublisher::GetSubscriberCount() const
+  {
+    if (m_datawriter == nullptr) return(0);
+    return(m_datawriter->GetSubscriberCount());
+  }
+
   std::string CPublisher::GetTopicName() const
   {
     if(m_datawriter == nullptr) return("");
@@ -385,6 +391,11 @@ namespace eCAL
   bool CPublisher::IsSubscribed() const
   {
     return false;
+  }
+
+  size_t CPublisher::GetSubscriberCount() const
+  {
+    return 0;
   }
 
   std::string CPublisher::GetTopicName() const

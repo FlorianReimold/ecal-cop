@@ -221,6 +221,23 @@ extern "C"
 /////////////////////////////////////////////////////////
 // Publisher
 /////////////////////////////////////////////////////////
+#if ECAL_CORE_PUBLISHER
+static std::recursive_mutex g_pub_callback_mtx;
+static void g_pub_event_callback(const char* topic_name_, const struct eCAL::SPubEventCallbackData* data_, const PubEventCallbackCT callback_, void* par_)
+{
+  const std::lock_guard<std::recursive_mutex> lock(g_pub_callback_mtx);
+  SPubEventCallbackDataC data;
+  data.type        = data_->type;
+  data.time        = data_->time;
+  data.clock       = data_->clock;
+  data.tid         = data_->tid.c_str();
+  data.tname       = data_->tdatatype.name.c_str();
+  data.tencoding   = data_->tdatatype.encoding.c_str();
+  data.tdescriptor = data_->tdatatype.descriptor.c_str();
+  callback_(topic_name_, &data, par_);
+}
+#endif
+
 extern "C"
 {
   ECALC_API ECAL_HANDLE eCAL_Pub_New()
@@ -336,6 +353,23 @@ extern "C"
     return(0);
   }
 
+  ECALC_API int eCAL_Pub_AddEventCallback(ECAL_HANDLE handle_, eCAL_Publisher_Event type_, PubEventCallbackCT callback_, void* par_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
+    auto callback = std::bind(g_pub_event_callback, std::placeholders::_1, std::placeholders::_2, callback_, par_);
+    if (pub->AddEventCallback(type_, callback)) return(1);
+    return(0);
+  }
+
+  ECALC_API int eCAL_Pub_RemEventCallback(ECAL_HANDLE handle_, eCAL_Publisher_Event type_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CPublisher* pub = static_cast<eCAL::CPublisher*>(handle_);
+    if (pub->RemEventCallback(type_)) return(1);
+    return(0);
+  }
+
   ECALC_API int eCAL_Pub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)
   {
 #if ECAL_CORE_PUBLISHER
@@ -365,6 +399,20 @@ static void g_sub_receive_callback(const char* topic_name_, const struct eCAL::S
   data.id    = data_->id;
   data.time  = data_->time;
   data.clock = data_->clock;
+  callback_(topic_name_, &data, par_);
+}
+
+static void g_sub_event_callback(const char* topic_name_, const struct eCAL::SSubEventCallbackData* data_, const SubEventCallbackCT callback_, void* par_)
+{
+  const std::lock_guard<std::recursive_mutex> lock(g_sub_callback_mtx);
+  SSubEventCallbackDataC data;
+  data.type        = data_->type;
+  data.time        = data_->time;
+  data.clock       = data_->clock;
+  data.tid         = data_->tid.c_str();
+  data.tname       = data_->tdatatype.name.c_str();
+  data.tencoding   = data_->tdatatype.encoding.c_str();
+  data.tdescriptor = data_->tdatatype.descriptor.c_str();
   callback_(topic_name_, &data, par_);
 }
 #endif
@@ -530,6 +578,23 @@ extern "C"
     return(0);
   }
 
+  ECALC_API int eCAL_Sub_AddEventCallback(ECAL_HANDLE handle_, eCAL_Subscriber_Event type_, SubEventCallbackCT callback_, void* par_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
+    auto callback = std::bind(g_sub_event_callback, std::placeholders::_1, std::placeholders::_2, callback_, par_);
+    if (sub->AddEventCallback(type_, callback)) return(1);
+    return(0);
+  }
+
+  ECALC_API int eCAL_Sub_RemEventCallback(ECAL_HANDLE handle_, eCAL_Subscriber_Event type_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
+    if (sub->RemEventCallback(type_)) return(1);
+    return(0);
+  }
+  
   ECALC_API int eCAL_Sub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)
   {
 #if ECAL_CORE_SUBSCRIBER
