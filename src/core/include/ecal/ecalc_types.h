@@ -35,4 +35,4 @@
 **/
 typedef void* ECAL_HANDLE;
 
-#endif // ecalc_types_h_included
+#endif /* ecalc_types_h_included */

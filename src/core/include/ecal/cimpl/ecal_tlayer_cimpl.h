@@ -18,27 +18,34 @@
 */
 
 /**
- * @file   ecal_log_level.h
- * @brief  eCAL logging severities
+ * @file   ecal_tlayer_cimpl.h
+ * @brief  eCAL transport layer
 **/
 
-#pragma once
+#ifndef ecal_tlayer_cimpl_h_included
+#define ecal_tlayer_cimpl_h_included
 
 /**
- * @brief Values that represent different log level to filter on monitoring. 
+ * @brief eCAL transport layer types.
 **/
-enum eCAL_Logging_eLogLevel
+enum eTransportLayerC
 {
-  log_level_none    =   0,
-  log_level_all     = 255,
-  log_level_info    =   1,
-  log_level_warning =   2,
-  log_level_error   =   4,
-  log_level_fatal   =   8,
-  log_level_debug1  =  16,
-  log_level_debug2  =  32,
-  log_level_debug3  =  64,
-  log_level_debug4  = 128,
+  tlayer_none       = 0,
+  tlayer_udp_mc     = 1,
+  tlayer_shm        = 4,
+  tlayer_tcp        = 5,
+  tlayer_all        = 255
 };
 
-typedef char eCAL_Logging_Filter;  //!< This type is to be used as a bitmask for the activated logging levels
+/**
+ * @brief eCAL transport layer modes.
+**/
+enum eSendModeC
+{
+  smode_none = -1,
+  smode_off  = 0,
+  smode_on,
+  smode_auto
+};
+
+#endif /*ecal_tlayer_cimpl_h_included*/
