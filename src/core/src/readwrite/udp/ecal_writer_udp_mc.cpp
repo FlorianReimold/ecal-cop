@@ -52,7 +52,7 @@ namespace eCAL
 
   bool CDataWriterUdpMC::Create(const std::string & host_name_, const std::string & topic_name_, const std::string & topic_id_)
   {
-    if (m_created) return false;
+    if (m_created) return true;
 
     m_host_name   = host_name_;
     m_topic_name  = topic_name_;
@@ -80,7 +80,7 @@ namespace eCAL
 
   bool CDataWriterUdpMC::Destroy()
   {
-    if (!m_created) return false;
+    if (!m_created) return true;
 
     m_sample_sender_loopback.reset();
     m_sample_sender_no_loopback.reset();

@@ -86,7 +86,7 @@ namespace eCAL
 
   bool CDataWriterTCP::Destroy()
   {
-    if(!m_publisher) return false;
+    if(!m_publisher) return true;
 
     // destroy publisher
     m_publisher = nullptr;

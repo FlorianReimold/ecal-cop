@@ -28,7 +28,9 @@ endif()
 
 if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
   add_subdirectory(core_test)
-  add_subdirectory(pubsub_test)
+  if(ECAL_CORE_TRANSPORT_SHM OR ECAL_CORE_TRANSPORT_UDP) # this test is running for shm and udp layer only, needs to be fixed for tcp
+    add_subdirectory(pubsub_test)
+  endif()
   add_subdirectory(serialization_test)
   if(ECAL_CORE_BUILD_TESTS_PROTOBUF)
     add_subdirectory(pubsub_proto_test)

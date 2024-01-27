@@ -54,7 +54,7 @@ namespace eCAL
   
   bool CDataWriterSHM::Create(const std::string& /*host_name_*/, const std::string& topic_name_, const std::string & /*topic_id_*/)
   {
-    if (m_created) return false;
+    if (m_created) return true;
     m_topic_name = topic_name_;
 
     // init write index and create memory files
@@ -68,12 +68,13 @@ namespace eCAL
 
     // initialize memory file buffer
     m_created = SetBufferCount(m_buffer_count);
+
     return m_created;
   }
 
   bool CDataWriterSHM::Destroy()
   {
-    if (!m_created) return false;
+    if (!m_created) return true;
     m_created = false;
 
     m_memory_file_vec.clear();
