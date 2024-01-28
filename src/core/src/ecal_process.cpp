@@ -366,15 +366,6 @@ namespace
       eCAL::g_process_id_s = std::to_string(eCAL::g_process_id);
     }
   }
-
-  int parseLine(char* line)
-  {
-    int i = strlen(line);
-    while (*line < '0' || *line > '9') line++;
-    line[i - 3] = '\0';
-    i = atoi(line);
-    return i;
-  }
 }
 
 namespace eCAL

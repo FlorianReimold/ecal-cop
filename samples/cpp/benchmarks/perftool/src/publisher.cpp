@@ -43,10 +43,10 @@
 Publisher::Publisher(const std::string& topic_name, double frequency, std::size_t payload_size, bool quiet, bool log_print_verbose_times)
   : ecal_pub                (topic_name)
   , frequency_              (frequency)
-  , is_interrupted_         (false)
   , payload_                (payload_size)
-  , next_deadline_          (std::chrono::steady_clock::now() + period_)
   , period_                 (std::chrono::nanoseconds(static_cast<long long>(1e9 / frequency)))
+  , next_deadline_          (std::chrono::steady_clock::now() + period_)
+  , is_interrupted_         (false)
   , log_print_verbose_times_(log_print_verbose_times)
 {
   statistics_.reserve(static_cast<size_t>((frequency + 1.0) * 1.2));

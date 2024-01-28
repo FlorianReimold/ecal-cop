@@ -65,7 +65,7 @@ namespace
     ///////////////////////////////////////////////
     // evaluate byte size
     ///////////////////////////////////////////////
-    pb_ostream_t pb_sizestream = { nullptr };
+    pb_ostream_t pb_sizestream = { nullptr, nullptr, 0, 0, nullptr};
     pb_encode(&pb_sizestream, eCAL_pb_LogMessage_fields, &pb_log_message_);
 
     // return encoding byte size
@@ -207,7 +207,7 @@ namespace
     ///////////////////////////////////////////////
     // evaluate byte size
     ///////////////////////////////////////////////
-    pb_ostream_t pb_sizestream = { nullptr };
+    pb_ostream_t pb_sizestream = { nullptr, nullptr, 0, 0, nullptr};
     pb_encode(&pb_sizestream, eCAL_pb_LogMessageList_fields, &pb_log_message_list_);
 
     // return encoding byte size

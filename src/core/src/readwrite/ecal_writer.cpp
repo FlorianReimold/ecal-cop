@@ -1085,6 +1085,8 @@ namespace eCAL
       m_writer.tcp.Destroy();
       break;
     }
+#else // ECAL_CORE_TRANSPORT_TCP
+    (void)mode_;
 #endif // ECAL_CORE_TRANSPORT_TCP
   }
 

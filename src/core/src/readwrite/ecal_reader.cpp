@@ -698,6 +698,9 @@ namespace eCAL
         // process only for tcp layer
         CTCPReaderLayer::Get()->SetConnectionParameter(par);
       }
+#else
+      (void)host_name_;
+      (void)parameter_;
 #endif
       break;
     default:

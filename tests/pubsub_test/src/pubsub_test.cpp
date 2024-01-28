@@ -625,7 +625,7 @@ TEST(PubSub, MultipleSendsUDP)
   // let's match them
   eCAL::Process::SleepMS(2 * CMN_REGISTRATION_REFRESH);
   long long timestamp = 1;
-  for (const auto elem : send_vector)
+  for (const auto& elem : send_vector)
   {
     pub.Send(elem, timestamp);
     eCAL::Process::SleepMS(DATA_FLOW_TIME);
