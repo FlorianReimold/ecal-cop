@@ -445,6 +445,7 @@ endif()
 # public header
 ######################################
 set(ecal_header_cmn
+    include/ecal/types/monitoring.h
     include/ecal/ecal.h
     include/ecal/ecal_callback.h
     include/ecal/ecal_client.h
