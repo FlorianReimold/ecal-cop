@@ -8,11 +8,9 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-${{ matrix.os }}
-
     strategy:
       matrix:
-        os: [22.04, 20.04]
+        os: [ubuntu-22.04, ubuntu-20.04]
 
         build_configuration:
           ########################################
@@ -205,10 +203,9 @@ jobs:
             BUILD_SHARED_LIBS: "OFF"
             CMAKE_BUILD_TYPE: "Release"
 
+    runs-on: ${{ matrix.os }}
+
     steps:
-    - name: Log operating system
-      run: echo "Operating System: ${{ matrix.os }}"   
-    
     - name: Install dependencies
       run: |
         sudo apt update
