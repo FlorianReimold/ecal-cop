@@ -39,6 +39,7 @@ ecal_add_sample(${PROJECT_NAME} ${source_files})
 
 target_link_libraries(${PROJECT_NAME}
   eCAL::core
+  Threads::Threads
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)
