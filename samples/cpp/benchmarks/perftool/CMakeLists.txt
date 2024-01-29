@@ -21,6 +21,7 @@ set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 
 project(perftool)
 
+find_package(Threads REQUIRED)
 find_package(eCAL REQUIRED)
 
 set(source_files
@@ -38,6 +39,7 @@ ecal_add_sample(${PROJECT_NAME} ${source_files})
 
 target_link_libraries(${PROJECT_NAME}
   eCAL::core
+  Threads::Threads
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src)

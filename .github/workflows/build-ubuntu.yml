@@ -1,4 +1,4 @@
-name: Build Ubuntu 22.04
+name: Build on Ubuntu
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-22.04
-
     strategy:
       matrix:
+        os: [ubuntu-22.04, ubuntu-20.04]
+
         build_configuration:
           ########################################
           - name: "default"
@@ -203,8 +203,10 @@ jobs:
             BUILD_SHARED_LIBS: "OFF"
             CMAKE_BUILD_TYPE: "Release"
 
+    runs-on: ${{ matrix.os }}
+
     steps:
-    - name: Install Dependencies
+    - name: Install dependencies
       run: |
         sudo apt update
         sudo apt-get install ninja-build libprotobuf-dev libprotoc-dev protobuf-compiler
@@ -212,13 +214,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
-        submodules:  'true'
+        submodules: 'true'
         fetch-depth: 0
 
     - name: CMake
       run: |
-        export CC=/usr/bin/gcc-11
-        export CXX=/usr/bin/g++-11
         mkdir "${{ runner.workspace }}/_build"
         cd "${{ runner.workspace }}/_build"
         cmake $GITHUB_WORKSPACE -G "Ninja" \
