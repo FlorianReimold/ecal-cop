@@ -21,6 +21,7 @@ set(CMAKE_FIND_PACKAGE_PREFER_CONFIG ON)
 
 project(perftool)
 
+find_package(Threads REQUIRED)
 find_package(eCAL REQUIRED)
 
 set(source_files
