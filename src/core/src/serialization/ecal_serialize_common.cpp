@@ -22,12 +22,9 @@
  * @brief  eCAL common (de)serialization
 **/
 
-#include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
-
-#include <string>
-#include <vector>
+#include "nanopb/ecal.pb.h"
 
 #include "ecal_serialize_common.h"
 

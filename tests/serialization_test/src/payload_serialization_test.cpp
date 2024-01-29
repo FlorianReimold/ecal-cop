@@ -17,10 +17,10 @@
  * ========================= eCAL LICENSE =================================
 */
 
+#include "../../serialization/ecal_serialize_sample_payload.h"
+
 #include <gtest/gtest.h>
 #include <random>
-
-#include "../../serialization/ecal_serialize_sample_payload.h"
 
 namespace
 {

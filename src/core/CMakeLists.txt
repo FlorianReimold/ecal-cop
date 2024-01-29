@@ -324,6 +324,8 @@ set(ecal_serialization_src
     src/serialization/nanopb/host.pb.h
     src/serialization/nanopb/layer.pb.c
     src/serialization/nanopb/layer.pb.h
+    src/serialization/nanopb/logging.pb.c
+    src/serialization/nanopb/logging.pb.h
     src/serialization/nanopb/monitoring.pb.c
     src/serialization/nanopb/monitoring.pb.h
     src/serialization/nanopb/process.pb.c
@@ -336,6 +338,8 @@ set(ecal_serialization_src
     src/serialization/ecal_serialize_common.h
     src/serialization/ecal_serialize_logging.cpp
     src/serialization/ecal_serialize_logging.h
+    src/serialization/ecal_serialize_monitoring.cpp
+    src/serialization/ecal_serialize_monitoring.h
     src/serialization/ecal_serialize_sample_payload.cpp
     src/serialization/ecal_serialize_sample_payload.h
     src/serialization/ecal_serialize_sample_registration.cpp

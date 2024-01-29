@@ -26,6 +26,9 @@
 
 #include "ecal_struct_sample_payload.h"
 
+#include <string>
+#include <vector>
+
 namespace eCAL
 {
   // payload sample - serialize/deserialize

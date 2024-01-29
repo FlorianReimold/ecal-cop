@@ -826,12 +826,12 @@ namespace eCAL
       auto& ecal_reg_sample_tdatatype = ecal_reg_sample_topic.tdatatype;
       if (share_ttype)
       {
-        ecal_reg_sample_tdatatype.encoding = m_topic_info.encoding;
-        ecal_reg_sample_tdatatype.name     = m_topic_info.name;
+        ecal_reg_sample_tdatatype.encoding   = m_topic_info.encoding;
+        ecal_reg_sample_tdatatype.name       = m_topic_info.name;
       }
       if (share_tdesc)
       {
-        ecal_reg_sample_tdatatype.desc     = m_topic_info.descriptor;
+        ecal_reg_sample_tdatatype.descriptor = m_topic_info.descriptor;
       }
     }
     ecal_reg_sample_topic.attr  = m_attr;

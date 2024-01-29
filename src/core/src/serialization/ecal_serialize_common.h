@@ -31,8 +31,8 @@
 #include "ecal_struct_sample_registration.h"
 #include "ecal_struct_service.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace eCAL
 {

@@ -17,9 +17,9 @@
  * ========================= eCAL LICENSE =================================
 */
 
-#include <cstdlib>
-
 #include "../../serialization/ecal_struct_service.h"
+
+#include <cstdlib>
 
 namespace eCAL
 {

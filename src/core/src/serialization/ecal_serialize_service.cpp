@@ -22,15 +22,14 @@
  * @brief  eCAL service (de)serialization
 **/
 
-#include "ecal_struct_service.h"
-#include "ecal_serialize_common.h"
-
-#include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
+#include "nanopb/ecal.pb.h"
+
+#include "ecal_serialize_common.h"
+#include "ecal_serialize_service.h"
 
 #include <iostream>
-#include "ecal_serialize_service.h"
 
 namespace
 {

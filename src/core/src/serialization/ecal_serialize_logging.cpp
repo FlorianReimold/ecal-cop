@@ -22,15 +22,14 @@
  * @brief  eCAL logging (de)serialization
 **/
 
-#include "ecal_struct_logging.h"
-#include "ecal_serialize_common.h"
-
-#include "nanopb/monitoring.pb.h"
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
+#include "nanopb/logging.pb.h"
+
+#include "ecal_serialize_common.h"
+#include "ecal_serialize_logging.h"
 
 #include <iostream>
-#include "ecal_serialize_logging.h"
 
 namespace
 {
@@ -289,7 +288,7 @@ namespace
     pb_istream = pb_istream_from_buffer((pb_byte_t*)data_, size_);
     if (!pb_decode(&pb_istream, eCAL_pb_LogMessageList_fields, &pb_log_message_list))
     {
-      std::cerr << "NanoPb eCAL::Logging::LogMessage decode failed: " << pb_istream.errmsg << std::endl;
+      std::cerr << "NanoPb eCAL::Logging::LogMessageList decode failed: " << pb_istream.errmsg << std::endl;
     }
 
     return true;

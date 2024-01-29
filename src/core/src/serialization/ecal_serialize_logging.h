@@ -26,6 +26,9 @@
 
 #include "ecal_struct_logging.h"
 
+#include <string>
+#include <vector>
+
 namespace eCAL
 {
   // logmessage - serialize/deserialize

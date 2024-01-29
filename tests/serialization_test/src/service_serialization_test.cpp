@@ -17,9 +17,9 @@
  * ========================= eCAL LICENSE =================================
 */
 
-#include <gtest/gtest.h>
-
 #include "../../serialization/ecal_serialize_service.h"
+
+#include <gtest/gtest.h>
 
 namespace eCAL
 {

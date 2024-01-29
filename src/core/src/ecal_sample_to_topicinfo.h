@@ -36,7 +36,7 @@ namespace eCAL
     const auto& tdatatype = sample.topic.tdatatype;
     topic.encoding   = tdatatype.encoding;
     topic.name       = tdatatype.name;
-    topic.descriptor = tdatatype.desc;
+    topic.descriptor = tdatatype.descriptor;
     return topic;
   }
   
@@ -48,9 +48,9 @@ namespace eCAL
     {
       auto& topic_datatype = modified_sample.topic.tdatatype;
       auto split_type = Util::SplitCombinedTopicType(modified_sample.topic.ttype);
-      topic_datatype.encoding = split_type.first;
-      topic_datatype.name     = split_type.second;
-      topic_datatype.desc     = modified_sample.topic.tdesc;
+      topic_datatype.encoding   = split_type.first;
+      topic_datatype.name       = split_type.second;
+      topic_datatype.descriptor = modified_sample.topic.tdesc;
     }
   }
 }

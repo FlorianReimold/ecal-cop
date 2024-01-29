@@ -38,6 +38,8 @@ set(nanopb_generated_src
   ../../src/core/src/serialization/nanopb/host.pb.h
   ../../src/core/src/serialization/nanopb/layer.pb.c
   ../../src/core/src/serialization/nanopb/layer.pb.h
+  ../../src/core/src/serialization/nanopb/logging.pb.c
+  ../../src/core/src/serialization/nanopb/logging.pb.h
   ../../src/core/src/serialization/nanopb/monitoring.pb.c
   ../../src/core/src/serialization/nanopb/monitoring.pb.h
   ../../src/core/src/serialization/nanopb/process.pb.c
@@ -53,6 +55,8 @@ set(ecal_serialize_src
   ../../src/core/src/serialization/ecal_serialize_common.h
   ../../src/core/src/serialization/ecal_serialize_logging.cpp
   ../../src/core/src/serialization/ecal_serialize_logging.h
+  ../../src/core/src/serialization/ecal_serialize_monitoring.cpp
+  ../../src/core/src/serialization/ecal_serialize_monitoring.h
   ../../src/core/src/serialization/ecal_serialize_sample_payload.cpp
   ../../src/core/src/serialization/ecal_serialize_sample_payload.h
   ../../src/core/src/serialization/ecal_serialize_sample_registration.cpp
@@ -71,6 +75,9 @@ set(unit_test_src
   src/logging_compare.cpp
   src/logging_generate.cpp
   src/logging_serialization_test.cpp
+  src/monitoring_compare.cpp
+  src/monitoring_generate.cpp
+  src/monitoring_serialization_test.cpp
   src/payload_compare.cpp
   src/payload_generate.cpp
   src/payload_serialization_test.cpp

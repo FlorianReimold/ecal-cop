@@ -106,7 +106,7 @@ namespace eCAL
     // compare two DataTypeInformation objects
     bool CompareDataTypeInformation(const DataTypeInformation& dt1, const DataTypeInformation& dt2)
     {
-      return (dt1.name == dt2.name) && (dt1.encoding == dt2.encoding) && (dt1.desc == dt2.desc);
+      return (dt1.name == dt2.name) && (dt1.encoding == dt2.encoding) && (dt1.descriptor == dt2.descriptor);
     }
 
     // compare two LayerParUdpMC objects

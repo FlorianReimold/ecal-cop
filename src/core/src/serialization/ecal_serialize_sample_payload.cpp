@@ -22,12 +22,12 @@
  * @brief  eCAL payload sample (de)serialization
 **/
 
-#include "ecal_struct_sample_payload.h"
-#include "ecal_serialize_common.h"
-
-#include "nanopb/ecal.pb.h"
 #include "nanopb/pb_encode.h"
 #include "nanopb/pb_decode.h"
+#include "nanopb/ecal.pb.h"
+
+#include "ecal_serialize_common.h"
+#include "ecal_struct_sample_payload.h"
 
 #include <iostream>
 

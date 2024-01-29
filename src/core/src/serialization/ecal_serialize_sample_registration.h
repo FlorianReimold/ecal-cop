@@ -26,6 +26,9 @@
 
 #include "ecal_struct_sample_registration.h"
 
+#include <string>
+#include <vector>
+
 namespace eCAL
 {
   // registration sample - serialize/deserialize
