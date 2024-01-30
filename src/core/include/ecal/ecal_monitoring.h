@@ -26,8 +26,6 @@
 
 #include <ecal/types/monitoring.h>
 
-#include <string>
-
 namespace eCAL
 {
   namespace Monitoring

@@ -14,8 +14,6 @@ Visit the eCAL Documentation at 🌐 https://ecal.io for more information.
 ## Differences to Eclipse-eCAL
   - communication core only, no additional eco system tools
   - C++ and C language support only
-  - no monitoring API
-  - logging over udp not wire compatible
   - reduced API functionality (removal of all deprecated functions)
 
 ## How to build
