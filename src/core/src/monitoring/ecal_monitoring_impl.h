@@ -35,6 +35,10 @@
 #include <set>
 #include <string>
 
+#ifdef ECAL_OS_LINUX
+#include <strings.h>  // strcasecmp
+#endif
+
 namespace eCAL
 {
   ////////////////////////////////////////

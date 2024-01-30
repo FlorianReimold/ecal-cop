@@ -82,7 +82,7 @@ option(ECAL_CORE_BUILD_TESTS_PROTOBUF                    "Build the eCAL google 
 option(ECAL_CORE_CONFIG_INIFILE                          "Enables to configure eCAL via ecal.ini file"                                                           ON)
 option(ECAL_CORE_COMMAND_LINE                            "Enables eCAL application cmd line interfaces"                                                          ON)
 option(ECAL_CORE_REGISTRATION                            "Enables the eCAL registration layer"                                                                   ON)
-option(ECAL_CORE_MONITORING                              "Enables the eCAL monitoring functionality"                                                             ON)
+option(ECAL_CORE_MONITORING                              "Enables the eCAL monitoring functionality"                                                            OFF)
 option(ECAL_CORE_PUBLISHER                               "Enables the eCAL publisher functionality"                                                              ON)
 option(ECAL_CORE_SUBSCRIBER                              "Enables the eCAL subscriber functionality"                                                             ON)
 option(ECAL_CORE_SERVICE                                 "Enables the eCAL server/client functionality"                                                          ON)

@@ -70,6 +70,9 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_REGISTRATION` (Default: ON)
 - Enabling this option activates the eCAL registration layer. This layer is responsible for managing and registering different components within the eCAL ecosystem, facilitating communication between them.
 
+##### `ECAL_CORE_MONITORING` (Default: OFF)
+- Enabling this option activates the eCAL monitoring functionality.
+
 ##### `ECAL_CORE_PUBLISHER` (Default: ON)
 - Enabling this option includes the eCAL publisher functionality. This is essential for components that need to publish data to the eCAL communication infrastructure.
 
