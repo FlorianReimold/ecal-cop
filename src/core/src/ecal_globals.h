@@ -30,6 +30,9 @@
 #endif 
 #include "time/ecal_timegate.h"
 #include "logging/ecal_log_impl.h"
+#if ECAL_CORE_MONITORING
+#include "monitoring/ecal_monitoring_def.h"
+#endif
 #if ECAL_CORE_PUBLISHER
 #include "pubsub/ecal_pubgate.h"
 #endif
@@ -64,6 +67,9 @@ namespace eCAL
 
     const std::unique_ptr<CConfig>&                                       config()                 { return config_instance; };
     const std::unique_ptr<CLog>&                                          log()                    { return log_instance; };
+#if ECAL_CORE_MONITORING
+    const std::unique_ptr<CMonitoring>&                                   monitoring()             { return monitoring_instance; };
+#endif
 #if ECAL_CORE_TIMEPLUGIN
     const std::unique_ptr<CTimeGate>&                                     timegate()               { return timegate_instance; };
 #endif
@@ -91,6 +97,9 @@ namespace eCAL
     unsigned int                                                          components;
     std::unique_ptr<CConfig>                                              config_instance;
     std::unique_ptr<CLog>                                                 log_instance;
+#if ECAL_CORE_MONITORING
+    std::unique_ptr<CMonitoring>                                          monitoring_instance;
+#endif
 #if ECAL_CORE_TIMEPLUGIN
     std::unique_ptr<CTimeGate>                                            timegate_instance;
 #endif

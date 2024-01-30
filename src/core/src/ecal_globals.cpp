@@ -185,6 +185,20 @@ namespace eCAL
     }
 #endif // ECAL_CORE_TIMEPLUGIN
 
+#if ECAL_CORE_MONITORING
+    /////////////////////
+    // MONITORING
+    /////////////////////
+    if ((components_ & Init::Monitoring) != 0u)
+    {
+      if (monitoring_instance == nullptr)
+      {
+        monitoring_instance = std::make_unique<CMonitoring>();
+        new_initialization = true;
+      }
+    }
+#endif // ECAL_CORE_MONITORING
+
     /////////////////////
     // LOGGING
     /////////////////////
@@ -222,6 +236,9 @@ namespace eCAL
 #if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance && ((components_ & Init::TimeSync) != 0u))      timegate_instance->Create(CTimeGate::eTimeSyncMode::realtime);
 #endif
+#if ECAL_CORE_MONITORING
+    if (monitoring_instance && ((components_ & Init::Monitoring) != 0u))  monitoring_instance->Create();
+#endif
     initialized =  true;
     components  |= components_;
 
@@ -252,6 +269,10 @@ namespace eCAL
     case Init::Service:
       return(servicegate_instance != nullptr);
 #endif
+#if ECAL_CORE_MONITORING
+    case Init::Monitoring:
+      return(monitoring_instance != nullptr);
+#endif
     case Init::Logging:
       return(log_instance != nullptr);
 #if ECAL_CORE_TIMEPLUGIN
@@ -268,6 +289,9 @@ namespace eCAL
     if (!initialized) return(1);
 
     // start destruction
+#if ECAL_CORE_MONITORING
+    if (monitoring_instance)             monitoring_instance->Destroy();
+#endif
 #if ECAL_CORE_TIMEPLUGIN
     if (timegate_instance)               timegate_instance->Destroy();
 #endif
@@ -298,6 +322,9 @@ namespace eCAL
     if (log_instance)                    log_instance->Destroy();
     //if (config_instance)                 config_instance->Destroy();
 
+#if ECAL_CORE_MONITORING
+    monitoring_instance             = nullptr;
+#endif
 #if ECAL_CORE_TIMEPLUGIN
     timegate_instance               = nullptr;
 #endif

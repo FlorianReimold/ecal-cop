@@ -70,6 +70,14 @@ namespace eCAL
     return(g_globals()->log().get());
   }
 
+#if ECAL_CORE_MONITORING
+  CMonitoring* g_monitoring()
+  {
+    if (g_globals() == nullptr) return(nullptr);
+    return(g_globals()->monitoring().get());
+  }
+#endif
+
 #if ECAL_CORE_TIMEPLUGIN
   CTimeGate* g_timegate()
   {

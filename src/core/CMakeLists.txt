@@ -201,6 +201,18 @@ set(ecal_logging_src
 )
 
 ######################################
+# monitoring
+######################################
+if(ECAL_CORE_MONITORING)
+set(ecal_monitoring_src
+    src/monitoring/ecal_monitoring_def.cpp
+    src/monitoring/ecal_monitoring_def.h
+    src/monitoring/ecal_monitoring_impl.cpp
+    src/monitoring/ecal_monitoring_impl.h
+)
+endif()
+
+######################################
 # pubsub
 ######################################
 set(ecal_pub_src
@@ -461,6 +473,7 @@ set(ecal_header_cmn
     include/ecal/ecal_log_level.h
     include/ecal/ecal_os.h
     include/ecal/ecal_payload_writer.h
+    include/ecal/ecal_monitoring.h
     include/ecal/ecal_process.h
     include/ecal/ecal_process_severity.h
     include/ecal/ecal_publisher.h
@@ -482,6 +495,7 @@ set(ecal_header_cimpl
     include/ecal/cimpl/ecal_core_cimpl.h
     include/ecal/cimpl/ecal_init_cimpl.h
     include/ecal/cimpl/ecal_log_cimpl.h
+    include/ecal/cimpl/ecal_monitoring_cimpl.h
     include/ecal/cimpl/ecal_process_cimpl.h
     include/ecal/cimpl/ecal_publisher_cimpl.h
     include/ecal/cimpl/ecal_server_cimpl.h
@@ -525,11 +539,12 @@ ecal_add_ecal_shared_library(${PROJECT_NAME}
     ${ecal_io_udp_src}
     ${ecal_io_udp_sendreceive_linux_src}
     ${ecal_io_udp_sendreceive_win_src}
-    ${ecal_logging_src} 
-    ${ecal_pub_src} 
-    ${ecal_sub_src} 
-    ${ecal_writer_src} 
-    ${ecal_reader_src} 
+    ${ecal_logging_src}
+    ${ecal_monitoring_src}
+    ${ecal_pub_src}
+    ${ecal_sub_src}
+    ${ecal_writer_src}
+    ${ecal_reader_src}
     ${ecal_registration_src}
     ${ecal_serialization_src}
     ${ecal_service_src}
@@ -577,6 +592,7 @@ set(ECAL_CORE_FEATURES
   ECAL_CORE_CONFIG_INIFILE
   ECAL_CORE_COMMAND_LINE
   ECAL_CORE_REGISTRATION
+  ECAL_CORE_MONITORING
   ECAL_CORE_PUBLISHER
   ECAL_CORE_SUBSCRIBER
   ECAL_CORE_SERVICE
@@ -690,6 +706,7 @@ if(NOT ${CMAKE_VERSION} VERSION_LESS "3.8.0")
     ${ecal_io_udp_sendreceive_linux_src}
     ${ecal_io_udp_sendreceive_win_src}
     ${ecal_logging_src} 
+    ${ecal_monitoring_src}
     ${ecal_pub_src} 
     ${ecal_sub_src} 
     ${ecal_writer_src} 

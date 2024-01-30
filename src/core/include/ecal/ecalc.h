@@ -36,7 +36,7 @@
 #include <ecal/cimpl/ecal_client_cimpl.h>
 #include <ecal/cimpl/ecal_core_cimpl.h>
 #include <ecal/cimpl/ecal_log_cimpl.h>
-//#include <ecal/cimpl/ecal_monitoring_cimpl.h>
+#include <ecal/cimpl/ecal_monitoring_cimpl.h>
 #include <ecal/cimpl/ecal_process_cimpl.h>
 #include <ecal/cimpl/ecal_publisher_cimpl.h>
 #include <ecal/cimpl/ecal_server_cimpl.h>
