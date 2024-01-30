@@ -95,7 +95,7 @@ This section provides documentation for the CMake options used in configuring th
 ##### `ECAL_CORE_TRANSPORT_UDP` (Default: ON)
 - Enabling this option includes the eCAL UDP Multicast message transport layer.
 
-##### `ECAL_CORE_TRANSPORT_TPC` (Default: OFF)
+##### `ECAL_CORE_TRANSPORT_TCP` (Default: OFF)
 - Enabling this option includes the eCAL TCP message transport layer.
 - Requires tcp_pubsub library.
 
