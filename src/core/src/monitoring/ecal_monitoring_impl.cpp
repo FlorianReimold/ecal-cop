@@ -196,7 +196,7 @@ namespace eCAL
     const auto& sample_topic = sample_.topic;
     const int          process_id = sample_topic.pid;
     const std::string& topic_name = sample_topic.tname;
-    const size_t       topic_size = static_cast<size_t>(sample_topic.tsize);
+    const int32_t      topic_size = sample_topic.tsize;
     bool               topic_tlayer_ecal_udp_mc(false);
     bool               topic_tlayer_ecal_shm(false);
     bool               topic_tlayer_ecal_tcp(false);
@@ -206,8 +206,8 @@ namespace eCAL
       topic_tlayer_ecal_shm       |= (layer.type == tl_ecal_shm)       && layer.confirmed;
       topic_tlayer_ecal_tcp       |= (layer.type == tl_ecal_tcp)       && layer.confirmed;
     }
-    const size_t       connections_loc = static_cast<size_t>(sample_topic.connections_loc);
-    const size_t       connections_ext = static_cast<size_t>(sample_topic.connections_ext);
+    const int32_t      connections_loc = sample_topic.connections_loc;
+    const int32_t      connections_ext = sample_topic.connections_ext;
     const int64_t      did             = sample_topic.did;
     const int64_t      dclock          = sample_topic.dclock;
     const int32_t      message_drops   = sample_topic.message_drops;
@@ -432,9 +432,9 @@ namespace eCAL
     const std::string& service_id   = sample_service.sid;
     const std::string& process_name = sample_service.pname;
     const std::string& unit_name    = sample_service.uname;
-    const int          process_id   = sample_service.pid;
-    const int          tcp_port_v0  = sample_service.tcp_port_v0;
-    const int          tcp_port_v1  = sample_service.tcp_port_v1;
+    const int32_t      process_id   = sample_service.pid;
+    const uint32_t     tcp_port_v0  = sample_service.tcp_port_v0;
+    const uint32_t     tcp_port_v1  = sample_service.tcp_port_v1;
 
     // create map key
     const std::string service_name_id = service_name + service_id + std::to_string(process_id);
