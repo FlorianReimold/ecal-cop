@@ -230,7 +230,7 @@ namespace eCAL
      return written_bytes;
   }
 
-  size_t CPublisher::Send(const std::string& s_, long long time_ = DEFAULT_TIME_ARGUMENT) const
+  size_t CPublisher::Send(const std::string& s_, long long time_) const
   {
     return(Send(s_.data(), s_.size(), time_));
   }
