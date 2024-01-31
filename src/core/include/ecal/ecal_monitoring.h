@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include <ecal/ecal_os.h>
 #include <ecal/types/monitoring.h>
 
 namespace eCAL
@@ -58,33 +59,24 @@ namespace eCAL
     ECAL_API int SetFilterState(bool state_);
 
     /**
-     * @brief Get monitoring as serialized protobuf string. 
-     *
-     * @param [out] mon_  String to store the monitoring information. 
-     *
-     * @return  Monitoring buffer length or zero if failed. 
-    **/
-    ECAL_API int GetMonitoring(std::string& mon_);
-
-    /**
      * @brief Get monitoring subset as serialized protobuf string.
      *
-     * @param [out] mon_       String to store the monitoring information. 
+     * @param [out] mon_       Target string to store the monitoring information. 
      * @param       entities_  Entities to get.
      *
      * @return Zero if succeeded.
     **/
-    ECAL_API int GetMonitoring(std::string& mon_, unsigned int entities_);
+    ECAL_API int GetMonitoring(std::string& mon_, unsigned int entities_ = Entity::All);
     
     /**
      * @brief Get monitoring as a struct.
      *
-     * @param [out] mon_       Target struct to store monitoring information.
+     * @param [out] mon_       Target struct to store the monitoring information.
      * @param       entities_  Entities definition.
      *
      * @return Number of struct elements if succeeded.
     **/
-    ECAL_API int GetMonitoring(eCAL::Monitoring::SMonitoring& mon_, unsigned int entities_ = Entity::All);
+    ECAL_API int GetMonitoring(SMonitoring& mon_, unsigned int entities_ = Entity::All);
   }
   /** @example monitoring_rec.cpp
   * This is an example how the eCAL Monitoring API may be utilized to print monitoring information.

@@ -21,8 +21,6 @@
  * @brief  common data publisher based on eCAL
 **/
 
-#if ECAL_CORE_PUBLISHER
-
 #include <ecal/ecal.h>
 #include <ecal/ecal_config.h>
 
@@ -128,6 +126,11 @@ namespace eCAL
     return(m_created);
   }
 
+  bool CPublisher::Create(const std::string& topic_name_)
+  {
+    return Create(topic_name_, SDataTypeInformation());
+  }
+
   bool CPublisher::Destroy()
   {
     if(!m_created)             return(false);
@@ -227,6 +230,11 @@ namespace eCAL
      return written_bytes;
   }
 
+  size_t CPublisher::Send(const std::string& s_, long long time_) const
+  {
+    return(Send(s_.data(), s_.size(), time_));
+  }
+
   bool CPublisher::AddEventCallback(eCAL_Publisher_Event type_, PubEventCallbackT callback_)
   {
     if (m_datawriter == nullptr) return(false);
@@ -282,136 +290,3 @@ namespace eCAL
     return(out.str());
   }
 }
-
-#else // ECAL_CORE_PUBLISHER
-
-#include <ecal/ecal.h>
-
-namespace eCAL
-{
-  CPublisher::CPublisher() :
-    m_datawriter(nullptr),
-    m_id(0),
-    m_created(false),
-    m_initialized(false)
-  {
-  }
-
-  CPublisher::CPublisher(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
-    : CPublisher()
-  {}
-
-  CPublisher::CPublisher(const std::string& topic_name_)
-    : CPublisher(topic_name_, SDataTypeInformation{})
-  {}
-
-  CPublisher::~CPublisher()
-  {}
-
-  /**
-   * @brief CPublisher are move-enabled
-  **/
-  CPublisher::CPublisher(CPublisher&& rhs) noexcept :
-    m_datawriter(rhs.m_datawriter),
-    m_id(rhs.m_id),
-    m_created(rhs.m_created),
-    m_initialized(rhs.m_initialized)
-  {
-    rhs.m_created     = false;
-    rhs.m_initialized = false;
-  }
-
-  /**
-   * @brief CPublisher are move-enabled
-  **/
-  CPublisher& CPublisher::operator=(CPublisher&& rhs) noexcept
-  {
-    m_datawriter      = rhs.m_datawriter;
-
-    m_id              = rhs.m_id;
-    m_created         = rhs.m_created;
-    m_initialized     = rhs.m_initialized;
-
-    rhs.m_created     = false;
-    rhs.m_initialized = false;
-
-    return *this;
-  }
-
-  bool CPublisher::Create(const std::string& topic_name_, const SDataTypeInformation& data_type_info_)
-  {
-    return false;
-  }
-
-  bool CPublisher::Destroy()
-  {
-    return false;
-  }
-
-  bool CPublisher::SetDataTypeInformation(const SDataTypeInformation& data_type_info_)
-  {
-    return false;
-  }
-
-  bool CPublisher::SetAttribute(const std::string& attr_name_, const std::string& attr_value_)
-  {
-    return false;
-  }
-
-  bool CPublisher::ClearAttribute(const std::string& attr_name_)
-  {
-    return false;
-  }
-
-  bool CPublisher::ShareType(bool state_ /*= true*/)
-  {
-    return false;
-  }
-
-  bool CPublisher::ShareDescription(bool state_ /*= true*/)
-  {
-    return false;
-  }
-
-  bool CPublisher::SetID(long long id_)
-  {
-    return false;
-  }
-
-  size_t CPublisher::Send(const void* const buf_, const size_t len_, const long long time_ /* = DEFAULT_TIME_ARGUMENT */) const
-  {
-    return 0;
-  }
-
-  size_t CPublisher::Send(CPayloadWriter& payload_, long long time_) const
-  {
-    return 0;
-  }
-
-  bool CPublisher::IsSubscribed() const
-  {
-    return false;
-  }
-
-  size_t CPublisher::GetSubscriberCount() const
-  {
-    return 0;
-  }
-
-  std::string CPublisher::GetTopicName() const
-  {
-    return "";
-  }
-
-  SDataTypeInformation CPublisher::GetDataTypeInformation() const
-  {
-    return(SDataTypeInformation{});
-  }
-
-  std::string CPublisher::Dump(const std::string& indent_ /* = "" */) const
-  {
-    return("");
-  }
-}
-
-#endif // ECAL_CORE_PUBLISHER

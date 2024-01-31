@@ -267,10 +267,10 @@ namespace eCAL
       default:
         break;
         }
-      std::string topic_datatype_encoding   = sample_topic.tdatatype.encoding;
-      std::string topic_datatype_name       = sample_topic.tdatatype.name;
-      std::string topic_datatype_descriptor = sample_topic.tdatatype.descriptor;
-      auto attr                             = sample_topic.attr;
+      std::string topic_datatype_encoding = sample_topic.tdatatype.encoding;
+      std::string topic_datatype_name     = sample_topic.tdatatype.name;
+      std::string topic_datatype_desc     = sample_topic.tdatatype.desc;
+      auto attr                           = sample_topic.attr;
 
       // try to get topic info
       const std::string topic_name_id  = topic_name + topic_id;
@@ -288,11 +288,11 @@ namespace eCAL
 
       // update flexible content
       TopicInfo.rclock++;
-      TopicInfo.tdatatype.encoding   = std::move(topic_datatype_encoding);
-      TopicInfo.tdatatype.name       = std::move(topic_datatype_name);
-      TopicInfo.tdatatype.descriptor = std::move(topic_datatype_descriptor);
+      TopicInfo.tdatatype.encoding  = std::move(topic_datatype_encoding);
+      TopicInfo.tdatatype.name      = std::move(topic_datatype_name);
+      TopicInfo.tdatatype.desc      = std::move(topic_datatype_desc);
 
-      TopicInfo.attr               = std::map<std::string, std::string>{attr.begin(), attr.end()};
+      TopicInfo.attr                = std::map<std::string, std::string>{attr.begin(), attr.end()};
       // tlayer udp_mc
       {
         eCAL::Monitoring::TLayer tlayer;
@@ -555,7 +555,7 @@ namespace eCAL
     return(pHostMap);
   }
 
-  void CMonitoringImpl::GetMonitoringSerialized(std::string& monitoring_, unsigned int entities_)
+  void CMonitoringImpl::GetMonitoring(std::string& monitoring_, unsigned int entities_)
   {
     // create monitoring struct
     Monitoring::SMonitoring monitoring;
@@ -589,7 +589,7 @@ namespace eCAL
     SerializeToBuffer(monitoring, monitoring_);
   }
 
-  void CMonitoringImpl::GetMonitoringStructs(Monitoring::SMonitoring& monitoring_, unsigned int entities_)
+  void CMonitoringImpl::GetMonitoring(Monitoring::SMonitoring& monitoring_, unsigned int entities_)
   {
     if ((entities_ & Monitoring::Entity::Process) != 0u)
     {

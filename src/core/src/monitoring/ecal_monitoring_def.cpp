@@ -64,12 +64,12 @@ namespace eCAL
 
   void CMonitoring::GetMonitoring(std::string& monitoring_, unsigned int entities_)
   {
-    m_monitoring_impl->GetMonitoringSerialized(monitoring_, entities_);
+    m_monitoring_impl->GetMonitoring(monitoring_, entities_);
   }
 
   void CMonitoring::GetMonitoring(eCAL::Monitoring::SMonitoring& monitoring_, unsigned int entities_)
   {
-    m_monitoring_impl->GetMonitoringStructs(monitoring_, entities_);
+    m_monitoring_impl->GetMonitoring(monitoring_, entities_);
   }
 
   namespace Monitoring
@@ -95,19 +95,14 @@ namespace eCAL
       return(0);
     }
 
-    int GetMonitoring(std::string& mon_)
-    {
-      if (g_monitoring() != nullptr) g_monitoring()->GetMonitoring(mon_);
-      return((int)mon_.size());
-    }
-
     int GetMonitoring(std::string& mon_, unsigned int entities_)
     {
+      mon_.clear();
       if (g_monitoring() != nullptr) g_monitoring()->GetMonitoring(mon_, entities_);
       return((int)mon_.size());
     }
 
-    int GetMonitoring(eCAL::Monitoring::SMonitoring& mon_, unsigned int entities_)
+    int GetMonitoring(SMonitoring& mon_, unsigned int entities_)
     {
       if (g_monitoring() != nullptr)
       {

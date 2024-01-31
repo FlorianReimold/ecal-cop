@@ -57,8 +57,8 @@ namespace eCAL
     void SetInclFilter(const std::string& filter_);
     void SetFilterState(bool state_);
 
-    void GetMonitoringSerialized(std::string& monitoring_, unsigned int entities_);
-    void GetMonitoringStructs(Monitoring::SMonitoring& monitoring_, unsigned int entities_);
+    void GetMonitoring(std::string& monitoring_, unsigned int entities_);
+    void GetMonitoring(Monitoring::SMonitoring& monitoring_, unsigned int entities_);
 
   protected:
     bool ApplySample(const Registration::Sample& ecal_sample_, eTLayerType /*layer_*/);

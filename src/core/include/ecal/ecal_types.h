@@ -35,12 +35,12 @@ namespace eCAL
   {
     std::string name;          //!< name of the datatype
     std::string encoding;      //!< encoding of the datatype (e.g. protobuf, flatbuffers, capnproto)
-    std::string descriptor;    //!< descriptor information of the datatype (necessary for reflection)
+    std::string desc;          //!< descriptor information of the datatype (necessary for reflection)
 
     //!< @cond
     bool operator==(const SDataTypeInformation& other) const
     {
-      return name == other.name && encoding == other.encoding && descriptor == other.descriptor;
+      return name == other.name && encoding == other.encoding && desc == other.desc;
     }
 
     bool operator!=(const SDataTypeInformation& other) const

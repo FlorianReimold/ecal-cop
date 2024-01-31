@@ -179,18 +179,18 @@ namespace eCAL
       {
         iter->second.method.mname     = method_;
         iter->second.method.req_type  = request_type_information_.name;
-        iter->second.method.req_desc  = request_type_information_.descriptor;
+        iter->second.method.req_desc  = request_type_information_.desc;
         iter->second.method.resp_type = response_type_information_.name;
-        iter->second.method.resp_desc = response_type_information_.descriptor;
+        iter->second.method.resp_desc = response_type_information_.desc;
       }
       else
       {
         SMethod method;
         method.method.mname     = method_;
         method.method.req_type  = request_type_information_.name;
-        method.method.req_desc  = request_type_information_.descriptor;
+        method.method.req_desc  = request_type_information_.desc;
         method.method.resp_type = response_type_information_.name;
-        method.method.resp_desc = response_type_information_.descriptor;
+        method.method.resp_desc = response_type_information_.desc;
         m_method_map[method_] = method;
       }
     }
@@ -228,18 +228,18 @@ namespace eCAL
         method.method.mname     = method_;
         method.method.req_type  = req_type_;
         method.method.resp_type = resp_type_;
-        method.callback            = callback_;
+        method.callback         = callback_;
         m_method_map[method_] = method;
       }
     }
 
     SDataTypeInformation request_datatype_information;
-    request_datatype_information.name       = req_type_;
-    request_datatype_information.descriptor = req_desc;
+    request_datatype_information.name = req_type_;
+    request_datatype_information.desc = req_desc;
 
     SDataTypeInformation response_datatype_information;
-    response_datatype_information.name       = resp_type_;
-    response_datatype_information.descriptor = resp_desc;
+    response_datatype_information.name = resp_type_;
+    response_datatype_information.desc = resp_desc;
 
     return true;
   }

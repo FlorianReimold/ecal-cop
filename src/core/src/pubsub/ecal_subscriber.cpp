@@ -21,8 +21,6 @@
  * @brief  common data subscriber for eCAL
 **/
 
-#if ECAL_CORE_SUBSCRIBER
-
 #include <ecal/ecal.h>
 
 #include "ecal_globals.h"
@@ -79,6 +77,11 @@ namespace eCAL
     rhs.m_initialized = false;
 
     return *this;
+  }
+
+  bool CSubscriber::Create(const std::string& topic_name_)
+  {
+    return Create(topic_name_, SDataTypeInformation{});
   }
 
   bool CSubscriber::Create(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
@@ -236,121 +239,3 @@ namespace eCAL
     return(out.str());
   }
 }
-
-#else // ECAL_CORE_SUBSCRIBER
-
-#include <ecal/ecal.h>
-
-namespace eCAL
-{
-  CSubscriber::CSubscriber() :
-    m_datareader(nullptr),
-    m_created(false),
-    m_initialized(false)
-  {
-  }
-
-  CSubscriber::CSubscriber(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
-    : CSubscriber()
-  {}
-
-  CSubscriber::CSubscriber(const std::string& topic_name_)
-    : CSubscriber(topic_name_, SDataTypeInformation{})
-  {}
-
-  CSubscriber::~CSubscriber()
-  {
-  }
-
-  CSubscriber::CSubscriber(CSubscriber&& rhs) noexcept :
-    m_datareader(rhs.m_datareader),
-    m_created(rhs.m_created),
-    m_initialized(rhs.m_initialized)
-  {
-  }
-
-  CSubscriber& CSubscriber::operator=(CSubscriber&& rhs) noexcept
-  {
-    m_datareader = std::move(rhs.m_datareader);
-
-    m_created         = rhs.m_created;
-    m_initialized     = rhs.m_initialized;
-
-    rhs.m_created     = false;
-    rhs.m_initialized = false;
-
-    return *this;
-  }
-
-  bool CSubscriber::Create(const std::string& topic_name_, const SDataTypeInformation& topic_info_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::Destroy()
-  {
-    return false;
-  }
-
-  bool CSubscriber::SetID(const std::set<long long>& id_set_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::SetAttribute(const std::string& attr_name_, const std::string& attr_value_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::ClearAttribute(const std::string& attr_name_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::ReceiveBuffer(std::string& buf_, long long* time_ /* = nullptr */, int rcv_timeout_ /* = 0 */) const
-  {
-    return false;
-  }
-
-  bool CSubscriber::AddReceiveCallback(ReceiveCallbackT callback_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::RemReceiveCallback()
-  {
-    return false;
-  }
-
-  bool CSubscriber::AddEventCallback(eCAL_Subscriber_Event type_, SubEventCallbackT callback_)
-  {
-    return false;
-  }
-
-  bool CSubscriber::RemEventCallback(eCAL_Subscriber_Event type_)
-  {
-    return false;
-  }
-
-  size_t CSubscriber::GetPublisherCount() const
-  {
-    return 0;
-  }
-
-  std::string CSubscriber::GetTopicName() const
-  {
-    return "";
-  }
-
-  SDataTypeInformation CSubscriber::GetDataTypeInformation() const
-  {
-    return(SDataTypeInformation{});
-  }
-
-  std::string CSubscriber::Dump(const std::string& indent_ /* = "" */) const
-  {
-    return "";
-  }
-}
-
-#endif // ECAL_CORE_SUBSCRIBER

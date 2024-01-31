@@ -215,21 +215,17 @@ endif()
 ######################################
 # pubsub
 ######################################
-set(ecal_pub_src
-    src/pubsub/ecal_publisher.cpp
-)
 if(ECAL_CORE_PUBLISHER)
-  list(APPEND ecal_pub_src
+  set(ecal_pub_src
+      src/pubsub/ecal_publisher.cpp
       src/pubsub/ecal_pubgate.cpp
       src/pubsub/ecal_pubgate.h
   )
 endif()
 
-set(ecal_sub_src
-    src/pubsub/ecal_subscriber.cpp
-)
 if(ECAL_CORE_SUBSCRIBER)
-  list(APPEND ecal_sub_src
+  set(ecal_sub_src
+      src/pubsub/ecal_subscriber.cpp
       src/pubsub/ecal_subgate.cpp
       src/pubsub/ecal_subgate.h
   )

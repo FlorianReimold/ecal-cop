@@ -142,7 +142,7 @@ namespace eCAL
     {
       std::string                         name;                         // name of the datatype
       std::string                         encoding;                     // encoding of the datatype (e.g., protobuf, flatbuffers, capnproto)
-      std::string                         descriptor;                   // descriptor information of the datatype (necessary for reflection)
+      std::string                         desc;                         // descriptor information of the datatype (necessary for reflection)
     };
 
     // eCAL topic information

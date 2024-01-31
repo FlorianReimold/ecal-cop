@@ -133,10 +133,7 @@ namespace eCAL
      *
      * @return  True if it succeeds, false if it fails.
     **/
-    ECAL_API bool Create(const std::string& topic_name_)
-    {
-      return Create(topic_name_, SDataTypeInformation());
-    }
+    ECAL_API bool Create(const std::string& topic_name_);
 
     /**
      * @brief Destroys this object. 
@@ -230,10 +227,7 @@ namespace eCAL
      *
      * @return  Number of bytes sent.
     **/
-    ECAL_API size_t Send(const std::string& s_, long long time_ = DEFAULT_TIME_ARGUMENT) const
-    {
-      return(Send(s_.data(), s_.size(), time_));
-    }
+    ECAL_API size_t Send(const std::string& s_, long long time_ = DEFAULT_TIME_ARGUMENT) const;
 
     /**
      * @brief Add callback function for publisher events.

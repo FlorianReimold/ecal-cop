@@ -135,9 +135,7 @@ namespace eCAL
      *
      * @return  True if it succeeds, false if it fails.
     **/
-    ECAL_API bool Create(const std::string& topic_name_) {
-      return Create(topic_name_, SDataTypeInformation{});
-    }
+    ECAL_API bool Create(const std::string& topic_name_);
 
     /**
      * @brief Creates this object.
