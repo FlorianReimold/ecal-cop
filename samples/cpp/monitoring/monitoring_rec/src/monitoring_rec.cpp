@@ -19,18 +19,6 @@
 
 #include <ecal/ecal.h>
 
-int main(int argc, char** argv)
-{
-  std::string monitoring_s;
-  eCAL::Monitoring::GetMonitoring(monitoring_s);
-  return(0);
-}
-
-
-#if 0
-
-#include <ecal/ecal.h>
-
 #include <iostream>
 
 #ifdef _MSC_VER
@@ -232,5 +220,3 @@ int main(int argc, char **argv)
 
   return(0);
 }
-
-#endif
