@@ -21,6 +21,8 @@
  * @brief  Global monitoring class
 **/
 
+#include <ecal/ecal.h>
+
 #include "ecal_monitoring_def.h"
 #include "ecal_monitoring_impl.h"
 #include "ecal_global_accessors.h"

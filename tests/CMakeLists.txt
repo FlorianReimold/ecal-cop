@@ -19,6 +19,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 add_subdirectory(expmap_test)
+add_subdirectory(serialization_test)
 add_subdirectory(topic2mcast_test)
 add_subdirectory(util_test)
 
@@ -31,7 +32,6 @@ if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
   if(ECAL_CORE_TRANSPORT_SHM OR ECAL_CORE_TRANSPORT_UDP) # this test is running for shm and udp layer only, needs to be fixed for tcp
     add_subdirectory(pubsub_test)
   endif()
-  add_subdirectory(serialization_test)
   if(ECAL_CORE_BUILD_TESTS_PROTOBUF)
     add_subdirectory(pubsub_proto_test)
   endif()

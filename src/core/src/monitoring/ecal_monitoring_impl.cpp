@@ -288,11 +288,15 @@ namespace eCAL
 
       // update flexible content
       TopicInfo.rclock++;
-      TopicInfo.tdatatype.encoding  = std::move(topic_datatype_encoding);
-      TopicInfo.tdatatype.name      = std::move(topic_datatype_name);
-      TopicInfo.tdatatype.desc      = std::move(topic_datatype_desc);
+      TopicInfo.tdatatype.encoding = std::move(topic_datatype_encoding);
+      TopicInfo.tdatatype.name     = std::move(topic_datatype_name);
+      TopicInfo.tdatatype.desc     = std::move(topic_datatype_desc);
 
-      TopicInfo.attr                = std::map<std::string, std::string>{attr.begin(), attr.end()};
+      // attributes
+      TopicInfo.attr = std::map<std::string, std::string>{attr.begin(), attr.end()};
+
+      // layer
+      TopicInfo.tlayer.clear();
       // tlayer udp_mc
       {
         eCAL::Monitoring::TLayer tlayer;
@@ -314,13 +318,14 @@ namespace eCAL
         tlayer.confirmed = topic_tlayer_ecal_tcp;
         TopicInfo.tlayer.push_back(tlayer);
       }
-      TopicInfo.tsize              = static_cast<int>(topic_size);
-      TopicInfo.connections_loc    = static_cast<int>(connections_loc);
-      TopicInfo.connections_ext    = static_cast<int>(connections_ext);
-      TopicInfo.did                = did;
-      TopicInfo.dclock             = dclock;
-      TopicInfo.message_drops      = message_drops;
-      TopicInfo.dfreq              = dfreq;
+
+      TopicInfo.tsize           = static_cast<int>(topic_size);
+      TopicInfo.connections_loc = static_cast<int>(connections_loc);
+      TopicInfo.connections_ext = static_cast<int>(connections_ext);
+      TopicInfo.did             = did;
+      TopicInfo.dclock          = dclock;
+      TopicInfo.message_drops   = message_drops;
+      TopicInfo.dfreq           = dfreq;
     }
 
     return(true);

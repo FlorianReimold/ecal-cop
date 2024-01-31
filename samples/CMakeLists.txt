@@ -90,7 +90,7 @@ endif()
 
 # monitoring
 if(ECAL_CORE_MONITORING AND ECAL_CORE_BUILD_SAMPLES_PROTOBUF)
-#  add_subdirectory(cpp/monitoring/monitoring_rec)
+  add_subdirectory(cpp/monitoring/monitoring_rec)
   add_subdirectory(cpp/monitoring/monitoring_reg)
 endif()
 
