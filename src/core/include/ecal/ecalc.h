@@ -42,6 +42,7 @@
 #include <ecal/cimpl/ecal_server_cimpl.h>
 #include <ecal/cimpl/ecal_subscriber_cimpl.h>
 #include <ecal/cimpl/ecal_time_cimpl.h>
+#include <ecal/cimpl/ecal_timer_cimpl.h>
 #include <ecal/cimpl/ecal_tlayer_cimpl.h>
 #include <ecal/cimpl/ecal_util_cimpl.h>
 

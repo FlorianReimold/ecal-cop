@@ -386,6 +386,7 @@ endif()
 ######################################
 set(ecal_time_src
     src/time/ecal_time.cpp
+    src/time/ecal_timer.cpp
 )
 if(ECAL_CORE_TIMEPLUGIN)
   list(APPEND ecal_time_src
@@ -478,6 +479,7 @@ set(ecal_header_cmn
     include/ecal/ecal_service_info.h
     include/ecal/ecal_subscriber.h
     include/ecal/ecal_time.h
+    include/ecal/ecal_timer.h
     include/ecal/ecal_tlayer.h
     include/ecal/ecal_types.h
     include/ecal/ecal_util.h
@@ -499,6 +501,7 @@ set(ecal_header_cimpl
     include/ecal/cimpl/ecal_service_info_cimpl.h
     include/ecal/cimpl/ecal_subscriber_cimpl.h
     include/ecal/cimpl/ecal_time_cimpl.h
+    include/ecal/cimpl/ecal_timer_cimpl.h
     include/ecal/cimpl/ecal_util_cimpl.h
 )
 
