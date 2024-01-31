@@ -124,9 +124,9 @@ namespace eCAL
       {
         SDataTypeInformation topic_info;
         static T msg{};
-        topic_info.encoding   = "proto";
-        topic_info.name       = msg.GetTypeName();
-        topic_info.descriptor = protobuf::GetProtoMessageDescription(msg);
+        topic_info.encoding = "proto";
+        topic_info.name     = msg.GetTypeName();
+        topic_info.desc     = protobuf::GetProtoMessageDescription(msg);
         return topic_info;
       }
 

@@ -109,6 +109,7 @@ namespace eCAL
       if ((g_timegate() != nullptr) && g_timegate()->IsValid())
       {
         g_timegate()->SleepForNanoseconds(duration_nsecs_);
+      }
 #endif
       eCAL::Process::SleepFor(std::chrono::nanoseconds(duration_nsecs_));
     }

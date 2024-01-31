@@ -75,7 +75,7 @@ namespace eCAL
           monitoring1.publisher[i].direction != monitoring2.publisher[i].direction ||
           monitoring1.publisher[i].tdatatype.name != monitoring2.publisher[i].tdatatype.name ||
           monitoring1.publisher[i].tdatatype.encoding != monitoring2.publisher[i].tdatatype.encoding ||
-          monitoring1.publisher[i].tdatatype.descriptor != monitoring2.publisher[i].tdatatype.descriptor ||
+          monitoring1.publisher[i].tdatatype.desc != monitoring2.publisher[i].tdatatype.desc ||
           monitoring1.publisher[i].tlayer.size() != monitoring2.publisher[i].tlayer.size() ||
           monitoring1.publisher[i].tsize != monitoring2.publisher[i].tsize ||
           monitoring1.publisher[i].connections_loc != monitoring2.publisher[i].connections_loc ||
@@ -109,7 +109,7 @@ namespace eCAL
           monitoring1.subscriber[i].direction != monitoring2.subscriber[i].direction ||
           monitoring1.subscriber[i].tdatatype.name != monitoring2.subscriber[i].tdatatype.name ||
           monitoring1.subscriber[i].tdatatype.encoding != monitoring2.subscriber[i].tdatatype.encoding ||
-          monitoring1.subscriber[i].tdatatype.descriptor != monitoring2.subscriber[i].tdatatype.descriptor ||
+          monitoring1.subscriber[i].tdatatype.desc != monitoring2.subscriber[i].tdatatype.desc ||
           monitoring1.subscriber[i].tlayer.size() != monitoring2.subscriber[i].tlayer.size() ||
           monitoring1.subscriber[i].tsize != monitoring2.subscriber[i].tsize ||
           monitoring1.subscriber[i].connections_loc != monitoring2.subscriber[i].connections_loc ||

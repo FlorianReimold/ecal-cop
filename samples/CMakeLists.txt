@@ -88,6 +88,12 @@ if(ECAL_CORE_PUBLISHER AND ECAL_CORE_SUBSCRIBER)
   endif()
 endif()
 
+# monitoring
+if(ECAL_CORE_MONITORING AND ECAL_CORE_BUILD_SAMPLES_PROTOBUF)
+  add_subdirectory(cpp/monitoring/monitoring_rec)
+  add_subdirectory(cpp/monitoring/monitoring_reg)
+endif()
+
 # services
 if(ECAL_CORE_SERVICE)
   add_subdirectory(cpp/services/latency_client)

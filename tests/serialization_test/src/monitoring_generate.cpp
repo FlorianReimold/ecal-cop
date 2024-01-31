@@ -66,7 +66,7 @@ namespace eCAL
       publisher.direction            = direction;
       publisher.tdatatype.name       = GenerateString(8);
       publisher.tdatatype.encoding   = GenerateString(8);
-      publisher.tdatatype.descriptor = GenerateString(10);
+      publisher.tdatatype.desc       = GenerateString(10);
       publisher.tlayer.push_back({ tl_ecal_shm, 1, true });
       publisher.tsize                = rand() % 5000;
       publisher.connections_loc      = rand() % 10;

@@ -81,9 +81,9 @@ namespace eCAL
     DataTypeInformation GenerateDataTypeInformation()
     {
       DataTypeInformation dt;
-      dt.name       = GenerateString(8);
-      dt.encoding   = GenerateString(6);
-      dt.descriptor = GenerateString(10);
+      dt.name     = GenerateString(8);
+      dt.encoding = GenerateString(6);
+      dt.desc     = GenerateString(10);
       return dt;
     }
 
