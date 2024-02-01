@@ -47,6 +47,7 @@
 #include "service/ecal_servicegate.h"
 #include "service/ecal_clientgate.h"
 #endif
+#include "ecal_descgate.h"
 
 #include <memory>
 
@@ -91,6 +92,7 @@ namespace eCAL
     const std::unique_ptr<CMemFileThreadPool>&                            memfile_pool()           { return memfile_pool_instance; };
     const std::unique_ptr<CMemFileMap>&                                   memfile_map()            { return memfile_map_instance; };
 #endif
+    const std::unique_ptr<CDescGate>&                                     descgate()               { return descgate_instance; };
 
   private:
     bool                                                                  initialized;
@@ -121,5 +123,6 @@ namespace eCAL
     std::unique_ptr<CMemFileThreadPool>                                   memfile_pool_instance;
     std::unique_ptr<CMemFileMap>                                          memfile_map_instance;
 #endif
+    std::unique_ptr<CDescGate>                                            descgate_instance;
   };
 }

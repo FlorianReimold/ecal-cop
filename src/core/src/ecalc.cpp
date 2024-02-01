@@ -248,7 +248,7 @@ static void g_pub_event_callback(const char* topic_name_, const struct eCAL::SPu
   data.tid        = data_->tid.c_str();
   data.tname      = data_->tdatatype.name.c_str();
   data.tencoding  = data_->tdatatype.encoding.c_str();
-  data.tdesc      = data_->tdatatype.desc.c_str();
+  data.tdesc      = data_->tdatatype.descriptor.c_str();
   callback_(topic_name_, &data, par_);
 }
 
@@ -395,7 +395,7 @@ static void g_sub_event_callback(const char* topic_name_, const struct eCAL::SSu
   data.tid         = data_->tid.c_str();
   data.tname       = data_->tdatatype.name.c_str();
   data.tencoding   = data_->tdatatype.encoding.c_str();
-  data.tdesc       = data_->tdatatype.desc.c_str();
+  data.tdesc       = data_->tdatatype.descriptor.c_str();
   callback_(topic_name_, &data, par_);
 }
 

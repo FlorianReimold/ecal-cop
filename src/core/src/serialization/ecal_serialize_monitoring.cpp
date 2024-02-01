@@ -172,7 +172,7 @@ namespace
     // tdatatype.encoding
     eCAL::nanopb::encode_string(pb_topic_.tdatatype.encoding, topic_.tdatatype.encoding);
     // tdatatype.desc
-    eCAL::nanopb::encode_string(pb_topic_.tdatatype.desc, topic_.tdatatype.desc);
+    eCAL::nanopb::encode_string(pb_topic_.tdatatype.desc, topic_.tdatatype.descriptor);
     // tsize
     pb_topic_.tsize = topic_.tsize;
     // connections_loc
@@ -618,7 +618,7 @@ namespace
     // tdatatype.encoding
     eCAL::nanopb::decode_string(pb_topic_.tdatatype.encoding, topic_.tdatatype.encoding);
     // tdatatype.desc
-    eCAL::nanopb::decode_string(pb_topic_.tdatatype.desc, topic_.tdatatype.desc);
+    eCAL::nanopb::decode_string(pb_topic_.tdatatype.desc, topic_.tdatatype.descriptor);
     // tlayer
     decode_mon_registration_layer(pb_topic_.tlayer, topic_.tlayer);
     // attr

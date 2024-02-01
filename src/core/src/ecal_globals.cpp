@@ -97,6 +97,15 @@ namespace eCAL
     }
 #endif // ECAL_CORE_REGISTRATION
 
+    /////////////////////
+    // DESCRIPTION GATE
+    /////////////////////
+    if (descgate_instance == nullptr)
+    {
+      descgate_instance = std::make_unique<CDescGate>();
+      new_initialization = true;
+    }
+
 #if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     /////////////////////
     // MEMFILE MAP
@@ -220,6 +229,7 @@ namespace eCAL
     if (registration_provider_instance)                                   registration_provider_instance->Create(true, true, (components_ & Init::ProcessReg) != 0x0);
     if (registration_receiver_instance)                                   registration_receiver_instance->Create();
 #endif
+    if (descgate_instance)                                                descgate_instance->Create();
 #if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     if (memfile_pool_instance)                                            memfile_pool_instance->Create();
 #endif
@@ -311,6 +321,7 @@ namespace eCAL
 #if ECAL_CORE_SUBSCRIBER
     if (subgate_instance)                subgate_instance->Destroy();
 #endif
+    if (descgate_instance)               descgate_instance->Destroy();
 #if ECAL_CORE_REGISTRATION
     if (registration_receiver_instance)  registration_receiver_instance->Destroy();
     if (registration_provider_instance)  registration_provider_instance->Destroy();
@@ -342,6 +353,7 @@ namespace eCAL
     registration_receiver_instance  = nullptr;
     registration_provider_instance  = nullptr;
 #endif
+    descgate_instance               = nullptr;
 #if defined(ECAL_CORE_REGISTRATION_SHM) || defined(ECAL_CORE_TRANSPORT_SHM)
     memfile_pool_instance           = nullptr;
     memfile_map_instance            = nullptr;

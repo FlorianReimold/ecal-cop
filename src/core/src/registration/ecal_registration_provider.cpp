@@ -37,6 +37,46 @@
 
 #include <chrono>
 
+namespace
+{
+  bool ApplyTopicToDescGate(const std::string& topic_name_, const eCAL::SDataTypeInformation& topic_info_, bool topic_is_a_publisher_)
+  {
+    if (eCAL::g_descgate() != nullptr)
+    {
+      // calculate the quality of the current info
+      eCAL::CDescGate::QualityFlags quality = eCAL::CDescGate::QualityFlags::NO_QUALITY;
+      if (!topic_info_.encoding.empty() || !topic_info_.name.empty())
+        quality |= eCAL::CDescGate::QualityFlags::TYPE_AVAILABLE;
+      if (!topic_info_.descriptor.empty())
+        quality |= eCAL::CDescGate::QualityFlags::DESCRIPTION_AVAILABLE;
+      if (topic_is_a_publisher_)
+        quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_PRODUCER;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_THIS_PROCESS;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_CORRECT_ENTITY;
+      // update description
+      return eCAL::g_descgate()->ApplyTopicDescription(topic_name_, topic_info_, quality);
+    }
+    return false;
+  }
+
+  bool ApplyServiceToDescGate(const std::string& service_name_ ,const std::string& method_name_, const eCAL::SDataTypeInformation& request_type_information_, const eCAL::SDataTypeInformation& response_type_information_)
+  {
+    if (eCAL::g_descgate() != nullptr)
+    {
+      // Calculate the quality of the current info
+      eCAL::CDescGate::QualityFlags quality = eCAL::CDescGate::QualityFlags::NO_QUALITY;
+      if (!(request_type_information_.name.empty() && response_type_information_.name.empty()))
+        quality |= eCAL::CDescGate::QualityFlags::TYPE_AVAILABLE;
+      if (!(request_type_information_.descriptor.empty() && response_type_information_.descriptor.empty()))
+        quality |= eCAL::CDescGate::QualityFlags::DESCRIPTION_AVAILABLE;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_THIS_PROCESS;
+
+      return eCAL::g_descgate()->ApplyServiceDescription(service_name_, method_name_, request_type_information_, response_type_information_, quality);
+    }
+    return false;
+  }
+}
+
 namespace eCAL
 {
   std::atomic<bool> CRegistrationProvider::m_created;
@@ -352,6 +392,21 @@ namespace eCAL
     for(SampleMapT::const_iterator iter = m_topics_map.begin(); iter != m_topics_map.end(); ++iter)
     {
       //////////////////////////////////////////////
+      // update description
+      //////////////////////////////////////////////
+      // read attributes
+      const std::string topic_name(iter->second.topic.tname);
+      const bool topic_is_a_publisher(iter->second.cmd_type == eCAL::bct_reg_publisher);
+
+      SDataTypeInformation topic_info;
+      const auto& topic_datatype = iter->second.topic.tdatatype;
+      topic_info.encoding   = topic_datatype.encoding;
+      topic_info.name       = topic_datatype.name;
+      topic_info.descriptor = topic_datatype.desc;
+
+      ApplyTopicToDescGate(topic_name, topic_info, topic_is_a_publisher);
+
+      //////////////////////////////////////////////
       // send sample to registration layer
       //////////////////////////////////////////////
       return_value &= ApplySample(iter->second.topic.tname, iter->second);
@@ -369,6 +424,23 @@ namespace eCAL
     const std::lock_guard<std::mutex> lock(m_server_map_sync);
     for (SampleMapT::const_iterator iter = m_server_map.begin(); iter != m_server_map.end(); ++iter)
     {
+      //////////////////////////////////////////////
+      // update description
+      //////////////////////////////////////////////
+      const auto& ecal_sample_service = iter->second.service;
+      for (const auto& method : ecal_sample_service.methods)
+      {
+        SDataTypeInformation request_type;
+        request_type.name        = method.req_type;
+        request_type.descriptor  = method.req_desc;
+
+        SDataTypeInformation response_type;
+        response_type.name       = method.resp_type;
+        response_type.descriptor = method.resp_desc;
+
+        ApplyServiceToDescGate(ecal_sample_service.sname, method.mname, request_type, response_type);
+      }
+
       //////////////////////////////////////////////
       // send sample to registration layer
       //////////////////////////////////////////////

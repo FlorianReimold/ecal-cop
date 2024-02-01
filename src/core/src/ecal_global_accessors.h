@@ -44,6 +44,7 @@ namespace eCAL
   class  CRegistrationProvider;
   class  CRegistrationReceiver;
 #endif
+  class  CDescGate;
 #if ECAL_CORE_SUBSCRIBER
   class  CSubGate;
 #endif
@@ -73,6 +74,7 @@ namespace eCAL
   CRegistrationProvider*  g_registration_provider();
   CRegistrationReceiver*  g_registration_receiver();
 #endif
+  CDescGate*              g_descgate();
 #if ECAL_CORE_SUBSCRIBER
   CSubGate*               g_subgate();
 #endif

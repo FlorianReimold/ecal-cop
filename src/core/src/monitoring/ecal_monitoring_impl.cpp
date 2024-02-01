@@ -288,9 +288,9 @@ namespace eCAL
 
       // update flexible content
       TopicInfo.rclock++;
-      TopicInfo.tdatatype.encoding = std::move(topic_datatype_encoding);
-      TopicInfo.tdatatype.name     = std::move(topic_datatype_name);
-      TopicInfo.tdatatype.desc     = std::move(topic_datatype_desc);
+      TopicInfo.tdatatype.encoding   = std::move(topic_datatype_encoding);
+      TopicInfo.tdatatype.name       = std::move(topic_datatype_name);
+      TopicInfo.tdatatype.descriptor = std::move(topic_datatype_desc);
 
       // attributes
       TopicInfo.attr = std::map<std::string, std::string>{attr.begin(), attr.end()};

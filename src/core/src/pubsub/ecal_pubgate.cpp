@@ -21,12 +21,32 @@
  * @brief  eCAL publisher gateway class
 **/
 
-#include "config/ecal_config_reader_hlp.h"
 #include "ecal_pubgate.h"
 #include "ecal_sample_to_topicinfo.h"
+#include "ecal_globals.h"
 
 #include <iterator>
 #include <atomic>
+
+namespace
+{
+  bool ApplyTopicToDescGate(const std::string& topic_name_, const eCAL::SDataTypeInformation& topic_info_)
+  {
+    if (eCAL::g_descgate() != nullptr)
+    {
+      // Calculate the quality of the current info
+      eCAL::CDescGate::QualityFlags quality = eCAL::CDescGate::QualityFlags::NO_QUALITY;
+      if (!topic_info_.name.empty() || !topic_info_.encoding.empty())
+        quality |= eCAL::CDescGate::QualityFlags::TYPE_AVAILABLE;
+      if (!topic_info_.descriptor.empty())
+        quality |= eCAL::CDescGate::QualityFlags::DESCRIPTION_AVAILABLE;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_CORRECT_ENTITY;
+
+      return eCAL::g_descgate()->ApplyTopicDescription(topic_name_, topic_info_, quality);
+    }
+    return false;
+  }
+}
 
 namespace eCAL
 {
@@ -118,7 +138,7 @@ namespace eCAL
     const SDataTypeInformation topic_information{ eCALSampleToTopicInformation(ecal_sample_) };
 
     std::string reader_par;
-#if 0 // currently not needed for udp only
+#if 0
     for (const auto& layer : ecal_sample.tlayer())
     {
       // layer parameter as protobuf message
@@ -127,6 +147,9 @@ namespace eCAL
       reader_par = layer.par_layer().SerializeAsString();
     }
 #endif
+
+    // store description
+    ApplyTopicToDescGate(topic_name, topic_information);
 
     // register local subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);
@@ -169,7 +192,7 @@ namespace eCAL
     const SDataTypeInformation topic_information{ eCALSampleToTopicInformation(ecal_sample_) };
 
     std::string reader_par;
-#if 0 // currently not needed for udp only
+#if 0
     for (const auto& layer : ecal_sample.tlayer())
     {
       // layer parameter as protobuf message
@@ -178,6 +201,9 @@ namespace eCAL
       reader_par = layer.par_layer().SerializeAsString();
     }
 #endif
+
+    // store description
+    ApplyTopicToDescGate(topic_name, topic_information);
 
     // register external subscriber
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datawriter_sync);

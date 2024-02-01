@@ -21,20 +21,33 @@
  * @brief  eCAL subscriber gateway class
 **/
 
+#include "pubsub/ecal_subgate.h"
+#include "ecal_sample_to_topicinfo.h"
+#include "ecal_globals.h"
+
 #include <algorithm>
 #include <iterator>
 
-#include <ecal/ecal.h>
+namespace
+{
+  bool ApplyTopicToDescGate(const std::string& topic_name_, const eCAL::SDataTypeInformation& topic_info_)
+  {
+    if (eCAL::g_descgate() != nullptr)
+    {
+      // Calculate the quality of the current info
+      eCAL::CDescGate::QualityFlags quality = eCAL::CDescGate::QualityFlags::NO_QUALITY;
+      if (!topic_info_.name.empty() || !topic_info_.encoding.empty())
+        quality |= eCAL::CDescGate::QualityFlags::TYPE_AVAILABLE;
+      if (!topic_info_.descriptor.empty())
+        quality |= eCAL::CDescGate::QualityFlags::DESCRIPTION_AVAILABLE;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_CORRECT_ENTITY;
+      quality |= eCAL::CDescGate::QualityFlags::INFO_COMES_FROM_PRODUCER;
 
-#ifdef ECAL_OS_LINUX
-//#include <sys/types.h>
-//#include <sys/socket.h>
-#endif
-
-#include "ecal_global_accessors.h"
-
-#include "pubsub/ecal_subgate.h"
-#include "ecal_sample_to_topicinfo.h"
+      return eCAL::g_descgate()->ApplyTopicDescription(topic_name_, topic_info_, quality);
+    }
+    return false;
+  }
+}
 
 namespace eCAL
 {
@@ -229,8 +242,10 @@ namespace eCAL
     const std::string& topic_name = ecal_sample.tname;
     if (topic_name.empty()) return;
 
+    // store description
     const std::string& topic_id = ecal_sample.tid;
     const SDataTypeInformation topic_info{ eCALSampleToTopicInformation(ecal_sample_) };
+    ApplyTopicToDescGate(topic_name, topic_info);
 
     // get process id
     const std::string process_id = std::to_string(ecal_sample_.topic.pid);
@@ -259,6 +274,10 @@ namespace eCAL
     const std::string& topic_name = ecal_sample.tname;
     const std::string& topic_id   = ecal_sample.tid;
     const std::string process_id  = std::to_string(ecal_sample_.topic.pid);
+
+    // store description
+    const SDataTypeInformation topic_info{ eCALSampleToTopicInformation(ecal_sample_) };
+    ApplyTopicToDescGate(topic_name, topic_info);
 
     // unregister local publisher
     const std::shared_lock<std::shared_timed_mutex> lock(m_topic_name_datareader_sync);

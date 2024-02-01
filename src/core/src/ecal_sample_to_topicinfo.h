@@ -34,9 +34,9 @@ namespace eCAL
   {
     SDataTypeInformation topic;
     const auto& tdatatype = sample.topic.tdatatype;
-    topic.encoding = tdatatype.encoding;
-    topic.name     = tdatatype.name;
-    topic.desc     = tdatatype.desc;
+    topic.encoding   = tdatatype.encoding;
+    topic.name       = tdatatype.name;
+    topic.descriptor = tdatatype.desc;
     return topic;
   }
   

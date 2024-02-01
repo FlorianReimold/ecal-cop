@@ -418,6 +418,8 @@ set(ecal_cmn_src
     src/ecal.cpp
     src/ecal_def.h
     src/ecal_def_ini.h
+    src/ecal_descgate.cpp
+    src/ecal_descgate.h
     src/ecal_event.cpp 
     src/ecal_event.h
     src/ecal_eventhandle.h
@@ -506,6 +508,8 @@ set(ecal_header_cimpl
 
 set(ecal_header_msg
     include/ecal/msg/protobuf/client.h
+    include/ecal/msg/protobuf/dynamic_publisher.h
+    include/ecal/msg/protobuf/dynamic_subscriber.h    
     include/ecal/msg/protobuf/ecal_proto_dyn.h
     include/ecal/msg/protobuf/ecal_proto_hlp.h
     include/ecal/msg/protobuf/publisher.h

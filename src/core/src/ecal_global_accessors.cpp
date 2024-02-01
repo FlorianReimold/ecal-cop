@@ -100,6 +100,12 @@ namespace eCAL
   }
 #endif
 
+  CDescGate* g_descgate()
+  {
+    if (g_globals() == nullptr) return(nullptr);
+    return(g_globals()->descgate().get());
+  }
+
 #if ECAL_CORE_SUBSCRIBER
   CSubGate* g_subgate()
   {

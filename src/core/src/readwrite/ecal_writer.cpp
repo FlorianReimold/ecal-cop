@@ -781,7 +781,7 @@ namespace eCAL
     out << indent_ << "m_topic_id:               " << m_topic_id << std::endl;
     out << indent_ << "m_topic_info.encoding:    " << m_topic_info.encoding << std::endl;
     out << indent_ << "m_topic_info.name:        " << m_topic_info.name << std::endl;
-    out << indent_ << "m_topic_info.desc:        " << m_topic_info.desc << std::endl;
+    out << indent_ << "m_topic_info.desc:        " << m_topic_info.descriptor << std::endl;
     out << indent_ << "m_id:                     " << m_id << std::endl;
     out << indent_ << "m_clock:                  " << m_clock << std::endl;
     out << indent_ << "m_created:                " << m_created << std::endl;
@@ -820,7 +820,7 @@ namespace eCAL
     ecal_reg_sample_topic.tname  = m_topic_name;
     ecal_reg_sample_topic.tid    = m_topic_id;
     if (share_ttype) ecal_reg_sample_topic.ttype = Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name);
-    if (share_tdesc) ecal_reg_sample_topic.tdesc = m_topic_info.desc;
+    if (share_tdesc) ecal_reg_sample_topic.tdesc = m_topic_info.descriptor;
     // topic_information
     {
       auto& ecal_reg_sample_tdatatype = ecal_reg_sample_topic.tdatatype;
@@ -831,7 +831,7 @@ namespace eCAL
       }
       if (share_tdesc)
       {
-        ecal_reg_sample_tdatatype.desc = m_topic_info.desc;
+        ecal_reg_sample_tdatatype.desc = m_topic_info.descriptor;
       }
     }
     ecal_reg_sample_topic.attr  = m_attr;

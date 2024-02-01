@@ -76,6 +76,30 @@ namespace eCAL
     ECAL_API std::string GeteCALActiveIniFile();
 
     /**
+     * @brief Send shutdown event to specified local user process using it's unit name.
+     *
+     * @param unit_name_   Process unit name.
+    **/
+    ECAL_API void ShutdownProcess(const std::string& unit_name_);
+
+    /**
+     * @brief Send shutdown event to specified local user process using it's process id.
+     *
+     * @param process_id_   Process id.
+    **/
+    ECAL_API void ShutdownProcess(int process_id_);
+
+    /**
+     * @brief Send shutdown event to all local user processes.
+    **/
+    ECAL_API void ShutdownProcesses();
+
+    /**
+     * @brief Send shutdown event to all local core components.
+    **/
+    ECAL_API void ShutdownCore();
+
+    /**
      * @brief Enable eCAL message loop back,
      *          that means subscriber will receive messages from
      *          publishers of the same process (default == false).
@@ -99,6 +123,70 @@ namespace eCAL
      * @param state_  Switch on description sharing
     **/
     ECAL_API void PubShareDescription(bool state_);
+
+    /**
+     * @brief Get complete topic map (including types and descriptions).
+     *
+     * @param topic_info_map_  Map to store the datatype descriptions.
+     *                         Map containing { TopicName -> (Encoding, Type, Description) } mapping of all topics that are currently known.
+    **/
+    ECAL_API void GetTopics(std::unordered_map<std::string, SDataTypeInformation>& topic_info_map_);
+
+    /**
+     * @brief Get all topic names.
+     *
+     * @param topic_names_ Vector to store the topic names.
+    **/
+    ECAL_API void GetTopicNames(std::vector<std::string>& topic_names_);
+
+    /**
+     * @brief Gets description of the specified topic.
+     *
+     * @param topic_name_   Topic name.
+     * @param topic_info_   SDataTypeInformation to be filled by this function.
+     *
+     * @return True if TopicInformation for specified topic could be retrieved, false otherwise.
+    **/
+    ECAL_API bool GetTopicDataTypeInformation(const std::string& topic_name_, SDataTypeInformation& topic_info_);
+
+    /**
+     * @brief Get complete service map (including request and response types and descriptions).
+     *
+     * @param service_info_map_  Map to store the datatype descriptions.
+     *                           Map { (ServiceName, MethodName) -> ( (ReqType, ReqDescription), (RespType, RespDescription) ) } mapping of all currently known services.
+    **/
+    ECAL_API void GetServices(std::map<std::tuple<std::string, std::string>, SServiceMethodInformation>& service_info_map_);
+
+    /**
+     * @brief Get all service/method names.
+     *
+     * @param service_method_names_ Vector to store the service/method tuples (Vector { (ServiceName, MethodName) }).
+    **/
+    ECAL_API void GetServiceNames(std::vector<std::tuple<std::string, std::string>>& service_method_names_);
+
+    /**
+     * @brief Gets service method request and response type names.
+     *
+     * @param service_name_  Service name.
+     * @param method_name_   Method name.
+     * @param req_type_      String to store request type.
+     * @param resp_type_     String to store response type.
+     *
+     * @return  True if succeeded.
+    **/
+    ECAL_API bool GetServiceTypeNames(const std::string& service_name_, const std::string& method_name_, std::string& req_type_, std::string& resp_type_);
+
+    /**
+     * @brief Gets service method request and response descriptions.
+     *
+     * @param service_name_  Service name.
+     * @param method_name_   Method name.
+     * @param req_desc_      String to store request description.
+     * @param resp_desc_     String to store response description.
+     *
+     * @return  True if succeeded.
+    **/
+    ECAL_API bool GetServiceDescription(const std::string& service_name_, const std::string& method_name_, std::string& req_desc_, std::string& resp_desc_);
 
     /**
      * @brief Splits the topic type (eCAL < 5.12) into encoding and types (>= eCAL 5.12)

@@ -244,7 +244,7 @@ namespace eCAL
     // topic_information
     // Remove eCAL6!!
     if (m_use_ttype) ecal_reg_sample_topic.ttype = Util::CombinedTopicEncodingAndType(m_topic_info.encoding, m_topic_info.name);
-    if (m_use_tdesc) ecal_reg_sample_topic.tdesc = m_topic_info.desc;
+    if (m_use_tdesc) ecal_reg_sample_topic.tdesc = m_topic_info.descriptor;
     {
       auto& ecal_reg_sample_tdatatype = ecal_reg_sample_topic.tdatatype;
       if (m_use_ttype)
@@ -254,7 +254,7 @@ namespace eCAL
       }
       if (m_use_tdesc)
       {
-        ecal_reg_sample_tdatatype.desc = m_topic_info.desc;
+        ecal_reg_sample_tdatatype.desc = m_topic_info.descriptor;
       }
     }
     ecal_reg_sample_topic.attr  = m_attr;
@@ -953,7 +953,7 @@ namespace eCAL
     out << indent_ << "m_topic_id:                         " << m_topic_id                         << std::endl;
     out << indent_ << "m_topic_info.encoding:              " << m_topic_info.encoding              << std::endl;
     out << indent_ << "m_topic_info.name:                  " << m_topic_info.name                  << std::endl;
-    out << indent_ << "m_topic_info.desc:                  " << m_topic_info.desc                  << std::endl;
+    out << indent_ << "m_topic_info.desc:                  " << m_topic_info.descriptor            << std::endl;
     out << indent_ << "m_topic_size:                       " << m_topic_size                       << std::endl;
     out << indent_ << "m_read_buf.size():                  " << m_read_buf.size()                  << std::endl;
     out << indent_ << "m_read_time:                        " << m_read_time                        << std::endl;
