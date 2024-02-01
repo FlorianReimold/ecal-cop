@@ -25,6 +25,7 @@
 #ifndef ecal_process_cimpl_h_included
 #define ecal_process_cimpl_h_included
 
+#include <ecal/ecal_process_mode.h>
 #include <ecal/ecal_process_severity.h>
 
 #include <ecal/ecal_os.h>
