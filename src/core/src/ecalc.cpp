@@ -115,6 +115,7 @@ extern "C"
 /////////////////////////////////////////////////////////
 extern "C"
 {
+#if ECAL_CORE_MONITORING
   ECALC_API void eCAL_Util_ShutdownUnitName(const char* unit_name_)
   {
     std::string unit_name = unit_name_;
@@ -135,6 +136,7 @@ extern "C"
   {
     eCAL::Util::ShutdownCore();
   }
+#endif // ECAL_CORE_MONITORING
 
   ECALC_API void eCAL_Util_EnableLoopback(int state_)
   {
