@@ -195,6 +195,21 @@ extern "C"
   {
     eCAL::Process::SetState(severity_, level_, info_);
   }
+
+  ECALC_API int eCAL_Process_StartProcess(const char* proc_name_, const char* proc_args_, const char* working_dir_, int create_console_, enum eCAL_Process_eStartMode process_mode_, int block_)
+  {
+    return(eCAL::Process::StartProcess(proc_name_, proc_args_, working_dir_, create_console_ != 0, process_mode_, block_ != 0));
+  }
+
+  ECALC_API int eCAL_Process_StopProcessName(const char* proc_name_)
+  {
+    return(eCAL::Process::StopProcess(proc_name_));
+  }
+
+  ECALC_API int eCAL_Process_StopProcessID(int proc_id_)
+  {
+    return(eCAL::Process::StopProcess(proc_id_));
+  }
 }
 
 /////////////////////////////////////////////////////////
