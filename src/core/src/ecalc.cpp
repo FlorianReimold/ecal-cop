@@ -115,9 +115,105 @@ extern "C"
 /////////////////////////////////////////////////////////
 extern "C"
 {
+  ECALC_API void eCAL_Util_ShutdownUnitName(const char* unit_name_)
+  {
+    std::string unit_name = unit_name_;
+    eCAL::Util::ShutdownProcess(unit_name);
+  }
+
+  ECALC_API void eCAL_Util_ShutdownProcessID(int process_id_)
+  {
+    eCAL::Util::ShutdownProcess(process_id_);
+  }
+
+  ECALC_API void eCAL_Util_ShutdownProcesses()
+  {
+    eCAL::Util::ShutdownProcesses();
+  }
+
+  ECALC_API void eCAL_Util_ShutdownCore()
+  {
+    eCAL::Util::ShutdownCore();
+  }
+
   ECALC_API void eCAL_Util_EnableLoopback(int state_)
   {
     eCAL::Util::EnableLoopback(state_ != 0);
+  }
+
+  ECALC_API int eCAL_Util_GetTopicTypeName(const char* topic_name_, void* topic_type_, int topic_type_len_)
+  {
+    if(!topic_name_) return(0);
+    if(!topic_type_) return(0);
+    eCAL::SDataTypeInformation topic_info;
+    if(eCAL::Util::GetTopicDataTypeInformation(topic_name_, topic_info))
+    {
+      return(CopyBuffer(topic_type_, topic_type_len_, topic_info.name));
+    }
+    return(0);
+  }
+
+  ECALC_API int eCAL_Util_GetTopicEncoding(const char* topic_name_, void* topic_encoding_, int topic_encoding_len_)
+  {
+    if (!topic_name_)     return(0);
+    if (!topic_encoding_) return(0);
+    eCAL::SDataTypeInformation topic_info;
+    if (eCAL::Util::GetTopicDataTypeInformation(topic_name_, topic_info))
+    {
+      return(CopyBuffer(topic_encoding_, topic_encoding_len_, topic_info.encoding));
+    }
+    return(0);
+  }
+
+  ECALC_API int eCAL_Util_GetTopicDescription(const char* topic_name_, void* topic_desc_, int topic_desc_len_)
+  {
+    if(!topic_name_) return(0);
+    if(!topic_desc_) return(0);
+    eCAL::SDataTypeInformation topic_info;
+    if (eCAL::Util::GetTopicDataTypeInformation(topic_name_, topic_info))
+    {
+      return(CopyBuffer(topic_desc_, topic_desc_len_, topic_info.descriptor));
+    }
+    return(0);
+  }
+
+  ECALC_API int eCAL_Util_GetServiceResponseTypeName(const char* service_name_, const char* method_name_, void* resp_type_, int resp_type_len_)
+  {
+    if (!service_name_) return(0);
+    if (!method_name_)  return(0);
+    if (!resp_type_)    return(0);
+    std::string req_type, resp_type;
+    if (eCAL::Util::GetServiceTypeNames(service_name_, method_name_, req_type, resp_type))
+    {
+      return(CopyBuffer(resp_type_, resp_type_len_, resp_type));
+    }
+    return 0;
+  }
+
+  ECALC_API int eCAL_Util_GetServiceRequestDescription(const char* service_name_, const char* method_name_, void* req_desc_, int req_desc_len_)
+  {
+    if (!service_name_) return(0);
+    if (!method_name_)  return(0);
+    if (!req_desc_)     return(0);
+    std::string req_desc, resp_desc;
+    if (eCAL::Util::GetServiceDescription(service_name_, method_name_, req_desc, resp_desc))
+    {
+      return(CopyBuffer(req_desc_, req_desc_len_, req_desc));
+    }
+    return 0;
+  }
+
+  ECALC_API int eCAL_Util_GetServiceResponseDescription(const char* service_name_, const char* method_name_, void* resp_desc_, int resp_desc_len_)
+  {
+    if (!service_name_) return(0);
+    if (!method_name_)  return(0);
+    if (!resp_desc_)    return(0);
+    std::string req_desc, resp_desc;
+    if (eCAL::Util::GetServiceDescription(service_name_, method_name_, req_desc, resp_desc))
+    {
+      return(CopyBuffer(resp_desc_, resp_desc_len_, resp_desc));
+    }
+    return 0;
   }
 }
 
