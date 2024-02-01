@@ -18,18 +18,19 @@
 */
 
 /**
- * @file   ecal_service.h
- * @brief  eCAL service interface
+ * @file   ecal_process_mode.h
+ * @brief  eCAL process start mode
 **/
 
 #pragma once
 
-#ifdef _MSC_VER
-#pragma message("WARNING: This header file is deprecated. It will be removed in future eCAL versions. Please include <ecal/ecal_server.h> and / or <ecal/ecal_client.h> instead")
-#endif /*_MSC_VER*/
-#ifdef __GNUC__
-#pragma message "WARNING: This header file is deprecated. It will be removed in future eCAL versions. Please include <ecal/ecal_server.h> and / or <ecal/ecal_client.h> instead"
-#endif /* __GNUC__ */
-
-#include <ecal/ecal_server.h>
-#include <ecal/ecal_client.h>
+/**
+ * @brief  Process start mode (StartProcess) 
+**/
+enum eCAL_Process_eStartMode
+{
+  proc_smode_normal     =  0,  /*!<  0 == start mode normal     */
+  proc_smode_hidden     =  1,  /*!<  1 == start mode hidden     */
+  proc_smode_minimized  =  2,  /*!<  2 == start mode minimized  */
+  proc_smode_maximized  =  3,  /*!<  3 == start mode maximized  */
+};
