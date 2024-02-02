@@ -641,6 +641,54 @@ extern "C"
     return(0);
   }
   
+  ECALC_API int eCAL_Sub_GetTypeName(ECAL_HANDLE handle_, void* buf_, int buf_len_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
+    const eCAL::SDataTypeInformation datatype_info = sub->GetDataTypeInformation();
+    int buffer_len = CopyBuffer(buf_, buf_len_, datatype_info.name);
+    if (buffer_len != static_cast<int>(datatype_info.name.size()))
+    {
+      return(0);
+    }
+    else
+    {
+      return(buffer_len);
+    }
+  }
+
+  ECALC_API int eCAL_Sub_GetEncoding(ECAL_HANDLE handle_, void* buf_, int buf_len_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
+    const eCAL::SDataTypeInformation datatype_info = sub->GetDataTypeInformation();
+    int buffer_len = CopyBuffer(buf_, buf_len_, datatype_info.encoding);
+    if (buffer_len != static_cast<int>(datatype_info.encoding.size()))
+    {
+      return(0);
+    }
+    else
+    {
+      return(buffer_len);
+    }
+  }
+
+  ECALC_API int eCAL_Sub_GetDescription(ECAL_HANDLE handle_, void* buf_, int buf_len_)
+  {
+    if (handle_ == NULL) return(0);
+    eCAL::CSubscriber* sub = static_cast<eCAL::CSubscriber*>(handle_);
+    const eCAL::SDataTypeInformation datatype_info = sub->GetDataTypeInformation();
+    int buffer_len = CopyBuffer(buf_, buf_len_, datatype_info.descriptor);
+    if (buffer_len != static_cast<int>(datatype_info.descriptor.size()))
+    {
+      return(0);
+    }
+    else
+    {
+      return(buffer_len);
+    }
+  }
+
   ECALC_API int eCAL_Sub_Dump(ECAL_HANDLE handle_, void* buf_, int buf_len_)
   {
     if(handle_ == nullptr) return(0);

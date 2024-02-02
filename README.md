@@ -43,10 +43,10 @@ This section provides documentation for the CMake options used in configuring th
 #### Additional Builds
 
 ##### `ECAL_CORE_BUILD_SAMPLES` (Default: ON)
-- This option controls whether the eCAL samples should be built. If not needed, you can disable this option to reduce build time and output size.
+- This option controls whether the eCAL samples should be built. If not needed, you can disable this option to reduce build time.
 
 ##### `ECAL_CORE_BUILD_SAMPLES_PROTOBUF` (Default: OFF)
-- This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time and output size.
+- This option controls whether the eCAL protobuf samples should be built. If not needed, you can disable this option to reduce build time.
 - Requires google::protobuf serialization library.
 
 ##### `ECAL_CORE_BUILD_TESTS` (Default: ON)
@@ -54,7 +54,7 @@ This section provides documentation for the CMake options used in configuring th
 - Requires gtest library.
 
 ##### `ECAL_CORE_BUILD_TESTS_PROTOBUF` (Default: OFF)
-- This option determines whether the eCAL Google Tests using protobuf serialization should be built. .
+- This option determines whether the eCAL Google Tests using protobuf serialization should be built.
 - Requires gtest library and google::protobuf serialization library.
 
 #### Core Internal Feature Configuration
