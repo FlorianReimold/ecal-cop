@@ -23,6 +23,11 @@
 
 #include "ecal_clientgate.h"
 #include "service/ecal_service_client_impl.h"
+#include <atomic>
+#include <mutex>
+#include <shared_mutex>
+#include <string>
+#include <vector>
 
 namespace eCAL
 {
